@@ -1,0 +1,213 @@
+{
+  "common": {
+    "appName": "Finovault",
+    "tagline": "Vault Your Future. Grow Your Wealth.",
+    "continue": "Continue",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip for now",
+    "cancel": "Cancel",
+    "done": "Done",
+    "retry": "Retry",
+    "logIn": "Log in",
+    "createAccount": "Create account",
+    "secured": "Secured & encrypted",
+    "error": "Something went wrong",
+    "offline": "You are offline",
+    "learnMore": "Learn more"
+  },
+  "splash": {
+    "tagline": "Vault Your Future. Grow Your Wealth."
+  },
+  "welcome": {
+    "slide1Title": "Protect what you have",
+    "slide1Body": "Real-time fraud detection and bank-grade security keep your money safe.",
+    "slide2Title": "Grow your wealth",
+    "slide2Body": "Smart savings, goal tracking and a flexible pension built for irregular income.",
+    "slide3Title": "Pay for life without friction",
+    "slide3Body": "Transfers, bills and utilities — all in one trusted place.",
+    "slide4Title": "Intelligent guidance",
+    "slide4Body": "An AI coach that understands African income realities.",
+    "getStarted": "Get Started"
+  },
+  "role": {
+    "title": "How will you use Finovault?",
+    "subtitle": "Pick the way you want to manage your money. You can add more later.",
+    "individual": "Individual",
+    "individualDesc": "Personal wealth & savings",
+    "freelancer": "Freelancer",
+    "freelancerDesc": "Invoices, tax & irregular income",
+    "entrepreneur": "Entrepreneur",
+    "entrepreneurDesc": "Personal + business in one view",
+    "sme": "SME Owner",
+    "smeDesc": "Cash flow, vendors & runway",
+    "femaleFounder": "Women-led / Female founder path",
+    "selectHint": "Select one to continue"
+  },
+  "goals": {
+    "title": "What matters most?",
+    "subtitle": "Choose the goals you want to focus on.",
+    "riskTitle": "Risk tolerance",
+    "riskLow": "Low",
+    "riskModerate": "Moderate",
+    "riskHigh": "High",
+    "completeSetup": "Complete setup",
+    "goals": {
+      "emergency": "Emergency fund",
+      "retirement": "Retirement / Pension",
+      "debt": "Reduce debt",
+      "business": "Grow business",
+      "tax": "Tax readiness",
+      "home": "Buy a home",
+      "education": "Education"
+    }
+  },
+  "auth": {
+    "signupTitle": "Create your account",
+    "loginTitle": "Welcome back",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "password": "Password",
+    "passwordStrength": "Password strength",
+    "terms": "By creating an account you agree to our Terms & Privacy Policy.",
+    "alreadyHaveAccount": "Already have an account? Log in",
+    "noAccount": "Don't have an account? Create one",
+    "forgotPassword": "Forgot password",
+    "biometric": "Use Face ID / Fingerprint",
+    "invalidCredentials": "Invalid email or password.",
+    "rateLimited": "Too many attempts. Please try again in a moment.",
+    "otpTitle": "Verify your identity",
+    "otpBody": "Enter the 6-digit code we sent you.",
+    "otpResend": "Resend code",
+    "otpError": "That code didn't work. Try again.",
+    "enableBiometricTitle": "Faster, safer sign-in",
+    "enableBiometricBody": "Unlock Finovault with Face ID or your fingerprint next time instead of your password.",
+    "enableBiometricCta": "Enable Face ID / Fingerprint",
+    "unlockTitle": "Unlock Finovault",
+    "unlockBody": "Use Face ID or your fingerprint to get back in.",
+    "unlockCta": "Unlock",
+    "unlockChecking": "Checking…",
+    "unlockFallback": "Use password instead",
+    "unlockPrompt": "Unlock Finovault",
+    "biometricFailed": "Authentication didn't succeed. Try again."
+  },
+  "onboarding": {
+    "linkTitle": "Connect your money",
+    "linkBody": "Read-only access. We never store your banking password.",
+    "bank": "Bank account",
+    "mobileMoney": "Mobile money",
+    "link": "Link",
+    "linked": "Linked",
+    "skipNote": "You can link accounts later from Profile.",
+    "finish": "Enter Finovault"
+  },
+  "tabs": {
+    "home": "Home",
+    "insights": "Insights",
+    "vault": "Vault",
+    "pay": "Pay",
+    "profile": "Profile"
+  },
+  "vault": {
+    "createGoal": "Create goal",
+    "startPension": "Start pension",
+    "emptyTitle": "No goals yet",
+    "emptyBody": "Create your first savings or pension goal."
+  },
+  "pay": {
+    "transfer": "Transfer",
+    "transferBody": "Send money securely",
+    "payBill": "Pay bill",
+    "payBillBody": "Electricity, data, water & more",
+    "recent": "Recent",
+    "emptyHistory": "Your payment history will appear here."
+  },
+  "insights": {
+    "dailyBriefing": "Daily Briefing",
+    "briefingEmpty": "Your snapshot will appear here.",
+    "spendingPattern": "Spending pattern",
+    "patternEmpty": "Insights appear after you link accounts."
+  },
+  "home": {
+    "greeting": "Good {timeOfDay}, {name}",
+    "morning": "morning",
+    "afternoon": "afternoon",
+    "evening": "evening",
+    "notification": "Notifications",
+    "emptyTitle": "Let's get your vault set up",
+    "emptyBody": "Link your first account or create a savings goal to see your money picture.",
+    "emptyCta": "Link an account",
+    "metrics": {
+      "combinedWealth": "Combined wealth",
+      "revenueMrr": "Revenue / MRR",
+      "burnRate": "Burn rate",
+      "runway": "Runway",
+      "incomeThisMonth": "Income this month",
+      "unpaidInvoices": "Unpaid invoices",
+      "taxEstimate": "Tax estimate",
+      "activeProjects": "Active projects",
+      "totalNetWorth": "Total net worth",
+      "securityScore": "Security score",
+      "monthlySpending": "Monthly spending",
+      "cashPosition": "Cash position",
+      "revenue": "Revenue"
+    },
+    "actions": {
+      "cashFlow": "Cash flow",
+      "grants": "Grants",
+      "transfer": "Transfer",
+      "coach": "Coach",
+      "addInvoice": "Add invoice",
+      "setAsideTax": "Set aside tax",
+      "send": "Send",
+      "save": "Save",
+      "payBill": "Pay Bill",
+      "insights": "Insights",
+      "payVendor": "Pay vendor",
+      "recordInvoice": "Record invoice",
+      "advisor": "Advisor"
+    },
+    "sub": {
+      "perMonth": "per month",
+      "months": "months",
+      "vsBudget": "vs budget",
+      "addFirstProject": "Add your first project",
+      "taxShield": "Tax Shield {percent}",
+      "goal": "Goal {amount}"
+    },
+    "opportunitiesTitle": "Opportunities",
+    "recentProjectsTitle": "Recent projects",
+    "spendingVsBudgetTitle": "Spending vs budget",
+    "savingsTitle": "Savings",
+    "needsAttentionTitle": "Needs attention",
+    "rainyDayFund": "Rainy Day Fund",
+    "grants": {
+      "femaleSeedFund": "Female Innovators Seed Fund",
+      "curated": "Curated for women-led ventures"
+    },
+    "sme": {
+      "noVendors": "No vendors linked yet"
+    }
+  },
+  "profile": {
+    "planBadge": "Free",
+    "security": "Security Centre",
+    "linkedAccounts": "Linked Accounts",
+    "settings": "Settings",
+    "plan": "Plan & Billing",
+    "language": "Language",
+    "appearance": "Appearance",
+    "logout": "Log out",
+    "logoutConfirm": "Are you sure you want to log out?"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "security": "Security",
+    "biometric": "Face ID / Fingerprint unlock"
+  }
+}

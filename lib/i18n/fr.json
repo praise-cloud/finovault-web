@@ -1,0 +1,213 @@
+{
+  "common": {
+    "appName": "Finovault",
+    "tagline": "Votre avenir en coffre-fort. Faites croître votre patrimoine.",
+    "continue": "Continuer",
+    "next": "Suivant",
+    "back": "Retour",
+    "skip": "Passer pour l'instant",
+    "cancel": "Annuler",
+    "done": "Terminé",
+    "retry": "Réessayer",
+    "logIn": "Se connecter",
+    "createAccount": "Créer un compte",
+    "secured": "Sécurisé et chiffré",
+    "error": "Une erreur est survenue",
+    "offline": "Vous êtes hors ligne",
+    "learnMore": "En savoir plus"
+  },
+  "splash": {
+    "tagline": "Votre avenir en coffre-fort. Faites croître votre patrimoine."
+  },
+  "welcome": {
+    "slide1Title": "Protégez ce que vous avez",
+    "slide1Body": "La détection de fraude en temps réel et une sécurité bancaire protègent votre argent.",
+    "slide2Title": "Faites croître votre patrimoine",
+    "slide2Body": "Épargne intelligente, objectifs et pension flexible pour revenus irréguliers.",
+    "slide3Title": "Payez sans friction",
+    "slide3Body": "Transferts, factures et services — tout au même endroit.",
+    "slide4Title": "Des conseils intelligents",
+    "slide4Body": "Un coach IA qui comprend les réalités de revenus africains.",
+    "getStarted": "Commencer"
+  },
+  "role": {
+    "title": "Comment utiliserez-vous Finovault ?",
+    "subtitle": "Choisissez la façon de gérer votre argent. Vous pourrez en ajouter plus tard.",
+    "individual": "Particulier",
+    "individualDesc": "Patrimoine & épargne personnelle",
+    "freelancer": "Indépendant",
+    "freelancerDesc": "Factures, impôts & revenus irréguliers",
+    "entrepreneur": "Entrepreneur",
+    "entrepreneurDesc": "Personnel + entreprise en une vue",
+    "sme": "PME",
+    "smeDesc": "Trésorerie, fournisseurs & runway",
+    "femaleFounder": "Parcours femme / fondatrice",
+    "selectHint": "Sélectionnez-en un pour continuer"
+  },
+  "goals": {
+    "title": "Qu'est-ce qui compte le plus ?",
+    "subtitle": "Choisissez les objectifs à privilégier.",
+    "riskTitle": "Tolérance au risque",
+    "riskLow": "Faible",
+    "riskModerate": "Modérée",
+    "riskHigh": "Élevée",
+    "completeSetup": "Terminer la configuration",
+    "goals": {
+      "emergency": "Fonds d'urgence",
+      "retirement": "Retraite / Pension",
+      "debt": "Réduire les dettes",
+      "business": "Faire croître l'entreprise",
+      "tax": "Préparation fiscale",
+      "home": "Acheter une maison",
+      "education": "Éducation"
+    }
+  },
+  "auth": {
+    "signupTitle": "Créez votre compte",
+    "loginTitle": "Bon retour",
+    "fullName": "Nom complet",
+    "email": "E-mail",
+    "phone": "Téléphone (facultatif)",
+    "password": "Mot de passe",
+    "passwordStrength": "Force du mot de passe",
+    "terms": "En créant un compte, vous acceptez nos conditions et notre politique de confidentialité.",
+    "alreadyHaveAccount": "Vous avez déjà un compte ? Connectez-vous",
+    "noAccount": "Pas de compte ? Créez-en un",
+    "forgotPassword": "Mot de passe oublié",
+    "biometric": "Utiliser Face ID / empreinte",
+    "invalidCredentials": "E-mail ou mot de passe invalide.",
+    "rateLimited": "Trop de tentatives. Réessayez dans un instant.",
+    "otpTitle": "Vérifiez votre identité",
+    "otpBody": "Saisissez le code à 6 chiffres que nous vous avons envoyé.",
+    "otpResend": "Renvoyer le code",
+    "otpError": "Ce code n'a pas fonctionné. Réessayez.",
+    "enableBiometricTitle": "Connexion plus rapide et plus sûre",
+    "enableBiometricBody": "Déverrouillez Finovault avec Face ID ou votre empreinte la prochaine fois, au lieu de votre mot de passe.",
+    "enableBiometricCta": "Activer Face ID / empreinte",
+    "unlockTitle": "Déverrouiller Finovault",
+    "unlockBody": "Utilisez Face ID ou votre empreinte pour revenir.",
+    "unlockCta": "Déverrouiller",
+    "unlockChecking": "Vérification…",
+    "unlockFallback": "Utiliser le mot de passe",
+    "unlockPrompt": "Déverrouiller Finovault",
+    "biometricFailed": "L'authentification a échoué. Réessayez."
+  },
+  "onboarding": {
+    "linkTitle": "Connectez votre argent",
+    "linkBody": "Accès en lecture seule. Nous ne stockons jamais votre mot de passe bancaire.",
+    "bank": "Compte bancaire",
+    "mobileMoney": "Mobile money",
+    "link": "Connecter",
+    "linked": "Connecté",
+    "skipNote": "Vous pourrez connecter des comptes plus tard depuis le Profil.",
+    "finish": "Entrer dans Finovault"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "insights": "Aperçus",
+    "vault": "Coffre",
+    "pay": "Payer",
+    "profile": "Profil"
+  },
+  "vault": {
+    "createGoal": "Créer un objectif",
+    "startPension": "Démarrer la pension",
+    "emptyTitle": "Aucun objectif",
+    "emptyBody": "Créez votre premier objectif d'épargne ou de pension."
+  },
+  "pay": {
+    "transfer": "Transfert",
+    "transferBody": "Envoyez de l'argent en toute sécurité",
+    "payBill": "Payer une facture",
+    "payBillBody": "Électricité, données, eau et plus",
+    "recent": "Récent",
+    "emptyHistory": "Votre historique de paiements apparaîtra ici."
+  },
+  "insights": {
+    "dailyBriefing": "Briefing quotidien",
+    "briefingEmpty": "Votre aperçu apparaîtra ici.",
+    "spendingPattern": "Repères de dépenses",
+    "patternEmpty": "Les aperçus apparaissent une fois vos comptes connectés."
+  },
+  "home": {
+    "greeting": "Bon{timeOfDay}, {name}",
+    "morning": "jour",
+    "afternoon": "jour",
+    "evening": "soir",
+    "notification": "Notifications",
+    "emptyTitle": "Configurons votre coffre",
+    "emptyBody": "Connectez votre premier compte ou créez un objectif d'épargne.",
+    "emptyCta": "Connecter un compte",
+    "metrics": {
+      "combinedWealth": "Patrimoine combiné",
+      "revenueMrr": "Revenu / MRR",
+      "burnRate": "Taux de dépenses",
+      "runway": "Runway",
+      "incomeThisMonth": "Revenu du mois",
+      "unpaidInvoices": "Factures impayées",
+      "taxEstimate": "Estimation fiscale",
+      "activeProjects": "Projets actifs",
+      "totalNetWorth": "Patrimoine net",
+      "securityScore": "Score de sécurité",
+      "monthlySpending": "Dépenses mensuelles",
+      "cashPosition": "Position de trésorerie",
+      "revenue": "Revenu"
+    },
+    "actions": {
+      "cashFlow": "Flux de trésorerie",
+      "grants": "Subventions",
+      "transfer": "Transfert",
+      "coach": "Coach",
+      "addInvoice": "Ajouter une facture",
+      "setAsideTax": "Mettre de côté l'impôt",
+      "send": "Envoyer",
+      "save": "Épargner",
+      "payBill": "Payer une facture",
+      "insights": "Aperçus",
+      "payVendor": "Payer un fournisseur",
+      "recordInvoice": "Enregistrer une facture",
+      "advisor": "Conseiller"
+    },
+    "sub": {
+      "perMonth": "par mois",
+      "months": "mois",
+      "vsBudget": "vs budget",
+      "addFirstProject": "Ajoutez votre premier projet",
+      "taxShield": "Tax Shield {percent}",
+      "goal": "Objectif {amount}"
+    },
+    "opportunitiesTitle": "Opportunités",
+    "recentProjectsTitle": "Projets récents",
+    "spendingVsBudgetTitle": "Dépenses vs budget",
+    "savingsTitle": "Épargne",
+    "needsAttentionTitle": "À surveiller",
+    "rainyDayFund": "Fonds de précaution",
+"grants": {
+      "femaleSeedFund": "Fonds d'amorçage pour fondatrices",
+      "curated": "Conçu pour les entreprises dirigées par des femmes"
+    },
+    "sme": {
+      "noVendors": "Aucun fournisseur connecté"
+    }
+  },
+  "profile": {
+    "planBadge": "Gratuit",
+    "security": "Centre de sécurité",
+    "linkedAccounts": "Comptes connectés",
+    "settings": "Paramètres",
+    "plan": "Forfait & facturation",
+    "language": "Langue",
+    "appearance": "Apparence",
+    "logout": "Se déconnecter",
+    "logoutConfirm": "Voulez-vous vraiment vous déconnecter ?"
+  },
+  "settings": {
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "security": "Sécurité",
+    "biometric": "Déverrouillage Face ID / empreinte"
+  }
+}
