@@ -47,6 +47,6 @@ export interface IconProps {
 
 export function Icon({ name, size = 22, color, subdued = false, className = '' }: IconProps) {
   const Glyph = glyphMap[name];
-  const resolved = color ?? (subdued ? 'var(--fv-text-secondary)' : 'var(--fv-accent)');
+  const resolved = color ?? (subdued ? 'var(--fv-text-secondary)' : 'var(--fv-primary)');
   return <Glyph size={size} color={resolved} strokeWidth={1.8} className={className} />;
 }

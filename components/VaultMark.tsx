@@ -27,17 +27,17 @@ export function VaultMark({
         cy="24"
         r="21"
         fill="none"
-        stroke={subdued ? '#B0B4BA' : '#D4AF37'}
+        stroke={subdued ? '#B0B4BA' : '#1D4ED8'}
         strokeWidth="2.5"
       />
       <path
         d="M24 6 A18 18 0 0 1 37.97 14.52"
         fill="none"
-        stroke={subdued ? '#B0B4BA' : '#D4AF37'}
+        stroke={subdued ? '#B0B4BA' : '#1D4ED8'}
         strokeWidth="3"
         strokeLinecap="round"
       />
-      <circle cx="24" cy="24" r="4.5" fill={subdued ? '#B0B4BA' : '#D4AF37'} />
+      <circle cx="24" cy="24" r="4.5" fill={subdued ? '#B0B4BA' : '#1D4ED8'} />
     </svg>
   );
 }

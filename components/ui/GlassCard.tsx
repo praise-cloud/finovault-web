@@ -24,7 +24,7 @@ export function GlassCard({
       ? 'border-[var(--fv-error)]'
       : variant === 'elevated'
         ? 'shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
-        : 'border-[var(--fv-gold-border)]';
+        : 'border-[var(--fv-primary-border)]';
 
   const style = {
     padding,

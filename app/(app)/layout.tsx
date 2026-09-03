@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Home, PiggyBank, CreditCard, BarChart3, User, LogOut } from 'lucide-react';
+import { Home, PiggyBank, CreditCard, BarChart3, MessageCircle, User, LogOut } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -13,6 +13,7 @@ const navItems = [
   { href: '/vault', key: 'vault', icon: PiggyBank },
   { href: '/pay', key: 'pay', icon: CreditCard },
   { href: '/insights', key: 'insights', icon: BarChart3 },
+  { href: '/coach', key: 'coach', icon: MessageCircle },
 ] as const;
 
 /**
@@ -49,7 +50,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="flex w-16 shrink-0 flex-col items-center gap-2 border-r border-[var(--fv-border-subtle)] bg-[var(--fv-surface)] py-5 md:w-56 md:items-stretch md:px-4">
         <div className="mb-4 flex items-center gap-2 px-2">
           <VaultMark size={36} />
-          <span className="font-display hidden text-lg font-bold text-[var(--fv-accent)] md:block">
+          <span className="font-display hidden text-lg font-bold text-[var(--fv-primary)] md:block">
             Finovault
           </span>
         </div>
@@ -63,7 +64,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 aria-current={active ? 'page' : undefined}
                 className={`flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm transition-colors ${
                   active
-                    ? 'bg-[var(--fv-gold-border)] font-semibold text-[var(--fv-accent)]'
+                    ? 'bg-[var(--fv-primary-border)] font-semibold text-[var(--fv-primary)]'
                     : 'text-[var(--fv-text-secondary)] hover:bg-[var(--fv-border-subtle)]'
                 }`}
               >
@@ -98,7 +99,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <span className="text-sm font-medium text-[var(--fv-text-secondary)]">
             {firstName}
           </span>
-          <span className="rounded-full bg-[var(--fv-gold-border)] px-3 py-1 text-xs font-semibold text-[var(--fv-accent)]">
+          <span className="rounded-full bg-[var(--fv-primary-border)] px-3 py-1 text-xs font-semibold text-[var(--fv-primary)]">
             {t('profile.planBadge')}
           </span>
         </header>

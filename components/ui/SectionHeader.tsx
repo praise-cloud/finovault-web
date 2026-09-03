@@ -15,7 +15,7 @@ export function SectionHeader({ title, actionLabel, onAction, className = '' }: 
         <button
           type="button"
           onClick={onAction}
-          className="px-2 py-1 text-[14px] font-semibold text-[var(--fv-accent)] hover:opacity-80"
+          className="px-2 py-1 text-[14px] font-semibold text-[var(--fv-primary)] hover:opacity-80"
         >
           {actionLabel}
         </button>

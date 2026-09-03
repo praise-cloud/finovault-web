@@ -8,7 +8,7 @@ export interface TextFieldProps {
   onChangeText: (value: string) => void;
   onBlur?: () => void;
   error?: string;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'date';
   placeholder?: string;
   autoComplete?: string;
 }
@@ -38,7 +38,7 @@ export function TextField({
         onChange={(e) => onChangeText(e.target.value)}
         onBlur={onBlur}
         aria-invalid={!!error}
-        className={`min-h-[48px] rounded-[10px] border bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none transition-colors focus:border-[var(--fv-accent)] ${
+        className={`min-h-[48px] rounded-[10px] border bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none transition-colors focus:border-[var(--fv-primary)] ${
           error ? 'border-[var(--fv-error)]' : 'border-[var(--fv-border)]'
         }`}
       />

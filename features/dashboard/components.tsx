@@ -2,6 +2,48 @@
 
 import React from 'react';
 import { GlassCard, MoneyText, Icon, IconName } from '@/components/ui';
+import { VaultMark } from '@/components/VaultMark';
+import { formatMoney } from '@/lib/utils';
+
+export function HeroBalance({
+  label,
+  amount,
+  currency,
+  sub,
+  onAction,
+  actionLabel,
+}: {
+  label: string;
+  amount: number;
+  currency: string;
+  sub?: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}) {
+  return (
+    <div className="relative mb-4 overflow-hidden rounded-[16px] bg-gradient-to-br from-[var(--fv-secondary)] to-[var(--fv-primary)] p-5 text-white shadow-[var(--fv-shadow-card)]">
+      <div aria-hidden className="pointer-events-none absolute -right-6 -top-6 opacity-25">
+        <VaultMark size={130} subdued />
+      </div>
+      <div className="relative flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-[13px] font-medium text-[rgba(255,255,255,0.78)]">{label}</p>
+          <p className="mt-1.5 text-[30px] font-bold tabular-nums tracking-tight">{formatMoney(amount, currency)}</p>
+          {sub ? <p className="mt-1 text-[12px] text-[rgba(255,255,255,0.72)]">{sub}</p> : null}
+        </div>
+        {actionLabel ? (
+          <button
+            type="button"
+            onClick={onAction}
+            className="shrink-0 rounded-full border border-[rgba(255,255,255,0.35)] bg-[rgba(255,255,255,0.12)] px-3.5 py-1.5 text-[13px] font-semibold backdrop-blur transition-colors hover:bg-[rgba(255,255,255,0.22)]"
+          >
+            {actionLabel}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 export interface StatCardProps {
   label: string;
@@ -74,7 +116,7 @@ export function QuickAction({ icon, label, onPress }: QuickActionProps) {
       aria-label={label}
       className="flex min-w-[64px] flex-col items-center gap-1.5"
     >
-      <span className="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[var(--fv-gold-border)] bg-[var(--fv-surface)]">
+      <span className="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[var(--fv-primary-border)] bg-[var(--fv-surface)]">
         <Icon name={icon} size={20} />
       </span>
       <span className="text-center text-[11px] font-medium text-[var(--fv-text-secondary)]">

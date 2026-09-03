@@ -4,28 +4,30 @@
  */
 
 export const colors = {
-  primary: '#0A1F5C',
-  secondary: '#08142E',
-  accent: '#D4AF37',
-  accentLight: '#F4D35E',
+  primary: '#1D4ED8',
+  primaryLight: '#3B82F6',
+  accent: '#7DD3FC',
+  accentStrong: '#38BDF8',
+  wash: '#EFF6FF',
+  secondary: '#0F2557',
   charcoal: '#1A1A1A',
 
   light: {
-    bg: '#F7F9FC',
+    bg: '#F7FAFF',
     surface: '#FFFFFF',
     surfaceGlass: 'rgba(255, 255, 255, 0.85)',
     text: '#1A1A1A',
     textSecondary: '#43474D',
-    border: '#C4C6CE',
-    borderSubtle: 'rgba(196, 198, 206, 0.6)',
+    border: '#C8D3E8',
+    borderSubtle: 'rgba(200, 211, 232, 0.6)',
   },
 
   dark: {
-    bg: '#08142E',
+    bg: '#0F2557',
     surface: 'rgba(255, 255, 255, 0.08)',
     surfaceGlass: 'rgba(255, 255, 255, 0.10)',
     text: '#FFFFFF',
-    textSecondary: '#B0B4BA',
+    textSecondary: '#B8C4DC',
     border: 'rgba(255, 255, 255, 0.15)',
     borderSubtle: 'rgba(255, 255, 255, 0.08)',
   },
@@ -36,7 +38,7 @@ export const colors = {
   warningBg: 'rgba(201, 154, 46, 0.12)',
   error: '#8C3A3A',
   errorBg: 'rgba(140, 58, 58, 0.12)',
-  info: '#0A1F5C',
+  info: '#1D4ED8',
 } as const;
 
 export const typography = {

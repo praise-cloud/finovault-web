@@ -100,6 +100,11 @@
     "link": "Link",
     "linked": "Linked",
     "skipNote": "You can link accounts later from Profile.",
+    "welcomeTitle": "Welcome, {name}",
+    "welcomeBody": "Your {role} vault is ready. We'll help you protect what you have and grow your wealth.",
+    "securedNote": "Your money is protected by bank-grade security.",
+    "benefitSecurity": "Bank-grade encryption protects every transaction.",
+    "benefitPrivacy": "Your data stays yours. We never sell it.",
     "finish": "Enter Finovault"
   },
   "tabs": {
@@ -107,7 +112,13 @@
     "insights": "Insights",
     "vault": "Vault",
     "pay": "Pay",
-    "profile": "Profile"
+    "profile": "Profile",
+    "coach": "Coach",
+    "accounts": "Accounts",
+    "invoices": "Invoices",
+    "transactions": "Transactions",
+    "budgets": "Budgets",
+    "vendors": "Vendors"
   },
   "vault": {
     "createGoal": "Create goal",
@@ -174,7 +185,9 @@
       "vsBudget": "vs budget",
       "addFirstProject": "Add your first project",
       "taxShield": "Tax Shield {percent}",
-      "goal": "Goal {amount}"
+      "goal": "Goal {amount}",
+      "thisMonth": "this month",
+      "metricLine": "{metric}: {amount}"
     },
     "opportunitiesTitle": "Opportunities",
     "recentProjectsTitle": "Recent projects",
@@ -184,7 +197,18 @@
     "rainyDayFund": "Rainy Day Fund",
     "grants": {
       "femaleSeedFund": "Female Innovators Seed Fund",
-      "curated": "Curated for women-led ventures"
+      "curated": "Curated for women-led ventures",
+      "title": "Grant opportunities",
+      "list": {
+        "seedFund": "Female Innovators Seed Fund",
+        "seedFundDeadline": "Oct 15, 2026",
+        "sheWins": "SheWins Africa",
+        "sheWinsDeadline": "Nov 30, 2026",
+        "mra": "MRA Women Entrepreneur Grant",
+        "mraDeadline": "Dec 31, 2026",
+        "afdb": "AfDB AFAWA",
+        "afdbDeadline": "Rolling"
+      }
     },
     "sme": {
       "noVendors": "No vendors linked yet"
@@ -209,5 +233,94 @@
     "themeSystem": "System",
     "security": "Security",
     "biometric": "Face ID / Fingerprint unlock"
+  },
+  "coach": {
+    "snapshot": "Snapshot",
+    "askHint": "Ask your coach...",
+    "send": "Send",
+    "yourTopGoal": "your top goal",
+    "andWord": "and",
+    "noSpendingYet": "no tracked spending yet",
+    "flowHealthy": "healthy cash flow",
+    "flowTight": "tight cash flow",
+    "noVendorsYet": "no vendors yet",
+    "promptSpending": "Review my spending",
+    "promptSave": "Help me save",
+    "promptGrow": "How do I grow?",
+    "greeting": "Hey {name}, I'm your Money Coach. You have {balance} on hand and {flow} cash flow this month. Ask me anything about your money.",
+    "default": "Hey {name}, here's your snapshot: {balance} on hand, {flow} cash flow this month. As a {role}, I'd focus on {goal} next. Ask me to review spending, plan savings, or grow your money.",
+    "save": "Based on your last month you brought in {income} and spent {expense}. That leaves a surplus of {surplus}. Your biggest categories were {cats}. Park the surplus into {goal} automatically each payday to stay consistent.",
+    "invest": "You have {balance} across accounts. For a {role}, keep 3 months of expenses as cash, then split the rest between a pension pot and a diversified fund. Start small and increase contributions by 1% each quarter.",
+    "tax": "Set aside ~20% of each incoming payment for tax so deadlines never surprise you. Tag client payments clearly and reconcile invoices weekly — your future self will thank you.",
+    "smeCashFlow": "Your cash position is {balance}. At your current burn of {payroll} per month, you have {runway} months of runway. Consider tightening payables or negotiating better terms with vendors.",
+    "smeVendors": "Your top vendor is {vendor} ({spend}). Total monthly outflows are {expense}. Review payment terms — extending from 30 to 45 days could free up significant cash.",
+    "smeCompliance": "Upcoming deadlines: keep an eye on MRA filing dates. Set calendar reminders now to avoid penalties. The MRA portal accepts filings up to the due date.",
+    "smePayroll": "Payroll is {payroll} per month for {count} people ({pct} of expenses). Benchmark: aim for payroll < 30% of revenue. Consider contractor vs employee mix for flexibility.",
+    "entrepreneurFundraising": "You have {balance} cash and burn {burn} per month — {runway} months runway. To raise, you will need 18-24 months runway post-close. Start investor conversations 6 months before you need the money.",
+    "entrepreneurBurn": "Monthly burn is {burn} (burn multiple: {multiple}x revenue). Target burn multiple < 2x for efficient growth. Every hire should have a clear ROI path.",
+    "entrepreneurHiring": "Team is {count} people with {payroll} monthly payroll vs {revenue} revenue. Revenue per employee: {revPerEmp}. Before hiring, define the 90-day outcome for each role.",
+    "entrepreneurRevenue": "MRR is {mrr}, burn is {burn}. Annual revenue range: {range}. Focus on net revenue retention > 100% and CAC payback < 12 months.",
+    "femaleFounderGrants": "Check the Female Innovators Seed Fund (applications quarterly), SheWins Africa, and local women entrepreneur incentives. Deadlines are in your Insights tab.",
+    "freelancerInvoices": "Monthly income {income} with DSO of {dso} days. Target DSO < 30. Send reminders at day 7, 14, 21. Consider 2/10 net 30 terms to accelerate collection.",
+    "freelancerTax": "Set aside {taxReserve} (20% of {income}) for tax each month. Use a separate 'Tax Shield' goal with auto-contribute on every invoice payment."
+  },
+  "invoices": {
+    "create": "Create invoice",
+    "client": "Client name",
+    "amount": "Amount",
+    "dueDate": "Due date",
+    "total": "Total",
+    "paid": "Paid",
+    "outstanding": "Outstanding",
+    "dueShort": "Due",
+    "status": "Status",
+    "emptyTitle": "No invoices yet",
+    "emptyBody": "Create your first invoice to track what clients owe you."
+  },
+  "accounts": {
+    "link": "Link account",
+    "name": "Account name",
+    "type": "Type",
+    "balance": "Balance",
+    "totalBalance": "Total balance",
+    "active": "active",
+    "activity": "Activity",
+    "hideActivity": "Hide",
+    "unlink": "Unlink",
+    "noActivity": "No recent activity for this account.",
+    "emptyTitle": "No accounts linked",
+    "emptyBody": "Link your first account to see your money in one place."
+  },
+  "transactions": {
+    "income": "Income",
+    "expense": "Spending",
+    "all": "All",
+    "in": "In",
+    "out": "Out",
+    "account": "Account",
+    "category": "Category",
+    "allAccounts": "All accounts",
+    "allCategories": "All categories",
+    "emptyTitle": "No transactions",
+    "emptyBody": "Transactions will appear once you link accounts and move money."
+  },
+  "budgets": {
+    "create": "Create budget",
+    "category": "Category",
+    "amount": "Amount",
+    "monthlyTotal": "Monthly budget",
+    "spent": "Spent",
+    "overBudget": "Over budget",
+    "emptyTitle": "No budgets yet",
+    "emptyBody": "Set monthly limits to stay on top of your spending."
+  },
+  "vendors": {
+    "add": "Add vendor",
+    "name": "Vendor name",
+    "totalSpend": "Total spend",
+    "count": "vendors",
+    "reliability": "Reliability",
+    "emptyTitle": "No vendors linked",
+    "emptyBody": "Add your top suppliers to track spending and reliability."
   }
 }

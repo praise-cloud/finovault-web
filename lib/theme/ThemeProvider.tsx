@@ -9,9 +9,11 @@ export interface Theme {
   mode: Exclude<ThemeMode, 'system'>;
   colors: {
     primary: string;
-    secondary: string;
+    primaryLight: string;
     accent: string;
-    accentLight: string;
+    accentStrong: string;
+    wash: string;
+    secondary: string;
     charcoal: string;
     bg: string;
     surface: string;
@@ -27,7 +29,7 @@ export interface Theme {
     error: string;
     errorBg: string;
     info: string;
-    goldBorder: string;
+    primaryBorder: string;
   };
   spacing: typeof spacing;
   radius: typeof radius;
@@ -41,9 +43,11 @@ function buildTheme(mode: Exclude<ThemeMode, 'system'>): Theme {
     mode,
     colors: {
       primary: colors.primary,
-      secondary: colors.secondary,
+      primaryLight: colors.primaryLight,
       accent: colors.accent,
-      accentLight: colors.accentLight,
+      accentStrong: colors.accentStrong,
+      wash: colors.wash,
+      secondary: colors.secondary,
       charcoal: colors.charcoal,
       bg: scheme.bg,
       surface: scheme.surface,
@@ -59,7 +63,7 @@ function buildTheme(mode: Exclude<ThemeMode, 'system'>): Theme {
       error: colors.error,
       errorBg: colors.errorBg,
       info: colors.info,
-      goldBorder: mode === 'light' ? 'rgba(212, 175, 55, 0.25)' : 'rgba(212, 175, 55, 0.3)',
+      primaryBorder: mode === 'light' ? 'rgba(29, 78, 216, 0.18)' : 'rgba(125, 211, 252, 0.25)',
     },
     spacing,
     radius,

@@ -100,6 +100,11 @@
     "link": "Connecter",
     "linked": "Connecté",
     "skipNote": "Vous pourrez connecter des comptes plus tard depuis le Profil.",
+    "welcomeTitle": "Bienvenue, {name}",
+    "welcomeBody": "Votre coffre {role} est prêt. Nous vous aiderons à protéger ce que vous avez et à faire croître votre patrimoine.",
+    "securedNote": "Votre argent est protégé par une sécurité de niveau bancaire.",
+    "benefitSecurity": "Le chiffrement de niveau bancaire protège chaque opération.",
+    "benefitPrivacy": "Vos données restent vôtres. Nous ne les vendons jamais.",
     "finish": "Entrer dans Finovault"
   },
   "tabs": {
@@ -107,7 +112,13 @@
     "insights": "Aperçus",
     "vault": "Coffre",
     "pay": "Payer",
-    "profile": "Profil"
+    "profile": "Profil",
+    "coach": "Coach",
+    "accounts": "Comptes",
+    "invoices": "Factures",
+    "transactions": "Opérations",
+    "budgets": "Budgets",
+    "vendors": "Fournisseurs"
   },
   "vault": {
     "createGoal": "Créer un objectif",
@@ -174,7 +185,9 @@
       "vsBudget": "vs budget",
       "addFirstProject": "Ajoutez votre premier projet",
       "taxShield": "Tax Shield {percent}",
-      "goal": "Objectif {amount}"
+      "goal": "Objectif {amount}",
+      "thisMonth": "ce mois-ci",
+      "metricLine": "{metric} : {amount}"
     },
     "opportunitiesTitle": "Opportunités",
     "recentProjectsTitle": "Projets récents",
@@ -182,9 +195,20 @@
     "savingsTitle": "Épargne",
     "needsAttentionTitle": "À surveiller",
     "rainyDayFund": "Fonds de précaution",
-"grants": {
+    "grants": {
       "femaleSeedFund": "Fonds d'amorçage pour fondatrices",
-      "curated": "Conçu pour les entreprises dirigées par des femmes"
+      "curated": "Conçu pour les entreprises dirigées par des femmes",
+      "title": "Opportunités de subventions",
+      "list": {
+        "seedFund": "Fonds d'amorçage pour fondatrices",
+        "seedFundDeadline": "15 oct. 2026",
+        "sheWins": "SheWins Africa",
+        "sheWinsDeadline": "30 nov. 2026",
+        "mra": "Subvention MRA pour femmes entrepreneures",
+        "mraDeadline": "31 déc. 2026",
+        "afdb": "BAD AFAWA",
+        "afdbDeadline": "Continue"
+      }
     },
     "sme": {
       "noVendors": "Aucun fournisseur connecté"
@@ -209,5 +233,94 @@
     "themeSystem": "Système",
     "security": "Sécurité",
     "biometric": "Déverrouillage Face ID / empreinte"
+  },
+  "coach": {
+    "snapshot": "Aperçu",
+    "askHint": "Demandez à votre coach...",
+    "send": "Envoyer",
+    "yourTopGoal": "votre objectif principal",
+    "andWord": "et",
+    "noSpendingYet": "aucune dépense suivie",
+    "flowHealthy": "trésorerie saine",
+    "flowTight": "trésorerie tendue",
+    "noVendorsYet": "aucun fournisseur",
+    "promptSpending": "Revoir mes dépenses",
+    "promptSave": "Aidez-moi à épargner",
+    "promptGrow": "Comment faire croître ?",
+    "greeting": "Salut {name}, je suis votre Money Coach. Vous avez {balance} en main et {flow} ce mois-ci. Posez-moi toutes vos questions sur votre argent.",
+    "default": "Salut {name}, voici votre aperçu : {balance} en main, {flow} ce mois-ci. En tant que {role}, je me concentrerais sur {goal} ensuite. Demandez-moi de revoir vos dépenses, planifier vos épargnes ou faire croître votre argent.",
+    "save": "Le mois dernier vous avez reçu {income} et dépensé {expense}. Il reste un surplus de {surplus}. Vos plus grosses catégories étaient {cats}. Placez le surplus dans {goal} automatiquement chaque paie pour rester régulier.",
+    "invest": "Vous avez {balance} sur tous vos comptes. Pour un {role}, gardez 3 mois de dépenses en liquide, puis répartissez le reste entre un pot de pension et un fonds diversifié. Commencez petit et augmentez les cotisations de 1 % par trimestre.",
+    "tax": "Mettez de côté ~20 % de chaque paiement reçu pour les impôts afin que les échéances ne vous surprennent jamais. Étiquetez clairement les paiements clients et rapprochez les factures chaque semaine : votre futur moi vous remerciera.",
+    "smeCashFlow": "Votre position de trésorerie est {balance}. Avec une brûlure mensuelle de {payroll}, vous avez {runway} mois de runway. Envisagez de resserrer les dettes fournisseurs ou de négocier de meilleures conditions.",
+    "smeVendors": "Votre principal fournisseur est {vendor} ({spend}). Vos sorties mensuelles totales sont {expense}. Révisez les conditions de paiement — passer de 30 à 45 jours pourrait libérer beaucoup de cash.",
+    "smeCompliance": "Échéances à venir : surveillez les dates de dépôt auprès de la MRA. Définissez des rappels dans votre agenda pour éviter les pénalités. Le portail MRA accepte les dépôts jusqu'à la date limite.",
+    "smePayroll": "La paie est de {payroll} par mois pour {count} personnes ({pct} des dépenses). Repère : visez une paie < 30 % du chiffre d'affaires. Pensez à un mix employés/prestataires pour plus de flexibilité.",
+    "entrepreneurFundraising": "Vous avez {balance} de trésorerie et une brûlure de {burn} par mois — {runway} mois de runway. Pour lever des fonds, visez 18-24 mois de runway après clôture. Commencez les échanges avec les investisseurs 6 mois avant d'en avoir besoin.",
+    "entrepreneurBurn": "La brûlure mensuelle est de {burn} (multiple : {multiple}x du revenu). Visez un multiple < 2x pour une croissance efficace. Chaque embauche doit avoir une voie de ROI claire.",
+    "entrepreneurHiring": "L'équipe compte {count} personnes avec {payroll} de paie mensuelle contre {revenue} de revenu. Revenu par employé : {revPerEmp}. Avant d'embaucher, définissez le résultat à 90 jours de chaque rôle.",
+    "entrepreneurRevenue": "Le MRR est {mrr}, la brûlure {burn}. Fourchette de revenu annuel : {range}. Concentrez-vous sur une rétention nette > 100 % et un remboursement du CAC < 12 mois.",
+    "femaleFounderGrants": "Consultez le Fonds d'amorçage pour fondatrices (candidatures trimestrielles), SheWins Africa et les incitations locales pour les femmes entrepreneures. Les échéances figurent dans votre onglet Aperçus.",
+    "freelancerInvoices": "Revenu mensuel {income} avec un DSO de {dso} jours. Objectif : DSO < 30. Envoyez des rappels aux jours 7, 14, 21. Envisagez des conditions 2/10 net 30 pour accélérer le recouvrement.",
+    "freelancerTax": "Mettez de côté {taxReserve} (20 % de {income}) pour les impôts chaque mois. Utilisez un objectif « Tax Shield » séparé avec auto-cotisation à chaque paiement de facture."
+  },
+  "invoices": {
+    "create": "Créer une facture",
+    "client": "Nom du client",
+    "amount": "Montant",
+    "dueDate": "Date d'échéance",
+    "total": "Total",
+    "paid": "Payé",
+    "outstanding": "Impayé",
+    "dueShort": "Échéance",
+    "status": "Statut",
+    "emptyTitle": "Aucune facture",
+    "emptyBody": "Créez votre première facture pour suivre ce que vous doivent vos clients."
+  },
+  "accounts": {
+    "link": "Connecter un compte",
+    "name": "Nom du compte",
+    "type": "Type",
+    "balance": "Solde",
+    "totalBalance": "Solde total",
+    "active": "actif",
+    "activity": "Activité",
+    "hideActivity": "Masquer",
+    "unlink": "Dissocier",
+    "noActivity": "Aucune activité récente sur ce compte.",
+    "emptyTitle": "Aucun compte connecté",
+    "emptyBody": "Connectez votre premier compte pour voir votre argent au même endroit."
+  },
+  "transactions": {
+    "income": "Revenus",
+    "expense": "Dépenses",
+    "all": "Tous",
+    "in": "Entrées",
+    "out": "Sorties",
+    "account": "Compte",
+    "category": "Catégorie",
+    "allAccounts": "Tous les comptes",
+    "allCategories": "Toutes les catégories",
+    "emptyTitle": "Aucune opération",
+    "emptyBody": "Les opérations apparaîtront une fois vos comptes connectés et vos mouvements effectués."
+  },
+  "budgets": {
+    "create": "Créer un budget",
+    "category": "Catégorie",
+    "amount": "Montant",
+    "monthlyTotal": "Budget mensuel",
+    "spent": "Dépensé",
+    "overBudget": "Hors budget",
+    "emptyTitle": "Aucun budget",
+    "emptyBody": "Définissez des limites mensuelles pour maîtriser vos dépenses."
+  },
+  "vendors": {
+    "add": "Ajouter un fournisseur",
+    "name": "Nom du fournisseur",
+    "totalSpend": "Dépenses totales",
+    "count": "fournisseurs",
+    "reliability": "Fiabilité",
+    "emptyTitle": "Aucun fournisseur connecté",
+    "emptyBody": "Ajoutez vos principaux fournisseurs pour suivre les dépenses et la fiabilité."
   }
 }

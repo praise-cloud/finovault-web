@@ -15,9 +15,9 @@ export interface ButtonProps {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-[var(--fv-accent)] text-[var(--fv-primary)] hover:opacity-90',
+  primary: 'bg-[var(--fv-primary)] text-white hover:bg-[var(--fv-primary-light)]',
   secondary:
-    'bg-transparent border-2 border-[var(--fv-accent)] text-[var(--fv-accent)] hover:opacity-80',
+    'bg-transparent border-2 border-[var(--fv-primary)] text-[var(--fv-primary)] hover:opacity-80',
   ghost: 'bg-transparent text-[var(--fv-text-secondary)] hover:opacity-80',
 };
 

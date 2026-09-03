@@ -17,7 +17,7 @@ const sizeClasses: Record<NonNullable<MoneyTextProps['size']>, string> = {
 };
 
 const colorClasses: Record<NonNullable<MoneyTextProps['color']>, string> = {
-  accent: 'text-[var(--fv-accent)]',
+  accent: 'text-[var(--fv-primary)]',
   text: 'text-[var(--fv-text)]',
   success: 'text-[var(--fv-success)]',
   error: 'text-[var(--fv-error)]',

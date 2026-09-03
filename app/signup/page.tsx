@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, TextField } from '@/components/ui';
-import { VaultMark } from '@/components/VaultMark';
+import { AuthShell } from '@/components/auth/AuthShell';
 import { signupSchema, SignupValues, passwordStrength } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -36,21 +36,19 @@ export default function SignupPage() {
     try {
       setFormError(null);
       await signup({ fullName: values.fullName, email: values.email, password: values.password });
-      router.replace('/dashboard');
+      router.replace('/onboarding/role');
     } catch (err) {
       setFormError(err instanceof Error ? err.message : t('common.error'));
     }
   };
 
   return (
-    <main className="flex min-h-screen flex-col justify-center bg-[var(--fv-bg)] px-6 py-10">
-      <div className="mx-auto w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center">
-          <VaultMark size={56} />
-          <h1 className="mt-4 text-[26px] font-bold text-[var(--fv-text)]">{t('auth.signupTitle')}</h1>
-        </div>
-
-        <div className="flex flex-col gap-4">
+    <AuthShell
+      title={t('auth.signupTitle')}
+      subtitle={t('common.tagline')}
+      step={{ current: 1, total: 3 }}
+    >
+      <div className="flex flex-col gap-4">
           <Controller
             control={control}
             name="fullName"
@@ -100,7 +98,7 @@ export default function SignupPage() {
           />
           <div className="flex items-center justify-between">
             <span className="text-xs text-[var(--fv-text-secondary)]">{t('auth.passwordStrength')}</span>
-            <span className="text-sm font-semibold text-[var(--fv-accent)]">
+            <span className="text-sm font-semibold text-[var(--fv-primary)]">
               {passwordValue ? strengthLabels[strength] : ''}
             </span>
           </div>
@@ -117,12 +115,11 @@ export default function SignupPage() {
 
           <p className="py-4 text-center text-[15px] text-[var(--fv-text-secondary)]">
             {t('auth.alreadyHaveAccount')}{' '}
-            <Link href="/login" className="font-semibold text-[var(--fv-accent)]">
+            <Link href="/login" className="font-semibold text-[var(--fv-primary)]">
               {t('common.logIn')}
             </Link>
           </p>
         </div>
-      </div>
-    </main>
+    </AuthShell>
   );
 }

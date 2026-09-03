@@ -11,6 +11,20 @@ export interface MockDbSnapshot {
   users: MockUser[];
   sessions: Array<[string, string]>;
   idCounter: number;
+  accounts?: Record<string, unknown[]>;
+  transactions?: Record<string, unknown[]>;
+  budgets?: Record<string, unknown[]>;
+  goals?: Record<string, unknown[]>;
+  devices?: Record<string, unknown[]>;
+  securityEvents?: Record<string, unknown[]>;
+  securityOverviews?: Record<string, unknown>;
+  invoices?: Record<string, unknown[]>;
+  vendors?: Record<string, unknown[]>;
+  transfers?: Record<string, unknown[]>;
+  billPayments?: Record<string, unknown[]>;
+  payees?: Record<string, unknown[]>;
+  pensions?: Record<string, unknown>;
+  pensionContributions?: Record<string, unknown[]>;
 }
 
 export async function loadMockDbSnapshot(): Promise<MockDbSnapshot | null> {

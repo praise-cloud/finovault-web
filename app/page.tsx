@@ -18,7 +18,7 @@ export default function EntryPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[var(--fv-bg)]">
-      <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-[var(--fv-accent)] border-t-transparent" />
+      <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-[var(--fv-primary)] border-t-transparent" />
     </div>
   );
 }

@@ -16,20 +16,20 @@ export function GreetingHeader({ name, onBellPress }: { name: string; onBellPres
   const firstName = name?.split(' ')[0] ?? '';
 
   return (
-    <div className="mb-4 flex items-center justify-between">
+    <div className="mb-5 flex items-center justify-between">
       <div>
-        <h1 className="text-[18px] font-bold text-[var(--fv-text)]">
+        <h1 className="text-[22px] font-bold tracking-tight text-[var(--fv-text)]">
           {t('home.greeting', { timeOfDay: t(`home.${timeOfDayKey()}`), name: firstName })}
         </h1>
-        <p className="mt-0.5 text-[13px] text-[var(--fv-text-secondary)]">{t('common.tagline')}</p>
+        <p className="mt-1 text-[13px] text-[var(--fv-text-secondary)]">{t('common.tagline')}</p>
       </div>
       <button
         type="button"
         onClick={onBellPress}
         aria-label={t('home.notification')}
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--fv-border-subtle)] bg-[var(--fv-surface)] hover:opacity-80"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--fv-primary-border)] bg-[var(--fv-wash)] text-[var(--fv-primary)] transition-colors hover:bg-[var(--fv-accent)] hover:text-[var(--fv-secondary)]"
       >
-        <Bell size={20} color="var(--fv-text-secondary)" />
+        <Bell size={20} strokeWidth={1.8} />
       </button>
     </div>
   );

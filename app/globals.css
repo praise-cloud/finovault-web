@@ -1,36 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --fv-bg: #f7f9fc;
+  --fv-bg: #f7faff;
   --fv-surface: #ffffff;
   --fv-surface-glass: rgba(255, 255, 255, 0.85);
+  --fv-wash: #eff6ff;
   --fv-text: #1a1a1a;
   --fv-text-secondary: #43474d;
-  --fv-border: #c4c6ce;
-  --fv-border-subtle: rgba(196, 198, 206, 0.6);
-  --fv-gold-border: rgba(212, 175, 55, 0.25);
-  --fv-primary: #0a1f5c;
-  --fv-secondary: #08142e;
-  --fv-accent: #d4af37;
-  --fv-accent-light: #f4d35e;
+  --fv-border: #c8d3e8;
+  --fv-border-subtle: rgba(200, 211, 232, 0.6);
+  --fv-primary-border: rgba(29, 78, 216, 0.18);
+  --fv-primary: #1d4ed8;
+  --fv-primary-light: #3b82f6;
+  --fv-secondary: #0f2557;
+  --fv-accent: #7dd3fc;
+  --fv-accent-strong: #38bdf8;
   --fv-success: #2e7d5b;
   --fv-success-bg: rgba(46, 125, 91, 0.12);
   --fv-warning: #c99a2e;
   --fv-warning-bg: rgba(201, 154, 46, 0.12);
   --fv-error: #8c3a3a;
   --fv-error-bg: rgba(140, 58, 58, 0.12);
-  --fv-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --fv-shadow-card: 0 4px 24px rgba(15, 37, 87, 0.08);
 }
 
 .dark {
-  --fv-bg: #08142e;
+  --fv-bg: #0f2557;
   --fv-surface: rgba(255, 255, 255, 0.08);
   --fv-surface-glass: rgba(255, 255, 255, 0.1);
+  --fv-wash: rgba(125, 211, 252, 0.1);
   --fv-text: #ffffff;
-  --fv-text-secondary: #b0b4ba;
+  --fv-text-secondary: #b8c4dc;
   --fv-border: rgba(255, 255, 255, 0.15);
   --fv-border-subtle: rgba(255, 255, 255, 0.08);
-  --fv-gold-border: rgba(212, 175, 55, 0.3);
+  --fv-primary-border: rgba(125, 211, 252, 0.25);
   --fv-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
 

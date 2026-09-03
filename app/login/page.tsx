@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, TextField } from '@/components/ui';
-import { VaultMark } from '@/components/VaultMark';
+import { AuthShell } from '@/components/auth/AuthShell';
 import { loginSchema, LoginValues } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -37,14 +37,11 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col justify-center bg-[var(--fv-bg)] px-6 py-10">
-      <div className="mx-auto w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center">
-          <VaultMark size={56} />
-          <h1 className="mt-4 text-[26px] font-bold text-[var(--fv-text)]">{t('auth.loginTitle')}</h1>
-        </div>
-
-        <div className="flex flex-col gap-4">
+    <AuthShell
+      title={t('auth.loginTitle')}
+      subtitle={t('common.tagline')}
+    >
+      <div className="flex flex-col gap-4">
           <Controller
             control={control}
             name="email"
@@ -86,12 +83,11 @@ export default function LoginPage() {
 
           <p className="py-4 text-center text-[15px] text-[var(--fv-text-secondary)]">
             {t('auth.noAccount')}{' '}
-            <Link href="/signup" className="font-semibold text-[var(--fv-accent)]">
+            <Link href="/signup" className="font-semibold text-[var(--fv-primary)]">
               {t('common.createAccount')}
             </Link>
           </p>
         </div>
-      </div>
-    </main>
+    </AuthShell>
   );
 }
