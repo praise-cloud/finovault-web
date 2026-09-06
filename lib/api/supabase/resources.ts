@@ -3,7 +3,7 @@ import type { PensionPlan } from '@/types';
 import type { ApiResponse } from '@/types/api';
 import { ApiErrorCodes } from '@/types/api';
 import { computeTransferFee, computePensionProjection, computeSecurityScore } from '@/lib/utils/fees';
-import { ok, fail, requireUserId } from './helpers';
+import { ok, fail, requireUserId, snakeToCamel } from './helpers';
 
 // ── users ──────────────────────────────────────────────────────────────────
 
@@ -52,7 +52,8 @@ export async function updateMe(
 export async function getPreferences(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('user_preferences').select('*').eq('user_id', uid).single();
-  return ok(data ?? { financial_goals: [], risk_tolerance: 'moderate', money_fears: [], onboarding_completed: false });
+  const fallback = { financialGoals: [], riskTolerance: 'moderate', moneyFears: [], onboardingCompleted: false };
+  return ok(data ? snakeToCamel(data) : fallback);
 }
 
 export async function savePreferences(
@@ -62,19 +63,20 @@ export async function savePreferences(
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const p = body as Record<string, unknown>;
+  const { data: existing } = await supabase.from('user_preferences').select('*').eq('user_id', uid).single();
   const update: Record<string, unknown> = {
     user_id: uid,
-    financial_goals: p.financialGoals ?? [],
-    risk_tolerance: p.riskTolerance ?? 'moderate',
-    money_fears: p.moneyFears ?? [],
-    onboarding_completed: p.onboardingCompleted ?? false,
+    financial_goals: p.financialGoals ?? existing?.financial_goals ?? [],
+    risk_tolerance: p.riskTolerance ?? existing?.risk_tolerance ?? 'moderate',
+    money_fears: p.moneyFears ?? existing?.money_fears ?? [],
   };
+  if (p.onboardingCompleted !== undefined) update.onboarding_completed = p.onboardingCompleted;
   const { data } = await supabase
     .from('user_preferences')
     .upsert(update, { onConflict: 'user_id' })
     .select()
     .single();
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 export async function setRole(
@@ -105,7 +107,7 @@ export async function setBusinessProfile(
 export async function listAccounts(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('accounts').select('*').eq('user_id', uid).order('created_at', { ascending: false });
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function createAccount(
@@ -131,7 +133,7 @@ export async function createAccount(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create account.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 export async function deleteAccount(
@@ -158,7 +160,7 @@ export async function listTransactions(
     .eq('user_id', uid)
     .order('date', { ascending: false })
     .limit(limit);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function createTransaction(
@@ -188,7 +190,7 @@ export async function createTransaction(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create transaction.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── budgets ────────────────────────────────────────────────────────────────
@@ -196,7 +198,7 @@ export async function createTransaction(
 export async function listBudgets(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('budgets').select('*').eq('user_id', uid);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function upsertBudget(
@@ -222,7 +224,7 @@ export async function upsertBudget(
       .eq('id', existing.id)
       .select()
       .single();
-    return ok(data);
+    return ok(snakeToCamel(data));
   }
   const { data, error } = await supabase
     .from('budgets')
@@ -230,7 +232,7 @@ export async function upsertBudget(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create budget.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── goals ──────────────────────────────────────────────────────────────────
@@ -561,7 +563,7 @@ export async function getSecurityOverview(
   const { data } = await supabase.from('security_overviews').select('*').eq('user_id', uid).single();
   const stored = data ?? { score: 72, two_factor_enabled: false };
   const { data: events } = await supabase.from('security_events').select('*').eq('user_id', uid);
-  return ok({ ...stored, score: computeSecurityScore(events ?? [], stored) });
+  return ok(snakeToCamel({ ...stored, score: computeSecurityScore(events ?? [], stored) }));
 }
 
 export async function toggle2fa(
@@ -576,7 +578,7 @@ export async function toggle2fa(
   const updated = { ...current, two_factor_enabled: !!enabled };
   await supabase.from('security_overviews').upsert({ user_id: uid, ...updated }, { onConflict: 'user_id' });
   const { data: events } = await supabase.from('security_events').select('*').eq('user_id', uid);
-  return ok({ ...updated, score: computeSecurityScore(events ?? [], updated) });
+  return ok(snakeToCamel({ ...updated, score: computeSecurityScore(events ?? [], updated) }));
 }
 
 export async function changePassword(
@@ -611,13 +613,13 @@ export async function changePassword(
   const updated = { ...current, score: Math.min(99, Math.max(5, (current.score ?? 72) + 5)), last_password_change: now };
   await supabase.from('security_overviews').upsert({ user_id: uid, ...updated }, { onConflict: 'user_id' });
   const { data: events } = await supabase.from('security_events').select('*').eq('user_id', uid);
-  return ok({ ...updated, score: computeSecurityScore(events ?? [], updated) });
+  return ok(snakeToCamel({ ...updated, score: computeSecurityScore(events ?? [], updated) }));
 }
 
 export async function listDevices(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('security_devices').select('*').eq('user_id', uid);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function listSecurityEvents(
@@ -626,7 +628,7 @@ export async function listSecurityEvents(
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('security_events').select('*').eq('user_id', uid);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function resolveSecurityEvent(
@@ -643,7 +645,7 @@ export async function resolveSecurityEvent(
     .select()
     .single();
   if (!data) return fail('NOT_FOUND', 'Event not found.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── invoices ───────────────────────────────────────────────────────────────
@@ -655,7 +657,7 @@ export async function listInvoices(supabase: SupabaseClient, token: string | nul
     .select('*')
     .eq('user_id', uid)
     .order('due_date', { ascending: false });
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function createInvoice(
@@ -682,7 +684,7 @@ export async function createInvoice(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create invoice.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 export async function updateInvoiceStatus(
@@ -701,7 +703,7 @@ export async function updateInvoiceStatus(
     .select()
     .single();
   if (!data) return fail('NOT_FOUND', 'Invoice not found.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── vendors ────────────────────────────────────────────────────────────────
@@ -709,7 +711,7 @@ export async function updateInvoiceStatus(
 export async function listVendors(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('vendors').select('*').eq('user_id', uid);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function createVendor(
@@ -726,7 +728,7 @@ export async function createVendor(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create vendor.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── transfers & payees ─────────────────────────────────────────────────────
@@ -738,7 +740,7 @@ export async function listTransfers(supabase: SupabaseClient, token: string | nu
     .select('*')
     .eq('user_id', uid)
     .order('created_at', { ascending: false });
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function getTransfer(
@@ -754,7 +756,7 @@ export async function getTransfer(
     .eq('user_id', uid)
     .single();
   if (!data) return fail('NOT_FOUND', 'Transfer not found.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 export async function createTransfer(
@@ -778,7 +780,7 @@ export async function createTransfer(
     .eq('user_id', uid)
     .eq('idempotency_key', idempotencyKey)
     .single();
-  if (existing) return ok(existing);
+  if (existing) return ok(snakeToCamel(existing));
 
   const { data: acc } = await supabase
     .from('accounts')
@@ -828,7 +830,7 @@ export async function createTransfer(
     status: 'posted',
   });
 
-  return ok(transfer);
+  return ok(snakeToCamel(transfer));
 }
 
 export async function listPayees(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
@@ -863,7 +865,7 @@ export async function listBills(supabase: SupabaseClient, token: string | null):
     .select('*')
     .eq('user_id', uid)
     .order('date', { ascending: false });
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function payBill(
@@ -920,7 +922,7 @@ export async function payBill(
     status: 'posted',
   });
 
-  return ok(payment);
+  return ok(snakeToCamel(payment));
 }
 
 export async function scheduleBill(
@@ -948,5 +950,5 @@ export async function scheduleBill(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to schedule bill.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
