@@ -283,7 +283,7 @@ function GoalForm({
           <select
             value={type}
             onChange={(e) => setType(e.target.value as GoalType)}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
           >
             {GOAL_TYPES.map((gt) => (
               <option key={gt} value={gt}>{gt}</option>
@@ -400,7 +400,7 @@ function PensionSetupForm({
           <select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as PensionFrequency)}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
           >
             {FREQUENCIES.map((f) => (
               <option key={f} value={f}>{f}</option>
@@ -546,7 +546,7 @@ function AccountSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+        className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
       >
         <option value="">Select account</option>
         {accounts.map((a) => (

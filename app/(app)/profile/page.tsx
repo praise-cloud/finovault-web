@@ -139,7 +139,7 @@ export default function ProfilePage() {
           <select
             value={lang}
             onChange={(e) => setLang(e.target.value as 'en' | 'fr')}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none focus:border-[var(--fv-primary)]"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  focus:border-[var(--fv-primary)]"
           >
             {SUPPORTED_LOCALES.map((l) => (
               <option key={l} value={l}>
@@ -155,7 +155,7 @@ export default function ProfilePage() {
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none focus:border-[var(--fv-primary)]"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  focus:border-[var(--fv-primary)]"
           >
             <option value="MUR">MUR</option>
             <option value="NGN">NGN</option>
@@ -318,7 +318,7 @@ export default function ProfilePage() {
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value as 'light' | 'dark' | 'system')}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none focus:border-[var(--fv-primary)]"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  focus:border-[var(--fv-primary)]"
           >
             <option value="light">{t('settings.themeLight')}</option>
             <option value="dark">{t('settings.themeDark')}</option>
@@ -336,7 +336,7 @@ export default function ProfilePage() {
               setLanguage(l);
               setLang(l);
             }}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none focus:border-[var(--fv-primary)]"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  focus:border-[var(--fv-primary)]"
           >
             {SUPPORTED_LOCALES.map((l) => (
               <option key={l} value={l}>

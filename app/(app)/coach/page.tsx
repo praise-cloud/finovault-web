@@ -168,7 +168,7 @@ export default function CoachPage() {
             if (e.key === 'Enter') ask(input);
           }}
           placeholder={t('coach.askHint')}
-          className="min-w-0 flex-1 bg-transparent px-3 py-2 text-[15px] font-semibold text-[var(--fv-text)] outline-none"
+          className="min-w-0 flex-1 bg-transparent px-3 py-2 text-[15px] font-semibold text-[var(--fv-text)] "
         />
         <button
           type="button"

@@ -149,7 +149,9 @@
     "emptyTitle": "Let's get your vault set up",
     "emptyBody": "Link your first account or create a savings goal to see your money picture.",
     "emptyCta": "Link an account",
+    "pensionTitle": "Pension",
     "metrics": {
+      "title": "Business metrics",
       "combinedWealth": "Combined wealth",
       "revenueMrr": "Revenue / MRR",
       "burnRate": "Burn rate",
@@ -188,6 +190,20 @@
       "goal": "Goal {amount}",
       "thisMonth": "this month",
       "metricLine": "{metric}: {amount}"
+    },
+    "recentActivityTitle": "Recent activity",
+    "quickActionsTitle": "Quick actions",
+    "seeAll": "See all",
+    "coachCtaTitle": "Questions for your Money Coach?",
+    "coachCtaBody": "Ask anything — budgets, savings, invoices, taxes. I'm here to help.",
+    "coachCtaAction": "Ask the coach",
+    "ofGoal": "of goal",
+    "complianceTitle": "Compliance",
+    "complianceNote": "Keep filing dates on your calendar to avoid MRA penalties.",
+    "compliance": {
+      "statusOk": "Compliant",
+      "statusWarn": "Attention",
+      "statusExpired": "Expired"
     },
     "opportunitiesTitle": "Opportunities",
     "recentProjectsTitle": "Recent projects",

@@ -417,6 +417,7 @@ const DEMO_ACCOUNTS: Array<{
   { email: 'entrepreneur@finovault.app', password: 'Vault123!', role: 'entrepreneur', scheme: 'female_founder' },
   { email: 'sme@finovault.app', password: 'Vault123!', role: 'sme', scheme: 'standard' },
   { email: 'demo@finovault.app', password: 'Vault123!', role: 'entrepreneur', scheme: 'female_founder' },
+  { email: 'individual@finovault.app', password: 'Vault123!', role: 'individual', scheme: 'standard' },
 ];
 
 /** Seed a demo account for convenience during Phase 0 development. */
@@ -447,8 +448,10 @@ function seedFromDemoAccount(acc: (typeof DEMO_ACCOUNTS)[number]): void {
       seedSmeData(uid, acc.email, name);
       break;
     case 'entrepreneur':
-    case 'individual':
       seedEntrepreneurData(uid, acc.email, name);
+      break;
+    case 'individual':
+      seedIndividualData(uid, acc.email, name);
       break;
   }
 }
@@ -831,5 +834,81 @@ function seedSmeData(uid: string, email: string, fullName: string): MockUser {
     },
   ]);
   setSecurityOverview(uid, { score: 79, twoFactorEnabled: false });
+  return user;
+}
+
+function seedIndividualData(uid: string, email: string, fullName: string): MockUser {
+  const user = createUser({ email, password: 'Vault123!', fullName, id: uid });
+  updateProfile(uid, { primaryRole: 'individual', scheme: 'standard' });
+  updatePrefs(uid, {
+    financialGoals: ['emergency', 'vacation'],
+    riskTolerance: 'moderate',
+    onboardingCompleted: true,
+  });
+
+  const accs = makeAccounts(uid, [
+    { name: 'MCB Current', type: 'bank', institution: 'MCB', balance: 85000 },
+    { name: 'MyT Growth', type: 'mobileMoney', institution: 'MyT', balance: 15000 },
+  ]);
+  setAccounts(uid, accs);
+  setTransactions(
+    uid,
+    makeTransactions(uid, accs, [
+      { accountIndex: 0, daysAgo: 5, amount: 2500000, direction: 'in', category: 'Salary', merchantName: 'Mon Trésor Ltd' },
+      { accountIndex: 0, daysAgo: 5, amount: 850000, direction: 'out', category: 'Rent', merchantName: 'Skyline Properties' },
+      { accountIndex: 1, daysAgo: 2, amount: 450000, direction: 'out', category: 'Groceries', merchantName: 'Winners Supermarket' },
+    ])
+  );
+  setBudgets(uid, [
+    { id: nextId('bud'), category: 'Groceries', amount: 400000, period: 'monthly' },
+    { id: nextId('bud'), category: 'Transport', amount: 150000, period: 'monthly' },
+    { id: nextId('bud'), category: 'Dining', amount: 200000, period: 'monthly' },
+  ]);
+
+  const rainyId = nextId('goal');
+  const vacationId = nextId('goal');
+  setGoals(uid, [
+    {
+      id: rainyId,
+      name: 'Rainy Day Fund',
+      type: 'emergency',
+      targetAmount: 500000,
+      currentAmount: 250000,
+      completed: false,
+      contributions: [
+        {
+          id: nextId('con'),
+          goalId: rainyId,
+          amount: 250000,
+          date: isoDaysAgo(20),
+          sourceAccountId: accs[0].id,
+        },
+      ],
+    },
+    {
+      id: vacationId,
+      name: 'Vacation Fund',
+      type: 'general',
+      targetAmount: 800000,
+      currentAmount: 300000,
+      completed: false,
+      contributions: [
+        {
+          id: nextId('con'),
+          goalId: vacationId,
+          amount: 300000,
+          date: isoDaysAgo(10),
+          sourceAccountId: accs[1].id,
+        },
+      ],
+    },
+  ]);
+  setInvoices(uid, []);
+  setVendors(uid, []);
+  setPayees(uid, []);
+  setBillPayments(uid, []);
+  setDevices(uid, [{ id: nextId('dev'), name: 'iPhone 15 · Port Louis', lastSeen: isoDaysAgo(0), trusted: true }]);
+  setSecurityEvents(uid, []);
+  setSecurityOverview(uid, { score: 64, twoFactorEnabled: false });
   return user;
 }

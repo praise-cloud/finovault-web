@@ -6,6 +6,8 @@ import {
   Bell,
   Briefcase,
   ChevronRight,
+  CircleCheck,
+  Clock,
   Cpu,
   FileText,
   Lock,
@@ -14,6 +16,7 @@ import {
   PlusCircle,
   Send,
   TrendingUp,
+  TriangleAlert,
   Umbrella,
 } from 'lucide-react';
 
@@ -33,6 +36,9 @@ const glyphMap = {
   'file-text': FileText,
   bell: Bell,
   lock: Lock,
+  'circle-check': CircleCheck,
+  clock: Clock,
+  'triangle-alert': TriangleAlert,
 } as const;
 
 export type IconName = keyof typeof glyphMap;

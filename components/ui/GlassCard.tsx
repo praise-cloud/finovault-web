@@ -17,25 +17,24 @@ export function GlassCard({
   padding = 16,
   className = '',
 }: GlassCardProps) {
-  const base =
-    'rounded-[14px] border bg-[var(--fv-surface-glass)] shadow-[var(--fv-shadow-card)]';
+  const base = 'rounded-[12px] border-2 bg-[var(--fv-surface-glass)]';
   const variantClass =
     variant === 'danger'
-      ? 'border-[var(--fv-error)]'
+      ? 'border-[var(--fv-error)] shadow-[var(--fv-shadow-hard-sm)]'
       : variant === 'elevated'
-        ? 'shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
-        : 'border-[var(--fv-primary-border)]';
+        ? 'border-[var(--fv-border-ink)] shadow-[var(--fv-shadow-hard)]'
+        : variant === 'interactive'
+          ? 'border-[var(--fv-border-ink)] shadow-[var(--fv-shadow-hard-sm)] cursor-pointer transition-all duration-150 hover:-translate-y-px hover:shadow-[var(--fv-shadow-hard)] active:translate-y-px active:shadow-none'
+          : 'border-[var(--fv-border-ink)] shadow-[var(--fv-shadow-hard-sm)]';
 
-  const style = {
-    padding,
-  };
+  const style = { padding };
 
   if (onPress) {
     return (
       <button
         type="button"
         onClick={onPress}
-        className={`${base} ${variantClass} transition-opacity hover:opacity-90 ${className}`}
+        className={`${base} ${variantClass} ${className}`}
         style={style}
       >
         {children}

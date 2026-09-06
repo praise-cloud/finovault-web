@@ -149,7 +149,9 @@
     "emptyTitle": "Configurons votre coffre",
     "emptyBody": "Connectez votre premier compte ou créez un objectif d'épargne.",
     "emptyCta": "Connecter un compte",
+    "pensionTitle": "Retraite",
     "metrics": {
+      "title": "Métriques d'entreprise",
       "combinedWealth": "Patrimoine combiné",
       "revenueMrr": "Revenu / MRR",
       "burnRate": "Taux de dépenses",
@@ -188,6 +190,20 @@
       "goal": "Objectif {amount}",
       "thisMonth": "ce mois-ci",
       "metricLine": "{metric} : {amount}"
+    },
+    "recentActivityTitle": "Activité récente",
+    "quickActionsTitle": "Actions rapides",
+    "seeAll": "Tout voir",
+    "coachCtaTitle": "Une question pour votre Money Coach ?",
+    "coachCtaBody": "Posez-moi toutes vos questions — budgets, épargne, factures, impôts.",
+    "coachCtaAction": "Demander au coach",
+    "ofGoal": "sur {amount}",
+    "complianceTitle": "Conformité",
+    "complianceNote": "Gardez les dates de dépôt dans votre agenda pour éviter les pénalités MRA.",
+    "compliance": {
+      "statusOk": "Conforme",
+      "statusWarn": "Attention",
+      "statusExpired": "Expiré"
     },
     "opportunitiesTitle": "Opportunités",
     "recentProjectsTitle": "Projets récents",

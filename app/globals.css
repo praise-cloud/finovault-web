@@ -1,40 +1,105 @@
 @import "tailwindcss";
 
 :root {
-  --fv-bg: #f7faff;
+  --fv-bg: #f5f7ff;
   --fv-surface: #ffffff;
-  --fv-surface-glass: rgba(255, 255, 255, 0.85);
-  --fv-wash: #eff6ff;
-  --fv-text: #1a1a1a;
-  --fv-text-secondary: #43474d;
-  --fv-border: #c8d3e8;
-  --fv-border-subtle: rgba(200, 211, 232, 0.6);
-  --fv-primary-border: rgba(29, 78, 216, 0.18);
+  --fv-surface-glass: rgba(255, 255, 255, 0.92);
+  --fv-wash: #ebeeff;
+  --fv-text: #1a1a2e;
+  --fv-text-secondary: #4b5563;
+  --fv-border: #1a1a2e;
+  --fv-border-subtle: rgba(26, 26, 46, 0.3);
+  --fv-primary-border: rgba(26, 26, 46, 0.85);
   --fv-primary: #1d4ed8;
-  --fv-primary-light: #3b82f6;
+  --fv-primary-light: #2563eb;
   --fv-secondary: #0f2557;
   --fv-accent: #7dd3fc;
   --fv-accent-strong: #38bdf8;
   --fv-success: #2e7d5b;
   --fv-success-bg: rgba(46, 125, 91, 0.12);
-  --fv-warning: #c99a2e;
+  --fv-warning: #92600a;
   --fv-warning-bg: rgba(201, 154, 46, 0.12);
   --fv-error: #8c3a3a;
   --fv-error-bg: rgba(140, 58, 58, 0.12);
-  --fv-shadow-card: 0 4px 24px rgba(15, 37, 87, 0.08);
+  --fv-shadow-card: 4px 4px 0 0 rgba(26, 26, 46, 0.85);
+  --fv-border-ink: rgba(26, 26, 46, 0.85);
+  --fv-shadow-hard: 4px 4px 0 0 #1a1a2e;
+  --fv-shadow-hard-sm: 3px 3px 0 0 #1a1a2e;
+  --fv-ink: #1a1a2e;
+  --fv-shadow-hover: 6px 6px 0 0 rgba(26, 26, 46, 0.9);
+  --fv-border-w: 2px;
+  --fv-radius-card: 12px;
+  --fv-radius-control: 10px;
+  --fv-radius-chip: 8px;
+  --fv-radius-pill: 999px;
+}
+
+[data-role="individual"] {
+  --fv-role-accent: #4338ca;
+  --fv-role-strong: #4338ca;
+  --fv-role-wash: #eef0ff;
+}
+
+[data-role="freelancer"] {
+  --fv-role-accent: #b42318;
+  --fv-role-strong: #b42318;
+  --fv-role-wash: #fef0ee;
+}
+
+[data-role="entrepreneur"] {
+  --fv-role-accent: #92400e;
+  --fv-role-strong: #92400e;
+  --fv-role-wash: #fef6e5;
+}
+
+[data-role="sme"] {
+  --fv-role-accent: #0f766e;
+  --fv-role-strong: #0f766e;
+  --fv-role-wash: #e6f9f6;
 }
 
 .dark {
-  --fv-bg: #0f2557;
-  --fv-surface: rgba(255, 255, 255, 0.08);
-  --fv-surface-glass: rgba(255, 255, 255, 0.1);
-  --fv-wash: rgba(125, 211, 252, 0.1);
-  --fv-text: #ffffff;
-  --fv-text-secondary: #b8c4dc;
-  --fv-border: rgba(255, 255, 255, 0.15);
-  --fv-border-subtle: rgba(255, 255, 255, 0.08);
-  --fv-primary-border: rgba(125, 211, 252, 0.25);
-  --fv-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --fv-bg: #12121e;
+  --fv-surface: #1e1e2c;
+  --fv-surface-glass: rgba(30, 30, 44, 0.92);
+  --fv-wash: #23233a;
+  --fv-text: #f2f3ff;
+  --fv-text-secondary: #9ca3af;
+  --fv-border: #f2f3ff;
+  --fv-border-subtle: rgba(242, 243, 255, 0.25);
+  --fv-primary-border: rgba(242, 243, 255, 0.8);
+  --fv-shadow-card: 4px 4px 0 0 rgba(0, 0, 0, 0.55);
+  /* ponytail: dark ink/hard-shadow color guessed; DESIGN.md dark table tail not in context */
+  --fv-border-ink: rgba(255, 255, 255, 0.55);
+  --fv-shadow-hard: 4px 4px 0 0 rgba(0, 0, 0, 0.55);
+  --fv-shadow-hard-sm: 3px 3px 0 0 rgba(0, 0, 0, 0.55);
+  --fv-shadow-hover: 6px 6px 0 0 rgba(0, 0, 0, 0.6);
+  --fv-primary: #60a5fa;
+  --fv-secondary: #bbd3ff;
+}
+
+.dark [data-role="individual"] {
+  --fv-role-accent: #818cf8;
+  --fv-role-strong: #a5b4fc;
+  --fv-role-wash: #26264a;
+}
+
+.dark [data-role="freelancer"] {
+  --fv-role-accent: #fca5a5;
+  --fv-role-strong: #fee2e2;
+  --fv-role-wash: #3a2626;
+}
+
+.dark [data-role="entrepreneur"] {
+  --fv-role-accent: #fbbf24;
+  --fv-role-strong: #fde68a;
+  --fv-role-wash: #3a3226;
+}
+
+.dark [data-role="sme"] {
+  --fv-role-accent: #2dd4bf;
+  --fv-role-strong: #99f6e4;
+  --fv-role-wash: #1f3836;
 }
 
 html,
@@ -58,4 +123,20 @@ body {
   --color-foreground: var(--fv-text);
   --font-sans: Montserrat, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--fv-ink, var(--fv-text));
+  outline-offset: 2px;
 }

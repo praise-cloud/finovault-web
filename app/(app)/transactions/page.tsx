@@ -82,7 +82,7 @@ export default function TransactionsPage() {
           <select
             value={accountId}
             onChange={(e) => setAccountId(e.target.value)}
-            className="min-h-[44px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-3 py-2 text-[13px] text-[var(--fv-text)] outline-none"
+            className="min-h-[44px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-3 py-2 text-[13px] text-[var(--fv-text)] "
             aria-label={t('transactions.account')}
           >
             <option value="">{t('transactions.allAccounts')}</option>
@@ -95,7 +95,7 @@ export default function TransactionsPage() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="min-h-[44px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-3 py-2 text-[13px] text-[var(--fv-text)] outline-none"
+            className="min-h-[44px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-3 py-2 text-[13px] text-[var(--fv-text)] "
             aria-label={t('transactions.category')}
           >
             <option value="">{t('transactions.allCategories')}</option>
