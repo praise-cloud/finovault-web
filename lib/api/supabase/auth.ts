@@ -8,7 +8,7 @@ import { ok, fail } from './helpers';
 
 const scryptAsync = promisify(scrypt);
 
-function hashPassword(password: string, salt?: string): Promise<{ hash: string; salt: string }> {
+export function hashPassword(password: string, salt?: string): Promise<{ hash: string; salt: string }> {
   const s = salt ?? randomBytes(16).toString('hex');
   return scryptAsync(password, s, 64).then((buf) => ({
     hash: (buf as Buffer).toString('hex'),
@@ -16,7 +16,7 @@ function hashPassword(password: string, salt?: string): Promise<{ hash: string; 
   }));
 }
 
-async function verifyPassword(password: string, stored: string): Promise<boolean> {
+export async function verifyPassword(password: string, stored: string): Promise<boolean> {
   const [salt, hash] = stored.split(':');
   const { hash: computed } = await hashPassword(password, salt);
   return timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computed, 'hex'));

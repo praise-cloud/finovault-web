@@ -4,6 +4,7 @@ import type { ApiResponse } from '@/types/api';
 import { ApiErrorCodes } from '@/types/api';
 import { computeTransferFee, computePensionProjection, computeSecurityScore } from '@/lib/utils/fees';
 import { ok, fail, requireUserId, snakeToCamel } from './helpers';
+import { hashPassword, verifyPassword } from './auth';
 
 // ── users ──────────────────────────────────────────────────────────────────
 
@@ -592,13 +593,14 @@ export async function changePassword(
     return fail(ApiErrorCodes.VALIDATION, 'Password must be at least 8 characters.');
   }
   const { data: user } = await supabase.from('users').select('password_hash').eq('id', uid).single();
-  if (!user || user.password_hash !== b.currentPassword) {
+  if (!user || !(await verifyPassword(b.currentPassword as string, user.password_hash))) {
     return fail('INCORRECT_PASSWORD', 'Your current password is incorrect.');
   }
   if (b.currentPassword === b.newPassword) {
     return fail(ApiErrorCodes.VALIDATION, 'New password must be different from your current password.');
   }
-  await supabase.from('users').update({ password_hash: b.newPassword as string }).eq('id', uid);
+  const { hash, salt } = await hashPassword(b.newPassword as string);
+  await supabase.from('users').update({ password_hash: `${salt}:${hash}` }).eq('id', uid);
   const now = new Date().toISOString();
   await supabase.from('security_events').insert({
     user_id: uid,
@@ -836,7 +838,7 @@ export async function createTransfer(
 export async function listPayees(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('payees').select('*').eq('user_id', uid);
-  return ok(data ?? []);
+  return ok(snakeToCamel(data ?? []));
 }
 
 export async function createPayee(
@@ -853,7 +855,7 @@ export async function createPayee(
     .select()
     .single();
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create payee.');
-  return ok(data);
+  return ok(snakeToCamel(data));
 }
 
 // ── bills ──────────────────────────────────────────────────────────────────
