@@ -3,22 +3,24 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth-store';
+import { HomePage } from '@/features/homepage/HomePage';
 
-/**
- * Entry gate. After Providers has restored any stored session, bounce to the
- * dashboard when authenticated, otherwise to login.
- */
 export default function EntryPage() {
   const router = useRouter();
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const status = useAuthStore((s) => s.status);
+  const restoreSession = useAuthStore((s) => s.restoreSession);
 
   useEffect(() => {
-    router.replace(isAuthenticated ? '/dashboard' : '/login');
-  }, [isAuthenticated, router]);
+    restoreSession();
+  }, [restoreSession]);
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--fv-bg)]">
-      <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-[var(--fv-primary)] border-t-transparent" />
-    </div>
-  );
+  useEffect(() => {
+    if (status === 'authenticated') router.replace('/dashboard');
+  }, [status, router]);
+
+  if (status === 'idle' || status === 'authenticating' || status === 'error') {
+    return <HomePage />;
+  }
+
+  return null;
 }
