@@ -42,7 +42,7 @@ export function NotificationBell({ unreadCount, isOpen, onToggle, bellRef }: Not
       {unreadCount > 0 && (
         <span
           key={popKey}
-          className="absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full bg-[var(--fv-error)] px-1 text-[11px] font-bold leading-[18px] text-white [animation:badge-pop_120ms_ease-out]"
+          className="absolute -right-1 -top-1 flex min-w-[18px] items-center justify-center rounded-full bg-[var(--fv-error)] px-1 text-[11px] font-bold leading-[18px] text-[var(--fv-on-fill)] [animation:badge-pop_120ms_ease-out]"
           style={{ minWidth: unreadCount >= 100 ? 26 : unreadCount >= 10 ? 22 : 18 }}
         >
           {unreadCount >= 100 ? '99+' : unreadCount}

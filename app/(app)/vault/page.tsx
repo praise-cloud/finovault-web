@@ -419,7 +419,7 @@ function PensionSetupForm({
           <button
             type="button"
             onClick={() => setAutoDebit((v) => !v)}
-            className={`h-[28px] w-[48px] rounded-full transition-colors ${autoDebit ? 'bg-[var(--fv-primary)]' : 'bg-[var(--fv-border)]'}`}
+            className={`h-[28px] w-[48px] rounded-full transition-colors ${autoDebit ? 'bg-[var(--fv-primary)]' : 'bg-[var(--fv-border-subtle)]'}`}
             aria-label="Toggle auto-debit"
           >
             <span

@@ -4,9 +4,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Home, PiggyBank, CreditCard, BarChart3, MessageCircle, User, LogOut } from 'lucide-react';
+import { Home, PiggyBank, CreditCard, BarChart3, MessageCircle, User, LogOut, Sun, Moon, Monitor } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
 import { useAuthStore } from '@/stores/auth-store';
+import { useTheme, type ThemeMode } from '@/lib/theme';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown';
 import { useNotifications } from '@/lib/notifications/useNotifications';
@@ -34,6 +35,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
   const { notifications, unreadCount, markRead, markAllRead, announcement } = useNotifications();
+  const { mode, setMode } = useTheme();
+
+  const themeOrder: ThemeMode[] = ['light', 'dark', 'system'];
+  const nextMode = themeOrder[(themeOrder.indexOf(mode) + 1) % themeOrder.length];
+  const ThemeIcon = mode === 'light' ? Sun : mode === 'dark' ? Moon : Monitor;
+  const modeTitle =
+    mode === 'light'
+      ? t('settings.themeLight')
+      : mode === 'dark'
+        ? t('settings.themeDark')
+        : t('settings.themeSystem');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -107,6 +119,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {firstName}
           </span>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMode(nextMode)}
+              aria-label={t('settings.theme')}
+              aria-pressed={mode === 'system'}
+              title={`${t('settings.theme')}: ${modeTitle}`}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--fv-radius-control)] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] shadow-[var(--fv-shadow-hard-sm)] transition-all duration-[120ms] hover:-translate-y-0.5 hover:shadow-[var(--fv-shadow-hard)] active:translate-y-0.5 active:shadow-none"
+            >
+              <ThemeIcon size={20} strokeWidth={1.8} className="text-[var(--fv-text)]" />
+            </button>
             <NotificationBell
               unreadCount={unreadCount}
               isOpen={isDropdownOpen}

@@ -18,7 +18,7 @@ export function GreetingHeader({ name }: { name: string }) {
   return (
     <div className="mb-3 flex items-start gap-3">
       <div className="flex flex-col items-start gap-2">
-        <span className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white bg-[var(--fv-role-accent)]">
+        <span className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[var(--fv-on-fill)] bg-[var(--fv-role-accent)]">
           {dayPart}
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--fv-text)]">

@@ -135,7 +135,7 @@ export default function CoachPage() {
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[85%] rounded-[12px] border border-[var(--fv-border)] p-3 shadow-[var(--fv-shadow-card)] ${
-                m.role === 'user' ? 'bg-[var(--fv-primary)] text-white' : 'bg-[var(--fv-surface)] text-[var(--fv-text)]'
+                m.role === 'user' ? 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)]' : 'bg-[var(--fv-surface)] text-[var(--fv-text)]'
               }`}
             >
               <p className="text-[14px] font-semibold leading-snug">{m.text}</p>
@@ -175,7 +175,7 @@ export default function CoachPage() {
           onClick={() => ask(input)}
           disabled={busy}
           aria-label={t('coach.send')}
-          className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--fv-primary)] text-white disabled:opacity-50"
+          className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--fv-primary)] text-[var(--fv-on-fill)] disabled:opacity-50"
         >
           <Icon name="send" size={18} />
         </button>

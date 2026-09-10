@@ -247,3 +247,43 @@ Theme CSS sets `--fv-role-*` per mode (§2.2/§2.3); components consume names on
 - PRODUCT.md: deferred to @leader (out of DS-001 scope) — flagged.
 - Impeccable update: attempted `npx impeccable update` → `Download failed: invalid zip data` + pulled npm `impeccable@3.5.0`. Not retried (skill: ask once). Run manually later if desired.
 - Verification: `partially_verified` — spec-only; frontend must apply tokens then re-run AA checks (§9).
+
+## 12. Dark Theme Application (DS-005)
+
+**Mode strategy** — globals.css CSS variables = single source of truth. `ThemeProvider` (`lib/theme/*`) is already mounted in `components/Providers.tsx` and consumed by `app/(app)/profile/page.tsx` (mode select: light/dark/system). Root layout inline script + `suppressHydrationWarning` already prevent FOUC. **No new dependencies.**
+
+**Required corrections in `app/globals.css` `.dark` block** (full rationale + contrast: `specs/dark-financial-tokens.md`):
+
+| Token | Current (guessed) | Confirm | Why |
+|---|---|---|---|
+| `--fv-border-ink` | `rgba(255,255,255,0.55)` | `rgba(242,243,255,0.8)` | = `--fv-primary-border`; blends ≈ `#C8C9D5` → 10:1 vs surface (UI ≥3:1) |
+| `--fv-shadow-card` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | 0.55 ≈ invisible on `#12121E` |
+| `--fv-shadow-hard` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | same |
+| `--fv-shadow-hard-sm` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | same |
+| `--fv-shadow-hover` | `rgba(0,0,0,0.6)` | `rgba(0,0,0,0.75)` | 6px hover step reads |
+| `--fv-ink` | (missing override) | `#f2f3ff` | flips with mode → fixes global `:focus-visible` ring (line 146); matches `--fv-text` |
+| `--fv-success` | (missing) | `#4ade80` | 9.3:1 on `#12121E` |
+| `--fv-warning` | (missing) | `#facc15` | 10.5:1 |
+| `--fv-error` | (missing) | `#f87171` | 5.8:1 |
+| `--fv-success-bg` / `--fv-warning-bg` / `--fv-error-bg` | (missing) | 12%-alpha tints of the above | status chips |
+
+**New token `--fv-on-fill`** — text color on saturated fills (primary buttons, role-accent cards, avatar, error badge):
+`:root { --fv-on-fill: #ffffff; }` · `.dark { --fv-on-fill: #1a1a2e; }`
+
+Rationale: dark-mode fills flip to light pastels (`--fv-primary #60a5fa`, accents `#818cf8`/`#fca5a5`/`#fbbf24`/`#2dd4bf`, `--fv-error #f87171`). White text on those fails AA (2.3–2.4:1); ink `#1a1a2e` passes everywhere (≈5.8–10.4:1). In light mode fills are deep → white stays correct. All AA-verified in `specs/dark-financial-tokens.md` §Contrast.
+
+**`--fv-ink` semantics** — it is the *chrome* ink (borders/shadows/focus). It now flips (`#1a1a2e` light → `#f2f3ff` dark), so the forced-white CoachCta button override `bg-white! text-[var(--fv-ink)]!` must be **removed** (see audit map) — the button now relies on `variant="secondary"` (surface bg + `--fv-primary` text, both flip).
+
+**Hardcoded-color audit map** (8 fixes + 2 OK items): `specs/dark-financial-tokens.md` §Audit.
+
+## 13. Financial App Shell & Dark-Financial Module Refinements (DS-005)
+
+Layout geometry, persona module order, loading/empty/error standards: §5–§7 unchanged. Dark-specific refinements:
+
+- **Shell** (`app/(app)/layout.tsx`): add mode toggle (compact, cycles light→dark→system, icon + `aria-label` from existing `settings.theme*` i18n keys) in top bar, immediately left of `NotificationBell`. Profile page select remains the canonical full control (same state via `useTheme`). No sidebar changes — fully token-driven.
+- **Charts** (`app/(app)/insights/page.tsx`): fixed indigo `COLORS` ramp needs a dark-aware variant (adjacent series ≥3:1); non-blocking visual QA item.
+- **Module dark notes** (per module, states that need attention in dark): skeleton dashes `border-[var(--fv-border)]` → use `--fv-border-subtle` (dark `--fv-border` = full white, too loud); switch off-track `bg-[var(--fv-border)]` → `--fv-border-subtle` so the white knob stays visible; `BusinessMetricsCard` success/error tones need the dark status tokens (§12).
+- **i18n**: no new keys — `settings.theme/themeLight/themeDark/themeSystem` already exist in `en.json` (and mirror in `fr.json`); reuse `settings.theme` as toggle aria-label.
+- **API**: no new endpoints — dashboard already consumes `useMoneySummary/useAccounts/useBudgets/useGoals/useInvoices/useVendors/useBillPayments`. Compliance rows remain static seeds (existing `ponytail:` note; backend item, not blocking).
+
+Full per-file spec: `specs/dark-financial-layout.md`.

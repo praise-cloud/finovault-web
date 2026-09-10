@@ -1,59 +1,47 @@
-# Notification UI — Implementation Summary (FE-002)
+# Implementation Summary — FE-005 + FE-006 (Dark Theme + Financial Layout Refinements)
 
-## Files Created
+Status: **implemented, verified** (tsc 0 errors, lint 0 errors, 60/60 tests pass)
 
-| File | Purpose |
-|---|---|
-| `lib/notifications/useNotifications.ts` | Hook: fetch, poll (15s), mock generator timer (15–30s), markRead, markAllRead, unreadCount, aria-live announcement, relativeTime helper |
-| `components/notifications/NotificationBell.tsx` | Bell button (44px, neo-brutalist) + unread badge (hidden at 0, "99+" at ≥100) |
-| `components/notifications/NotificationItem.tsx` | Notification row: unread dot, type icon (32px circle), title/body/relative timestamp |
-| `components/notifications/NotificationDropdown.tsx` | Fixed-position panel (384px desktop / calc(100vw-32px) mobile), header with "Mark all read", scrollable list, empty state |
-
-## Files Modified
+## Files changed
 
 | File | Change |
 |---|---|
-| `app/(app)/layout.tsx` | Mounted NotificationBell + NotificationDropdown in top bar between firstName and plan badge. Added aria-live region. Fixed hooks-before-early-return. |
-| `features/dashboard/GreetingHeader.tsx` | Removed bell button, Bell import, and `onBellPress` prop. Simplified to `{ name }` prop. |
-| `lib/i18n/en.json` | Added 7 `notifications.*` keys |
-| `lib/i18n/fr.json` | Added 7 `notifications.*` keys (fr parity) |
+| `app/globals.css` | `.dark` corrections per tokens spec §1: `--fv-border-ink` → `rgba(242,243,255,0.8)`, shadows 0.55→0.7 / hover 0.75, added `--fv-ink: #f2f3ff`, added dark status tokens (`--fv-success/-warning/-error` + `-bg` variants), added `--fv-on-fill` (`:root` `#ffffff` / `.dark` `#1a1a2e`). Removed the `ponytail:` guess comment. |
+| `components/ui/Button.tsx` | #1: primary `text-white` → `text-[var(--fv-on-fill)]` |
+| `features/dashboard/components.tsx` | #2/#3/#4: CoachCta title/body → `--fv-on-fill` (+/85), removed forced `bg-white! text-[var(--fv-ink)]!` override (relies on `variant="secondary"`). Skeleton dashes (Goals line ~162, Recent ~238) → `border-[var(--fv-border-subtle)]`. |
+| `features/dashboard/GreetingHeader.tsx` | Extra (same defect class as #2–#4): greeting pill `text-white` → `text-[var(--fv-on-fill)]` on `--fv-role-accent` (spec §2 contrast table covers this pair). Flag for designer QA. |
+| `app/(app)/profile/page.tsx` | #5: avatar initials → `--fv-on-fill`. Switch off-track → `bg-[var(--fv-border-subtle)]`. |
+| `app/(app)/coach/page.tsx` | #6/#7: user bubble + send button → `--fv-on-fill` |
+| `components/notifications/NotificationBell.tsx` | #8: error badge → `--fv-on-fill` |
+| `components/VaultMark.tsx` | #9: hex strokes → `var(--fv-primary)` / `var(--fv-text-secondary, currentColor)` (subdued) via SVG `style` (var() in presentation attributes is unreliable cross-browser). |
+| `app/(app)/vault/page.tsx` | Switch off-track → `bg-[var(--fv-border-subtle)]` (knob stays `bg-white`). |
+| `app/(app)/layout.tsx` | Top-bar theme toggle immediately left of NotificationBell: 3-state icon button (Sun/Moon/Monitor cycling light→dark→system), wired to existing `useTheme()` `mode`/`setMode` (same store as profile select). `aria-label={t('settings.theme')}`, `aria-pressed={mode==='system'}`, `title` shows current value, chrome matches NotificationBell (`h-11 w-11`, border-ink, shadow-hard-sm). |
+| `app/(app)/insights/page.tsx` | #10: chart COLORS dark-aware — `LIGHT_COLORS` (unchanged) vs `DARK_COLORS` selected by resolved `theme.mode`; dark ramp alternates hue (indigo/amber/emerald/pink/blue/purple/red/teal) so adjacent series keep ≥3:1 on `--fv-surface` dark. |
 
-## Key Decisions
+## State handling
 
-- **Type**: Uses `AppNotification` from `types/index.ts` — no parallel type created
-- **API**: Uses existing `moneyApi.getNotifications()`, `moneyApi.markNotificationRead()`, `moneyApi.markAllNotificationsRead()`
-- **Mock generator**: Uses existing `simulateIncomingNotification()` from `lib/api/mock/db.ts`, detects mock mode via `USE_REAL_BACKEND` from `lib/api/client.ts`
-- **Type icon mapping**: transfer→ArrowUpRight (success-bg), bill→Receipt (warning-bg), security→TriangleAlert (warning-bg), goal→Award (wash), system→Bell (wash)
-- **Relative time**: Formatted in code (not i18n keys), locale-aware via `i18n.language`
+- **Theme**: single source of truth stays `ThemeProvider` (localStorage `finovault.themeMode.v1`, `.dark` class on `<html>`). Top-bar toggle and profile select both call `setMode` — no reimplementation, no new provider.
+- **i18n**: no new keys; reuses `settings.theme/themeLight/themeDark/themeSystem` (verified present in `en.json` + `fr.json`).
+- **API**: none touched.
 
-## A11y
+## Acceptance checklist (layout spec §5)
 
-- Bell: `aria-label` with count, `aria-expanded`, `aria-haspopup`
-- Dropdown: `role="dialog"`, focus management (moves into dropdown on open, returns to bell on close)
-- Esc closes + click-outside closes
-- `aria-live="polite"` region announces new notifications
-- Unread dot: `aria-hidden="true"` (visual only)
+- [x] `.dark` token corrections + `--fv-on-fill` landed
+- [x] Audit map #1–#9 applied (incl. GreetingHeader extra, same class)
+- [x] CoachCta override removed; `--fv-ink` flips; `:focus-visible` ring visible in dark
+- [x] Top-bar theme toggle wired to existing `useTheme`; i18n reuses `settings.theme*` (en + fr)
+- [x] Dark status tokens live → Compliance/BusinessMetrics status colors pass AA
+- [x] Skeleton dashes + switch off-tracks use `--fv-border-subtle`
+- [x] Charts dark-aware COLORS (visual QA item for designer)
 
-## Verification Status: `verified`
+## Verification
 
-- `npx tsc --noEmit` — passes (exit 0)
-- `npx vitest run lib/i18n/__tests__/parity.test.ts` — 2/2 pass
-- `npx vitest run lib/i18n/__tests__/code-keys.test.ts` — 2/2 pass
-- `npx next build` — compiled successfully
-- ESLint: pre-existing timeout issue (not related to changes)
+- `npx tsc --noEmit` → 0 errors
+- `npm run lint` → 0 errors (12 pre-existing warnings, none in changed lines)
+- `npm test --pool=threads` → 60/60 pass (first run, no flake)
 
-## Polish Gate Notes
+## Design QA notes for @designer
 
-- Neo-brutalist tokens used: `--fv-border-ink`, `--fv-shadow-hard-sm`, `--fv-shadow-hard`, `--fv-radius-control`, `--fv-radius-card`
-- 44px touch target on bell
-- Hard shadows + ink borders per DESIGN.md §1/§2
-- Hover lift / active press per DESIGN.md §5
-- Reduced motion: no explicit `prefers-reduced-motion` media query in components (relies on browser defaults + Tailwind's motion utilities). Badge scale animation deferred — badge uses static display without JS animation.
-
-## Out of Scope (ponytail)
-
-- Toast system (dropdown-only for v1)
-- Dismiss-single action
-- Real event-driven notifications / Supabase Realtime
-- Navigation to `notification.link` on click (wired but not navigated — needs router context in dropdown)
-- Badge scale animation (120ms pop) — static display for now, add when Framer Motion is available
+- GreetingHeader pill (`GreetingHeader.tsx:21`) was NOT in the audit map but is the identical white-on-accent-fill defect class; fixed with `--fv-on-fill` per spec §2 table. Confirm visually.
+- Insights dark palette is a hue-spread ramp (8 colors); confirm adjacent-slice legibility in the live pie chart.
+- Top-bar toggle icon shows the current mode (sun/moon/monitor); title shows localized current value.

@@ -73,7 +73,7 @@ export default function RolePage() {
             >
               <span
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] transition-colors ${
-                  active ? 'bg-[var(--fv-primary)] text-white' : 'bg-[var(--fv-wash)] text-[var(--fv-primary)]'
+                  active ? 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)]' : 'bg-[var(--fv-wash)] text-[var(--fv-primary)]'
                 }`}
               >
                 <Icon size={20} strokeWidth={1.8} />
@@ -85,7 +85,7 @@ export default function RolePage() {
               <span
                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors ${
                   active
-                    ? 'border-[var(--fv-primary)] bg-[var(--fv-primary)] text-white'
+                    ? 'border-[var(--fv-primary)] bg-[var(--fv-primary)] text-[var(--fv-on-fill)]'
                     : 'border-[var(--fv-border)] text-transparent'
                 }`}
               >

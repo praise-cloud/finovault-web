@@ -159,7 +159,7 @@ export function GoalsProgressList({
           {[0, 1].map((i) => (
             <div
               key={i}
-              className="h-12 animate-pulse rounded-[var(--fv-radius-control)] border-2 border-dashed border-[var(--fv-border)]"
+              className="h-12 animate-pulse rounded-[var(--fv-radius-control)] border-2 border-dashed border-[var(--fv-border-subtle)]"
             />
           ))}
         </div>
@@ -235,7 +235,7 @@ export function RecentTransactionsMini({
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="h-12 animate-pulse rounded-[var(--fv-radius-control)] border-2 border-dashed border-[var(--fv-border)]"
+                className="h-12 animate-pulse rounded-[var(--fv-radius-control)] border-2 border-dashed border-[var(--fv-border-subtle)]"
               />
             ))}
           </div>
@@ -297,12 +297,11 @@ export function CoachCtaCard() {
     <section id="mod-coach" aria-label={t('home.coachCtaTitle')} className={`${cardClass} mb-4 bg-[var(--fv-role-accent)] p-4`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-bold text-white">{t('home.coachCtaTitle')}</p>
-          <p className="mt-0.5 text-[13px] text-white/85">{t('home.coachCtaBody')}</p>
+          <p className="text-[15px] font-bold text-[var(--fv-on-fill)]">{t('home.coachCtaTitle')}</p>
+          <p className="mt-0.5 text-[13px] text-[var(--fv-on-fill)]/85">{t('home.coachCtaBody')}</p>
         </div>
         <Button
           variant="secondary"
-          className="bg-white! text-[var(--fv-ink)]!"
           onPress={() => router.push('/coach')}
           label={t('home.coachCtaAction')}
         />
