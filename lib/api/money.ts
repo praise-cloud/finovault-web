@@ -2,6 +2,7 @@ import { api } from './client';
 import type {
   Account,
   AccountType,
+  AppNotification,
   BillCategory,
   BillPayment,
   Budget,
@@ -148,6 +149,11 @@ export const moneyApi = {
   saveBusinessProfile: (profile: BusinessProfile) =>
     api.put<UserProfile>('/users/business-profile', profile),
   changeLanguage: (language: 'en' | 'fr') => api.patch<UserProfile>('/users/me', { preferredLanguage: language }),
+
+  // ---- notifications ---------------------------------------------------------
+  getNotifications: () => api.get<AppNotification[]>('/notifications'),
+  markNotificationRead: (id: string) => api.post<{ id: string; readAt: string }>(`/notifications/${id}/read`),
+  markAllNotificationsRead: () => api.post<{ updated: number }>('/notifications/read-all'),
 };
 
 export interface TransferFeePreview {

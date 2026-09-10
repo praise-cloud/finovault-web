@@ -992,6 +992,55 @@ export const mockRoutes: MockRoute[] = [
       return ok(payment);
     },
   },
+
+  // ---- notifications -----------------------------------------------------------
+  {
+    method: 'GET',
+    pattern: /^\/notifications$/,
+    handler: ({ token }) => {
+      const user = token ? getUserByToken(token) : undefined;
+      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+      const list = [...db.notificationsFor(user.profile.id)].sort((a, b) =>
+        b.createdAt.localeCompare(a.createdAt)
+      );
+      return ok(list);
+    },
+  },
+  {
+    method: 'POST',
+    pattern: /^\/notifications\/read-all$/,
+    handler: ({ token }) => {
+      const user = token ? getUserByToken(token) : undefined;
+      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+      const uid = user.profile.id;
+      const now = new Date().toISOString();
+      const list = db.notificationsFor(uid);
+      let updated = 0;
+      const patched = list.map((n) => {
+        if (!n.readAt) { updated++; return { ...n, readAt: now }; }
+        return n;
+      });
+      db.setNotifications(uid, patched);
+      return ok({ updated });
+    },
+  },
+  {
+    method: 'POST',
+    pattern: /^\/notifications\/([\w-]+)\/read$/,
+    handler: ({ token, params }) => {
+      const user = token ? getUserByToken(token) : undefined;
+      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+      const uid = user.profile.id;
+      const id = params[0];
+      const list = db.notificationsFor(uid);
+      const index = list.findIndex((n) => n.id === id);
+      if (index < 0) return fail('NOT_FOUND', 'Notification not found.');
+      const now = new Date().toISOString();
+      list[index] = { ...list[index], readAt: now };
+      db.setNotifications(uid, list);
+      return ok({ id, readAt: now });
+    },
+  },
 ];
 
 export function mockRequest(

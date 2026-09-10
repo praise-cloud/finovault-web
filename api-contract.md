@@ -78,6 +78,9 @@ All `data` payloads use **camelCase** keys (Snake→camel conversion happens in 
 | GET | `/bills` | List. |
 | POST | `/bills/schedule` | Create scheduled bill. |
 | POST | `/bills` | Pay bill. |
+| GET | `/notifications` | List, newest first. |
+| POST | `/notifications/:id/read` | Mark one read; returns `{ id, readAt }`. |
+| POST | `/notifications/read-all` | Mark all read; returns `{ updated: n }`. |
 
 Notes:
 

@@ -954,3 +954,50 @@ export async function scheduleBill(
   if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to schedule bill.');
   return ok(snakeToCamel(data));
 }
+
+// ── notifications ─────────────────────────────────────────────────────
+
+export async function listNotifications(
+  supabase: SupabaseClient,
+  token: string | null
+): Promise<ApiResponse<unknown>> {
+  const uid = await requireUserId(supabase, token);
+  const { data } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', uid)
+    .order('created_at', { ascending: false });
+  return ok(snakeToCamel(data ?? []));
+}
+
+export async function markNotificationRead(
+  supabase: SupabaseClient,
+  token: string | null,
+  notificationId: string
+): Promise<ApiResponse<unknown>> {
+  const uid = await requireUserId(supabase, token);
+  const now = new Date().toISOString();
+  const { data } = await supabase
+    .from('notifications')
+    .update({ read_at: now })
+    .eq('id', notificationId)
+    .eq('user_id', uid)
+    .select('id')
+    .single();
+  if (!data) return fail('NOT_FOUND', 'Notification not found.');
+  return ok({ id: data.id, readAt: now });
+}
+
+export async function markAllNotificationsRead(
+  supabase: SupabaseClient,
+  token: string | null
+): Promise<ApiResponse<unknown>> {
+  const uid = await requireUserId(supabase, token);
+  const now = new Date().toISOString();
+  const { count } = await supabase
+    .from('notifications')
+    .update({ read_at: now })
+    .eq('user_id', uid)
+    .is('read_at', null);
+  return ok({ updated: count ?? 0 });
+}

@@ -221,3 +221,16 @@ CREATE TABLE IF NOT EXISTS bills (
   scheduled_for timestamptz
 );
 CREATE INDEX IF NOT EXISTS idx_bills_user_date ON bills (user_id, date DESC);
+
+-- ── notifications ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS notifications (
+  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title      text NOT NULL,
+  body       text NOT NULL DEFAULT '',
+  type       text NOT NULL DEFAULT 'system',
+  link       text,
+  read_at    timestamptz,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_created ON notifications (user_id, created_at DESC);
