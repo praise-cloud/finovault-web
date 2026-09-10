@@ -338,5 +338,14 @@
     "reliability": "Fiabilité",
     "emptyTitle": "Aucun fournisseur connecté",
     "emptyBody": "Ajoutez vos principaux fournisseurs pour suivre les dépenses et la fiabilité."
+  },
+  "notifications": {
+    "bellLabel": "Notifications",
+    "bellLabelUnread": "{count} notifications non lues",
+    "title": "Notifications",
+    "markAllRead": "Tout marquer lu",
+    "emptyTitle": "Aucune notification",
+    "emptyBody": "Vous êtes à jour.",
+    "newNotification": "Nouvelle notification : {title}"
   }
 }

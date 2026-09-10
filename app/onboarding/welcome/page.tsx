@@ -7,6 +7,7 @@ import { ShieldCheck, Lock } from 'lucide-react';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { Button } from '@/components/ui';
 import { useAuthStore } from '@/stores/auth-store';
+import { moneyApi } from '@/lib/api/money';
 
 export default function WelcomePage() {
   const { t } = useTranslation();
@@ -22,6 +23,14 @@ export default function WelcomePage() {
 
   const firstName = user.fullName.split(' ')[0];
   const roleLabel = t(`role.${user.primaryRole}` as const);
+
+  const handleFinish = () => {
+    // Non-critical flag: fire-and-forget, never block navigation on it.
+    moneyApi.savePreferences({ onboardingCompleted: true }).catch((err) => {
+      console.error('Failed to persist onboarding completion:', err);
+    });
+    router.replace('/dashboard');
+  };
 
   return (
     <AuthShell
@@ -53,7 +62,7 @@ export default function WelcomePage() {
           ))}
         </ul>
 
-        <Button label={t('onboarding.finish')} onPress={() => router.replace('/dashboard')} fullWidth />
+        <Button label={t('onboarding.finish')} onPress={handleFinish} fullWidth />
       </div>
     </AuthShell>
   );

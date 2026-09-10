@@ -17,6 +17,7 @@ import type {
   PensionContribution,
   AccountType,
   TransactionDirection,
+  AppNotification,
 } from '@/types';
 import { loadMockDbSnapshot, persistMockDb, MockDbSnapshot } from './persistence';
 
@@ -49,6 +50,7 @@ const billPayments = new Map<string, BillPayment[]>();
 const payees = new Map<string, Payee[]>();
 const pensions = new Map<string, PensionPlan>();
 const pensionContributions = new Map<string, PensionContribution[]>();
+const notifications = new Map<string, AppNotification[]>();
 
 const passwordResetTokens = new Map<string, string>(); // token -> email
 const passwordResetIssuedAt = new Map<string, string>(); // token -> ISO
@@ -76,6 +78,7 @@ function snapshot(): MockDbSnapshot {
     payees: mapToObject(payees),
     pensions: mapToObject(pensions),
     pensionContributions: mapToObject(pensionContributions),
+    notifications: mapToObject(notifications),
   };
 }
 
@@ -111,6 +114,7 @@ export async function hydrateMockDb(): Promise<void> {
   payees.clear();
   pensions.clear();
   pensionContributions.clear();
+  notifications.clear();
   for (const [k, v] of objToMap(persisted.accounts)) accounts.set(k, v as Account[]);
   for (const [k, v] of objToMap(persisted.transactions)) transactions.set(k, v as Transaction[]);
   for (const [k, v] of objToMap(persisted.budgets)) budgets.set(k, v as Budget[]);
@@ -126,6 +130,8 @@ export async function hydrateMockDb(): Promise<void> {
   for (const [k, v] of objToMap(persisted.pensions)) pensions.set(k, v as PensionPlan);
   for (const [k, v] of objToMap(persisted.pensionContributions))
     pensionContributions.set(k, v as PensionContribution[]);
+  for (const [k, v] of objToMap(persisted.notifications))
+    notifications.set(k, v as AppNotification[]);
 }
 
 function save(): void {
@@ -261,6 +267,9 @@ export function pensionFor(userId: string): PensionPlan | undefined {
 export function pensionContributionsFor(userId: string): PensionContribution[] {
   return pensionContributions.get(userId) ?? [];
 }
+export function notificationsFor(userId: string): AppNotification[] {
+  return notifications.get(userId) ?? [];
+}
 
 export function setAccounts(userId: string, list: Account[]): void {
   accounts.set(userId, list);
@@ -318,6 +327,10 @@ export function setPensionContributions(userId: string, list: PensionContributio
   pensionContributions.set(userId, list);
   save();
 }
+export function setNotifications(userId: string, list: AppNotification[]): void {
+  notifications.set(userId, list);
+  save();
+}
 
 function push<T>(map: Map<string, T[]>, userId: string, value: T): void {
   const list = map.get(userId) ?? [];
@@ -352,6 +365,9 @@ export function addPayee(userId: string, payee: Payee): void {
 }
 export function addPensionContribution(userId: string, contribution: PensionContribution): void {
   push(pensionContributions, userId, contribution);
+}
+export function addNotification(userId: string, notification: AppNotification): void {
+  push(notifications, userId, notification);
 }
 
 // ---- password reset (mock) --------------------------------------------------
@@ -650,6 +666,32 @@ function seedEntrepreneurData(uid: string, email: string, fullName: string): Moc
       customerRef: 'ACC-2291',
     },
   ]);
+  setNotifications(uid, [
+    {
+      id: nextId('ntf'),
+      title: 'Transfer received',
+      body: 'MUR 15,000.00 received from Nova Studio.',
+      type: 'transfer',
+      link: '/transfers',
+      createdAt: isoDaysAgo(1),
+    },
+    {
+      id: nextId('ntf'),
+      title: 'Bill due soon',
+      body: 'Your CEB electricity bill of MUR 1,450.00 is due in 3 days.',
+      type: 'bill',
+      readAt: isoDaysAgo(1),
+      createdAt: isoDaysAgo(2),
+    },
+    {
+      id: nextId('ntf'),
+      title: 'Security alert',
+      body: 'A new device signed in from Windows PC · Home office.',
+      type: 'security',
+      readAt: isoDaysAgo(0),
+      createdAt: isoDaysAgo(2),
+    },
+  ]);
   return user;
 }
 
@@ -911,4 +953,38 @@ function seedIndividualData(uid: string, email: string, fullName: string): MockU
   setSecurityEvents(uid, []);
   setSecurityOverview(uid, { score: 64, twoFactorEnabled: false });
   return user;
+}
+
+// ---- simulate incoming notification (mock only) --------------------------------
+
+const MAX_UNREAD_SIMULATED = 5;
+
+const SIMULATED_TEMPLATES: Array<{ title: string; body: string; type: AppNotification['type'] }> = [
+  { title: 'Transfer received', body: 'MUR 8,500.00 received from Kite Media.', type: 'transfer' },
+  { title: 'Bill due soon', body: 'Your water bill is due in 2 days.', type: 'bill' },
+  { title: 'Security alert', body: 'A new sign-in was detected from an unrecognized device.', type: 'security' },
+  { title: 'Goal milestone', body: 'Your Emergency Fund has reached 50% of its target!', type: 'goal' },
+  { title: 'System update', body: 'Finovault has been updated with new features.', type: 'system' },
+];
+
+/**
+ * Appends a new simulated notification to the current user's mock db.
+ * Idempotent-safe: caps unread simulated notifications at 5.
+ * Returns the new notification if created, or null if skipped.
+ */
+export function simulateIncomingNotification(userId: string): AppNotification | null {
+  const existing = notificationsFor(userId);
+  const unreadCount = existing.filter((n) => !n.readAt).length;
+  if (unreadCount >= MAX_UNREAD_SIMULATED) return null;
+
+  const template = SIMULATED_TEMPLATES[existing.length % SIMULATED_TEMPLATES.length];
+  const notification: AppNotification = {
+    id: nextId('ntf'),
+    title: template.title,
+    body: template.body,
+    type: template.type,
+    createdAt: new Date().toISOString(),
+  };
+  addNotification(userId, notification);
+  return notification;
 }

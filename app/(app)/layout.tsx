@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Home, PiggyBank, CreditCard, BarChart3, MessageCircle, User, LogOut } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
 import { useAuthStore } from '@/stores/auth-store';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { NotificationDropdown } from '@/components/notifications/NotificationDropdown';
+import { useNotifications } from '@/lib/notifications/useNotifications';
 
 const navItems = [
   { href: '/dashboard', key: 'home', icon: Home },
@@ -27,6 +30,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const logout = useAuthStore((s) => s.logout);
+
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const bellRef = useRef<HTMLButtonElement>(null);
+  const { notifications, unreadCount, markRead, markAllRead, announcement } = useNotifications();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -99,10 +106,31 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <span className="text-sm font-medium text-[var(--fv-text-secondary)]">
             {firstName}
           </span>
-          <span className="rounded-full bg-[var(--fv-primary-border)] px-3 py-1 text-xs font-semibold text-[var(--fv-primary)]">
-            {t('profile.planBadge')}
-          </span>
+          <div className="flex items-center gap-2">
+            <NotificationBell
+              unreadCount={unreadCount}
+              isOpen={isDropdownOpen}
+              onToggle={() => setDropdownOpen((v) => !v)}
+              bellRef={bellRef}
+            />
+            <span className="rounded-full bg-[var(--fv-primary-border)] px-3 py-1 text-xs font-semibold text-[var(--fv-primary)]">
+              {t('profile.planBadge')}
+            </span>
+          </div>
         </header>
+        {isDropdownOpen && (
+          <NotificationDropdown
+            notifications={notifications}
+            onMarkRead={markRead}
+            onMarkAllRead={markAllRead}
+            onClose={() => setDropdownOpen(false)}
+            bellRef={bellRef}
+          />
+        )}
+        {/* Screen reader announcement for new notifications */}
+        <div aria-live="polite" className="sr-only">
+          {announcement}
+        </div>
         <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-6">{children}</main>
       </div>
     </div>

@@ -232,3 +232,17 @@ export const ROLE_DESCRIPTIONS: Record<PrimaryRole, string> = {
   entrepreneur: 'Personal + business in one view',
   sme: 'Cash flow, vendors & runway',
 };
+
+// ---- Notifications ----------------------------------------------------------
+
+export type NotificationType = 'transfer' | 'bill' | 'security' | 'goal' | 'system';
+
+export interface AppNotification {
+  id: string;
+  title: string;
+  body: string;
+  type: NotificationType;
+  link?: string;
+  readAt?: string;
+  createdAt: string;
+}

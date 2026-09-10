@@ -24,3 +24,16 @@ export async function requireUserId(
   if (!data?.user_id) throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
   return data.user_id;
 }
+
+export function snakeToCamel(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(snakeToCamel);
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([k, v]) => [
+        k.replace(/_([a-z])/g, (_m, c) => c.toUpperCase()),
+        snakeToCamel(v),
+      ])
+    );
+  }
+  return value;
+}

@@ -338,5 +338,14 @@
     "reliability": "Reliability",
     "emptyTitle": "No vendors linked",
     "emptyBody": "Add your top suppliers to track spending and reliability."
+  },
+  "notifications": {
+    "bellLabel": "Notifications",
+    "bellLabelUnread": "{count} unread notifications",
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "emptyTitle": "No notifications",
+    "emptyBody": "You're all caught up.",
+    "newNotification": "New notification: {title}"
   }
 }
