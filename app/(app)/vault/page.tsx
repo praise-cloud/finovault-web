@@ -162,16 +162,24 @@ function GoalRow({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <button
-          type="button"
+        <span
+          role="button"
+          tabIndex={0}
+          aria-label={`Contribute to ${goal.name}`}
           onClick={(e) => {
             e.stopPropagation();
             onContribute();
           }}
-          className="rounded-full border border-[var(--fv-primary)] px-3 py-1 text-[13px] font-semibold text-[var(--fv-primary)] hover:opacity-80"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation();
+              onContribute();
+            }
+          }}
+          className="cursor-pointer rounded-full border border-[var(--fv-primary)] px-3 py-1 text-[13px] font-semibold text-[var(--fv-primary)] hover:opacity-80"
         >
           Contribute
-        </button>
+        </span>
         <Icon name="chevron-right" size={18} subdued />
       </div>
     </GlassCard>
