@@ -51,7 +51,7 @@ export function Nav() {
               <button
                 type="button"
                 onClick={() => scrollTo(sectionIds[i])}
-                className="text-sm uppercase tracking-wider text-white/80 transition-colors hover:text-white"
+                className="text-sm font-medium uppercase tracking-wider text-white/80 transition-colors hover:text-white"
               >
                 {t(`hp.nav.${key}`)}
               </button>
@@ -62,7 +62,7 @@ export function Nav() {
         {/* Desktop CTA */}
         <a
           href="/login"
-          className="hidden rounded-none bg-[#6366f1] px-5 py-2.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#818cf8] md:inline-block"
+          className="hidden rounded-none bg-[var(--fv-hp-accent)] px-5 py-2.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[var(--fv-hp-accent-hover)] min-h-[48px] md:inline-block"
         >
           {t('hp.nav.enter')}
         </a>
@@ -97,14 +97,14 @@ export function Nav() {
               key={key}
               type="button"
               onClick={() => scrollTo(sectionIds[i])}
-              className="text-2xl uppercase tracking-wide text-white/80 transition-colors hover:text-white"
+              className="text-2xl font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white"
             >
               {t(`hp.nav.${key}`)}
             </button>
           ))}
           <a
             href="/login"
-            className="mt-4 rounded-none bg-[#6366f1] px-8 py-3 text-lg font-semibold uppercase tracking-widest text-white"
+            className="mt-4 rounded-none bg-[var(--fv-hp-accent)] px-8 py-3 text-lg font-semibold uppercase tracking-widest text-white"
           >
             {t('hp.nav.enter')}
           </a>

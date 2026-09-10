@@ -16,7 +16,7 @@ export function Philosophy() {
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <h2
-          className="hp-display text-center text-[var(--fv-hp-display-lg)] text-white"
+          className="hp-display text-center text-[var(--fv-hp-display-lg)] font-bold text-white"
           style={{ textWrap: 'balance' }}
         >
           {t('hp.philosophy.headline')}
@@ -24,7 +24,7 @@ export function Philosophy() {
         <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-3">
           {messages.map((key) => (
             <div key={key} className="border-t border-white/10 pt-6">
-              <p className="text-lg leading-relaxed text-white/80">{t(`hp.philosophy.${key}`)}</p>
+              <p className="max-w-[45ch] text-lg font-medium leading-relaxed text-[var(--fv-hp-text-body)]">{t(`hp.philosophy.${key}`)}</p>
             </div>
           ))}
         </div>

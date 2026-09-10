@@ -15,22 +15,22 @@ export function FinalCta() {
 
   return (
     <section aria-label="Waitlist" className="relative bg-[#0a0e17] py-32">
-      {/* Subtle purple glow */}
+      {/* Subtle blue glow */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.06) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center, rgba(29,78,216,0.06) 0%, transparent 70%)',
         }}
       />
       <div className="relative z-10 mx-auto max-w-3xl px-6 text-center md:px-10">
         <h2
-          className="hp-display text-[var(--fv-hp-display-xl)] text-white"
+          className="hp-display text-[var(--fv-hp-display-xl)] font-bold text-white"
           style={{ textWrap: 'balance' }}
         >
           {t('hp.cta.headline')}
         </h2>
-        <p className="mt-6 text-[var(--fv-hp-body-lg)] text-white/80">
+        <p className="mt-6 text-[var(--fv-hp-body-lg)] font-medium text-[var(--fv-hp-text-body)]">
           {t('hp.cta.subline')}
         </p>
 
@@ -50,11 +50,11 @@ export function FinalCta() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t('hp.cta.emailPlaceholder')}
-              className="min-h-[52px] flex-1 rounded-none border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/40 focus:border-[#6366f1]"
+              className="min-h-[52px] flex-1 rounded-none border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/40 focus:border-[var(--fv-hp-accent)]"
             />
             <button
               type="submit"
-              className="min-h-[52px] rounded-none bg-[#6366f1] px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#818cf8]"
+              className="min-h-[52px] rounded-none bg-[var(--fv-hp-accent)] px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[var(--fv-hp-accent-hover)]"
             >
               {t('hp.cta.button')}
             </button>

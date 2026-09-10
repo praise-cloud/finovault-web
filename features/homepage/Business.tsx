@@ -18,19 +18,19 @@ export function Business() {
             <div className="mb-3 h-2 w-2/3 bg-white/5" />
             <div className="mb-3 h-2 w-1/2 bg-white/5" />
             <div className="mt-8 flex gap-4">
-              <div className="h-8 flex-1 bg-[#6366f1]/10" />
+              <div className="h-8 flex-1 bg-[var(--fv-hp-accent-light)]" />
               <div className="h-8 flex-1 bg-[#d4a853]/10" />
             </div>
           </div>
         </div>
 
         {/* Text */}
-        <div className="order-1 lg:order-2">
-          <p className="text-[0.75rem] uppercase tracking-[0.08em] text-[#d4a853]/50">
+        <div className="order-1 max-w-[50ch] lg:order-2">
+          <p className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#d4a853]/60">
             {t('hp.business.planned')}
           </p>
           <h2
-            className="hp-display mt-4 text-[var(--fv-hp-display-lg)] text-white"
+            className="hp-display mt-4 text-[var(--fv-hp-display-lg)] font-bold text-white"
             style={{ textWrap: 'balance' }}
           >
             {t('hp.business.title')}
@@ -38,10 +38,10 @@ export function Business() {
           <div className="mt-10 grid gap-6">
             {caps.map((n) => (
               <div key={n} className="border-t border-white/10 pt-4">
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-bold text-white">
                   {t(`hp.business.cap${n}`)}
                 </h3>
-                <p className="mt-1 text-sm text-white/60">
+                <p className="mt-1 text-sm font-medium text-[var(--fv-hp-text-body)]">
                   {t(`hp.business.cap${n}desc`)}
                 </p>
               </div>

@@ -20,7 +20,7 @@ export function Footer() {
               <VaultMark size={28} subdued />
               <span className="hp-display text-sm tracking-widest text-white">FINOVAULT</span>
             </div>
-            <p className="mt-3 text-sm text-white/50">{t('hp.footer.tagline')}</p>
+            <p className="mt-3 text-sm font-medium text-[var(--fv-hp-text-muted)]">{t('hp.footer.tagline')}</p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
             <ul className="flex gap-6" role="list">
@@ -31,7 +31,7 @@ export function Footer() {
                     onClick={() =>
                       document.getElementById(navIds[i])?.scrollIntoView({ behavior: 'smooth' })
                     }
-                    className="text-sm text-white/60 transition-colors hover:text-white"
+                    className="text-sm font-medium text-[var(--fv-hp-text-muted)] transition-colors hover:text-white"
                   >
                     {t(`hp.footer.${key}`)}
                   </button>
@@ -43,7 +43,7 @@ export function Footer() {
               {['X', 'Li', 'Ig'].map((s) => (
                 <span
                   key={s}
-                  className="flex h-8 w-8 items-center justify-center border border-white/10 text-[0.65rem] text-white/60 transition-colors hover:text-white"
+                  className="flex h-8 w-8 items-center justify-center border border-white/10 text-[0.65rem] text-[var(--fv-hp-text-muted)] transition-colors hover:text-white"
                   aria-label={`${s} (coming soon)`}
                 >
                   {s}
@@ -55,12 +55,12 @@ export function Footer() {
 
         {/* Bottom row */}
         <div className="mt-12 flex flex-col justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
-          <p className="text-sm text-white/40">
+          <p className="text-sm text-[var(--fv-hp-text-muted)]">
             {t('hp.footer.copyright', { year: new Date().getFullYear() })}
           </p>
           <div className="flex gap-6">
             {(['terms', 'privacy', 'contact'] as const).map((key) => (
-              <span key={key} className="text-sm text-white/50 transition-colors hover:text-white cursor-pointer">
+              <span key={key} className="text-sm font-medium text-[var(--fv-hp-text-muted)] transition-colors hover:text-white cursor-pointer">
                 {t(`hp.footer.${key}`)}
               </span>
             ))}

@@ -1,51 +1,52 @@
-# Homepage Implementation Summary
+# FE-006 Implementation Summary — DS-004 Redesign (Blue + Brutalism + Readability)
 
-## Files Created (14 in `features/homepage/`)
+## What Changed
 
-| File | Lines | Description |
-|------|-------|-------------|
-| `HomePage.tsx` | 36 | Main composition — imports + renders all 13 sections in order |
-| `Nav.tsx` | 105 | Sticky nav: logo left, links center, CTA right. Transparent→solid on scroll. Mobile hamburger → full-screen overlay. |
-| `Hero.tsx` | 68 | Full viewport, "NEVER ENTER DEBT." headline, VaultMark animation (CSS keyframes), stats bar with dl/dt/dd |
-| `Philosophy.tsx` | 30 | "YOUR MONEY IS TALKING" — 3 messages with thin `border-t border-white/10` top borders, 3-col grid |
-| `Features.tsx` | 41 | 4-card grid: SEE, UNDERSTAND, PROTECT, DECIDE. Lucide icons (Eye, BrainCircuit, ShieldCheck, TrendingUp). Hover border accent |
-| `Mirror.tsx` | 53 | Two-column: text left + dashboard mockup right. 4 category rows with percentage bars. "ILLUSTRATIVE" label |
-| `Personal.tsx` | 53 | Light `#faf8f5` bg, split layout. 4 numbered capabilities with border-t dividers. CTA button |
-| `Business.tsx` | 55 | Dark bg, reversed split (visual left, text right). "PLANNED" label in gold. 4 capabilities. Secondary CTA |
-| `Roadmap.tsx` | 51 | 3-phase timeline: FOUNDATIONAL (current, purple), ENHANCING/TRANSFORMING (FUTURE, muted). Connector line on desktop |
-| `Security.tsx` | 40 | Light bg, "YOUR MONEY IS PRIVATE." — 4 principles. ShieldCheck icon. No security claims |
-| `Comparison.tsx` | 87 | 5-row × 4-col table. FINOVAULT column highlighted (purple). Horizontal scroll on mobile (`min-w-[640px]`) |
-| `Pricing.tsx` | 66 | 3 tiers: Free/Plus/Business. Plus featured (purple border). "PROPOSED / EARLY ACCESS" disclaimer. Footnote |
-| `FinalCta.tsx` | 61 | "GIVE YOUR MONEY ONE SHOT." — email input + waitlist button. Success state with `aria-live="polite"`. Subtle purple radial glow |
-| `Footer.tsx` | 67 | Logo + wordmark, nav links, social placeholders (X/Li/Ig), legal links, copyright with dynamic year |
+Full DS-004 redesign applied across all 14 homepage files. Purple accent `#6366f1` → brand blue `#1D4ED8`; body text on dark raised to 0.88 opacity; body text on light darkened to `#374151`; all headings/labels/eyebrows bold (700), stats extrabold (800), body medium (500); text columns capped at 50ch (45ch in Philosophy); hero headline widened to 14ch. Zero structural change — same sections, order, backgrounds, i18n keys.
 
-## Files Modified (3)
+## Files Touched
 
-| File | Change |
-|------|--------|
-| `app/page.tsx` | Replaced redirect gate with conditional HomePage/redirect. Uses `status` from auth store + `restoreSession()` |
-| `app/layout.tsx` | Updated metadata: title → "FINOVAULT — See it. Understand it. Own it.", description updated |
-| `app/globals.css` | Added 40+ `--fv-hp-*` tokens (colors, typography, spacing, motion), `.hp-display` class, 2 keyframes, `prefers-reduced-motion` reset |
+| File | Changes |
+|------|---------|
+| `app/globals.css` | Removed `--fv-hp-accent-purple(-hover)`, purple `--fv-hp-border-accent`. Added `--fv-hp-accent` `#1D4ED8`, `--fv-hp-accent-hover` `#2563EB`, `--fv-hp-accent-light` `rgba(29,78,216,0.15)`, `--fv-hp-accent-border` `rgba(29,78,216,0.3)`, `--fv-hp-accent-glow` `rgba(29,78,216,0.06)`, `--fv-hp-text-body` `rgba(255,255,255,0.88)`, `--fv-hp-text-dark-body` `#374151`. Focus ring `*:focus-visible` → `var(--fv-hp-accent)`. |
+| `features/homepage/Nav.tsx` | Desktop CTA + mobile CTA → blue (`bg-[var(--fv-hp-accent)]`/hover, `min-h-[48px]`). Desktop links `font-medium`, mobile links `font-bold`. |
+| `features/homepage/Hero.tsx` | Headline `max-w-[14ch]` + `font-bold`. Subheadline → `text-[var(--fv-hp-text-body)]` + `font-medium`. Primary CTA blue. Stat values `font-extrabold`, labels `font-medium` + `text-muted`, footnote `font-bold` + `tracking-[0.1em]` + `text-muted`. |
+| `features/homepage/Philosophy.tsx` | Messages → `text-[var(--fv-hp-text-body)]` + `font-medium` + `max-w-[45ch]`. Headline `font-bold`. |
+| `features/homepage/Features.tsx` | Card hover `border-[var(--fv-hp-accent-border)]`, icons `text-[var(--fv-hp-accent)]`, titles `font-bold`, descriptions `text-body` + `font-medium`. Headline `font-bold`. |
+| `features/homepage/Mirror.tsx` | Eyebrow → blue + `font-bold` + `tracking-[0.1em]`. Statement `text-body` + `font-medium`. Bars blue. Labels `text-body` + `font-medium`, pct `font-bold`. Footnote `font-bold` + `text-muted`. |
+| `features/homepage/Personal.tsx` | Text column `max-w-[50ch]`. Capability titles `font-bold`, desc `text-[var(--fv-hp-text-dark-body)]` + `font-medium`. CTA blue. Decorative bar `bg-[var(--fv-hp-accent-light)]`. |
+| `features/homepage/Business.tsx` | Text column `max-w-[50ch]`. Planned label `font-bold` + `tracking-[0.1em]`. Titles `font-bold`, desc `text-body` + `font-medium`. Decorative bar `bg-[var(--fv-hp-accent-light)]`. Gold kept. |
+| `features/homepage/Roadmap.tsx` | Phase1 status blue (`text-[var(--fv-hp-accent)] border-[var(--fv-hp-accent-border)]`). Titles/badges `font-bold`. List items `text-body` + `font-medium`. Bullets blue. |
+| `features/homepage/Security.tsx` | Text column `max-w-[50ch]`. Shield icon blue. Statement `text-dark-body` + `font-medium`. Principles `font-bold`, desc `text-dark-body` + `font-medium`. |
+| `features/homepage/Comparison.tsx` | Column headers `font-bold` + `tracking-[0.1em]`, FV column blue. Row labels `font-bold`, FV cells `font-semibold`, other cells `text-body` + `font-medium`. |
+| `features/homepage/Pricing.tsx` | Disclaimer `font-bold`. Featured border `border-[var(--fv-hp-accent-border)]`. Tier names `font-bold`, prices `font-extrabold`, period `font-medium`. Features `text-body` + `font-medium`, bullets blue. Featured CTA blue. Footnote `font-medium` + `text-muted`. |
+| `features/homepage/FinalCta.tsx` | Glow `rgba(29,78,216,0.06)`. Headline `font-bold`. Subline `text-body` + `font-medium`. Input focus blue, submit button blue. |
+| `features/homepage/Footer.tsx` | Tagline/nav/legal/social → `text-[var(--fv-hp-text-muted)]` + `font-medium`. |
 
 ## State Handling
 
-Only 2 components have state:
-- `Nav.tsx`: `scrolled` (boolean, scroll listener) + `open` (mobile menu toggle)
-- `FinalCta.tsx`: `submitted` (form state) + `email` (input value)
+No state logic touched (Nav scroll/menu, FinalCta form). Pure class/color/token changes.
 
-All other 12 components are stateless — pure render from i18n keys.
+## Verification Checklist (10/10 PASS)
 
-## Verification
+1. No `#6366f1` in homepage .tsx — 0 matches
+2. No `818cf8` — 0 matches
+3. No `rgba(99,102,241` — 0 matches (globals.css also clean)
+4. Body on dark = 0.88 — `--fv-hp-text-body` used, no `text-white/70|80` body text remains (only nav-link whites kept per spec + input placeholder)
+5. Body on light = `#374151` — `--fv-hp-text-dark-body` used in Personal/Security
+6. All headings `font-bold` — all 17 h1/h2/h3 verified
+7. Stats `font-extrabold` — Hero stats, Pricing prices
+8. Labels/eyebrows `font-bold` — Mirror/Roadmap/Pricing/Business/Hero footnotes
+9. `max-w-[50ch]` in Personal/Business/Security, `max-w-[45ch]` in Philosophy, Hero `max-w-[14ch]`
+10. Focus rings blue — `*:focus-visible` + FinalCta input focus border
 
-- ✅ **Zero console.log** in any created/modified file
-- ✅ **TypeScript**: Zero errors from homepage/page/layout/globals files. Pre-existing errors in `app/api/bff/[...path]/route.ts` (unrelated)
-- ✅ **ESLint**: Zero errors (only pre-existing CSS config warning)
-- ⚠️ **Build**: Pre-existing failure (ESM `__dirname` in next.config + Win32 SWC binary mismatch — not from my changes)
-- **Status**: `partially_verified` — TypeScript and lint pass; build blocked by pre-existing env issues
+## Verification Commands
 
-## Skipped / When to Add
+- `npx tsc --noEmit` — PASS (0 errors)
+- `npm run lint` — PASS (0 errors; 27 pre-existing warnings outside scope, none in affected files)
 
-- Scroll-reveal animations on section entry → CSS `@keyframes fadeSlideUp` defined but no IntersectionObserver yet. Add when spec requests scroll-triggered reveals
-- Dynamic nav link highlighting (active section) → needs IntersectionObserver. Add if UX requires it
-- Footer legal links → currently `span` with `cursor-pointer`. Wire up when legal pages exist
-- Social links → placeholders only. Wire up when social accounts are set up
+## Notes for Designer QA
+
+- `app/(app)/insights/page.tsx` still contains `#6366f1` in a chart COLORS array — outside the 15-file scope, flagged for @leader.
+- Gold `#d4a853` retained for "PLANNED" (Business) + "PROPOSED" (Pricing) labels per spec.
+- Line-height/leading values not in DS-004 changelog (e.g. Hero `leading-[1.65]`, Mirror statement) left untouched — structural safety.

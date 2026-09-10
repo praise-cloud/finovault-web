@@ -4,9 +4,11 @@
 
 **Aesthetic**: Luxury brutalism — high contrast, large editorial typography, asymmetric layouts, sharp rectangular panels, thin borders. Not corporate fintech. Not friendly SaaS. Not dark-mode hacker.
 
-**Color strategy**: Restrained. Deep navy-black background with white text. Single accent purple used sparingly (≤5% of surface). Gold for premium moments only (≤2%). Status colours for functional signals.
+**Color strategy**: Restrained. Deep navy-black background with white text. Single accent **blue** used sparingly (≤5% of surface). Gold for rare premium moments only (≤2%). Status colours for functional signals.
 
 **Scene**: A sophisticated financial tool that looks like it was designed by people who take money seriously. The page should feel like opening a premium financial publication — authoritative, clean, intelligent.
+
+---
 
 ## Colour Palette
 
@@ -20,17 +22,26 @@
 ### Text
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `--fv-hp-text-white` | `#ffffff` | Text on dark backgrounds |
+| `--fv-hp-text-white` | `#ffffff` | Headings on dark backgrounds |
+| `--fv-hp-text-body` | `rgba(255,255,255,0.88)` | **Body text on dark** — high contrast, NOT washed out |
+| `--fv-hp-text-muted` | `rgba(255,255,255,0.55)` | Labels, captions, tertiary text on dark |
 | `--fv-hp-text-dark` | `#1a1a1a` | Text on light backgrounds |
-| `--fv-hp-text-muted` | `rgba(255,255,255,0.6)` | Secondary text on dark |
+| `--fv-hp-text-dark-body` | `#374151` | **Body text on light** — slightly softer than heading |
 | `--fv-hp-text-muted-dark` | `#6b7280` | Secondary text on light |
 
-### Accent
+### Accent (BRAND BLUE)
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `--fv-hp-accent-purple` | `#6366f1` | Primary accent, CTAs, links |
-| `--fv-hp-accent-purple-hover` | `#818cf8` | Hover state |
-| `--fv-hp-accent-gold` | `#d4a853` | Premium accents, trust indicators, VaultMark |
+| `--fv-hp-accent` | `#1D4ED8` | Primary accent, CTAs, links, icon highlights, focus rings |
+| `--fv-hp-accent-hover` | `#2563EB` | Hover state (slightly lighter) |
+| `--fv-hp-accent-light` | `rgba(29,78,216,0.15)` | Subtle accent backgrounds, bar fills |
+| `--fv-hp-accent-border` | `rgba(29,78,216,0.3)` | Accent borders, card hover borders |
+| `--fv-hp-accent-glow` | `rgba(29,78,216,0.06)` | Subtle radial glow for CTA sections |
+
+### Secondary Accent (RARE)
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `--fv-hp-accent-gold` | `#d4a853` | Premium moments only (≤2%) — VaultMark, "PLANNED" labels |
 
 ### Status
 | Token | Hex | Usage |
@@ -44,15 +55,17 @@
 |-------|-------|-------|
 | `--fv-hp-border` | `rgba(255,255,255,0.12)` | Borders on dark backgrounds |
 | `--fv-hp-border-light` | `rgba(0,0,0,0.08)` | Borders on light backgrounds |
-| `--fv-hp-border-accent` | `rgba(99,102,241,0.3)` | Accent borders |
+| `--fv-hp-border-accent` | `rgba(29,78,216,0.3)` | Accent borders (blue, not purple) |
+
+---
 
 ## Typography
 
 ### Font Families
 | Role | Family | Source | Usage |
 |------|--------|--------|-------|
-| Display | Cinzel | Google Fonts (existing) | Headlines, section titles |
-| Body | Montserrat | Google Fonts (existing) | Body text, UI elements |
+| Display | Cinzel | Google Fonts (existing) | Headlines, section titles — **always bold (700)** |
+| Body | Montserrat | Google Fonts (existing) | Body text, UI elements, emphasis |
 
 **Note**: Both fonts already loaded in `app/layout.tsx`. No new dependencies needed.
 
@@ -62,22 +75,28 @@
 |-------|------|--------|-------------|----------------|-------|
 | `--fv-hp-display-xl` | `clamp(2.5rem, 6vw, 4.5rem)` | 700 | 1.05 | -0.02em | Hero headline |
 | `--fv-hp-display-lg` | `clamp(2rem, 4vw, 3rem)` | 700 | 1.1 | -0.02em | Section headlines |
-| `--fv-hp-display-md` | `clamp(1.5rem, 3vw, 2rem)` | 700 | 1.15 | -0.01em | Sub-section headlines |
-| `--fv-hp-body-lg` | `1.25rem` | 400 | 1.6 | 0 | Lead paragraphs |
-| `--fv-hp-body` | `1rem` | 400 | 1.6 | 0 | Body text |
-| `--fv-hp-body-sm` | `0.875rem` | 400 | 1.5 | 0 | Captions, labels |
-| `--fv-hp-label` | `0.75rem` | 600 | 1.4 | 0.08em | Uppercase labels, eyebrows |
-| `--fv-hp-stat` | `clamp(2rem, 5vw, 3.5rem)` | 700 | 1 | -0.02em | Statistics, metrics |
+| `--fv-hp-display-md` | `clamp(1.5rem, 3vw, 2rem)` | 700 | 1.15 | -0.01em | Sub-section headlines, card headings |
+| `--fv-hp-body-lg` | `1.25rem` | **500** | **1.7** | 0 | Lead paragraphs |
+| `--fv-hp-body` | `1rem` | 400 | **1.7** | 0 | Body text |
+| `--fv-hp-body-sm` | `0.875rem` | 400 | 1.6 | 0 | Captions, secondary info |
+| `--fv-hp-label` | `0.75rem` | **700** | 1.4 | **0.1em** | Uppercase labels, eyebrows, category tags |
+| `--fv-hp-stat` | `clamp(2rem, 5vw, 3.5rem)` | **800** | 1 | -0.02em | Statistics, metrics — extra bold |
 
 ### Typography Rules
-- **Headlines**: Cinzel, always uppercase, tight tracking (-0.02em)
-- **Body**: Montserrat, sentence case, default tracking
-- **Labels**: Montserrat, uppercase, wide tracking (0.08em)
+
+- **Headlines**: Cinzel, always uppercase, weight 700, tracking -0.02em
+- **Body on dark**: `color: var(--fv-hp-text-body)` (rgba 255,255,255,0.88) — NEVER lower than 0.80 opacity
+- **Body on light**: `color: var(--fv-hp-text-dark-body)` (#374151) — softer than heading, still high contrast
+- **Emphasis in body**: Montserrat `font-weight: 600` (semiBold) — NOT italic, NOT color change
+- **Labels**: Montserrat, uppercase, weight 700, tracking 0.1em — punchy, not whispery
 - **No italic on headlines** — weight and size carry emphasis
-- **Line length**: Cap body text at 65ch (`max-width: 65ch`)
-- **Light-on-dark compensation**: Add 0.05 to line-height for light text on dark backgrounds
+- **Line length**: Cap body text at `max-width: 60ch` (slightly tighter than 65ch for better readability on large screens)
+- **Light-on-dark compensation**: Add 0.05 to line-height for light text on dark backgrounds (already in scale: 1.7 for body-lg)
 - **`text-wrap: balance`** on h1–h3 for even line lengths
-- **`text-wrap: pretty`** on long prose to reduce orphans
+- **`text-wrap: pretty`** on long prose paragraphs to reduce orphans
+- **Minimum font-weight for readability**: Body text on dark backgrounds must be 400 weight minimum, with `--fv-hp-text-body` color (0.88 opacity). Never `text-white/60` or lower for readable body copy.
+
+---
 
 ## Spacing Scale
 
@@ -86,17 +105,22 @@
 | `--fv-hp-space-xs` | `0.25rem` | Tight gaps |
 | `--fv-hp-space-sm` | `0.5rem` | Small gaps |
 | `--fv-hp-space-md` | `1rem` | Default gaps |
-| `--fv-hp-space-lg` | `1.5rem` | Section element gaps |
+| `--fv-hp-space-lg` | `1.5rem` | Between heading and sub-elements |
 | `--fv-hp-space-xl` | `2rem` | Card padding, content gaps |
-| `--fv-hp-space-2xl` | `3rem` | Section internal spacing |
-| `--fv-hp-space-3xl` | `4rem` | Section separators |
-| `--fv-hp-space-4xl` | `6rem` | Major section breaks |
-| `--fv-hp-space-5xl` | `8rem` | Hero vertical padding |
+| `--fv-hp-space-2xl` | `3rem` | Section internal grouping |
+| `--fv-hp-space-3xl` | `4rem` | Between major content blocks within a section |
+| `--fv-hp-space-4xl` | `6rem` | Section vertical padding (min) |
+| `--fv-hp-space-5xl` | `8rem` | Section vertical padding (max), hero |
 
 ### Section Vertical Rhythm
-- Dark sections: `py-24` to `py-32` (6rem to 8rem)
-- Light sections: `py-20` to `py-28` (5rem to 7rem)
-- Between sections: `py-16` to `py-20` (4rem to 5rem) or use visual separator (border/divider)
+- All sections: `py-24 md:py-32` (6rem to 8rem) — consistent rhythm
+- Between heading and content within a section: `mt-12` to `mt-16` (3rem to 4rem)
+- Between sub-content and CTA: `mt-10` (2.5rem)
+- Within lists/capabilities: `gap-6` (1.5rem)
+- **Heading-to-body gap**: Always `mt-4` to `mt-6` (1rem to 1.5rem) — tight, connected
+- **Body-to-next-element gap**: `mt-6` to `mt-10` (1.5rem to 2.5rem)
+
+---
 
 ## Layout
 
@@ -122,6 +146,8 @@
 - Tablet: 768px - 1024px (2-column where appropriate)
 - Desktop: > 1024px (full layout)
 
+---
+
 ## Components
 
 ### Homepage-Specific Components
@@ -132,6 +158,7 @@
 - **Mobile**: Hamburger menu with slide-in overlay
 - **Height**: 72px desktop, 64px mobile
 - **Transition**: Background opacity on scroll (CSS transition, no JS animation loop)
+- **CTA button**: `bg: var(--fv-hp-accent)`, white text
 
 #### Hero
 - **Layout**: Full viewport height, left-aligned text
@@ -146,9 +173,11 @@
 - **Background**: `rgba(255,255,255,0.04)` on dark, `#ffffff` on light
 - **Border-radius**: 0 (sharp corners — luxury brutalism)
 - **Padding**: 24px desktop, 20px mobile
+- **Hover**: Border transitions to `var(--fv-hp-accent-border)`
 
 #### Button (Homepage Variant)
-- **Primary**: `bg: #6366f1`, `color: white`, `border-radius: 0`, uppercase, tracking 0.08em
+- **Primary**: `bg: var(--fv-hp-accent)` (#1D4ED8), `color: white`, `border-radius: 0`, uppercase, tracking 0.08em, font-weight 600
+- **Primary Hover**: `bg: var(--fv-hp-accent-hover)` (#2563EB)
 - **Secondary**: `border: 1px solid rgba(255,255,255,0.3)`, `color: white`, `bg: transparent`, border-radius 0
 - **Ghost**: `color: rgba(255,255,255,0.7)`, underline on hover
 - **Hover**: Opacity change + subtle scale (0.98 on active)
@@ -162,8 +191,10 @@
 #### IllustrativeLabel
 - **Type**: Small uppercase text with tracking
 - **Content**: "ILLUSTRATIVE — Product in development" or "PLANNED — Part of Phase 2-3 roadmap"
-- **Style**: `font-size: 0.75rem`, `letter-spacing: 0.08em`, `color: rgba(255,255,255,0.4)`
+- **Style**: `font-size: 0.75rem`, `letter-spacing: 0.1em`, `font-weight: 700`, `color: rgba(255,255,255,0.4)`
 - **Usage**: Below statistics, mockups, and future feature sections
+
+---
 
 ## Interaction Patterns
 
@@ -174,12 +205,12 @@
 - **Reduced motion**: Instant appearance (no animation)
 
 ### Hover States
-- Cards: Subtle border colour change (not scale, not shadow)
-- Buttons: Opacity + border-colour change
+- Cards: Border colour change to `var(--fv-hp-accent-border)` (not scale, not shadow)
+- Buttons: Background change to `var(--fv-hp-accent-hover)`
 - Links: Colour change + underline transition
 
 ### Focus States
-- `outline: 2px solid #6366f1` with `outline-offset: 2px`
+- `outline: 2px solid var(--fv-hp-accent)` with `outline-offset: 2px`
 - Visible on all interactive elements
 - Never `outline: none` without replacement
 
@@ -190,6 +221,8 @@
 - **Trigger**: On page load (once)
 - **Reduced motion**: Show headline immediately, skip animation
 - **Implementation**: Pure CSS `@keyframes` with `animation-fill-mode: forwards`
+
+---
 
 ## Motion
 
@@ -207,6 +240,8 @@
 - **No bounce, no elastic** — premium restraint
 - **Reduced motion**: All animations wrapped in `@media (prefers-reduced-motion: reduce)` with instant alternative
 - **CSS-only preferred**: Use `@keyframes` + `animation` for hero sequence; IntersectionObserver for scroll reveals
+
+---
 
 ## Homepage Section Architecture
 
@@ -232,7 +267,9 @@
 - Dark-to-dark sections: 1px divider line or `gap: 0` with visual separator
 - Dark-to-light transitions: No gap, clean colour boundary
 - Light-to-dark transitions: No gap, clean colour boundary
-- Internal section padding: `py-24` (6rem) to `py-32` (8rem)
+- Internal section padding: `py-24` (6rem) to `py-32` (8rem) — **consistent across all sections**
+
+---
 
 ## Existing System Integration
 
@@ -246,6 +283,8 @@ All new homepage tokens use `--fv-hp-*` prefix to avoid collision with app token
 
 ### i18n Pattern
 All text via `useTranslation()` hook from `react-i18next`. Keys follow `hp.*` namespace for homepage content.
+
+---
 
 ## Legal Constraints
 

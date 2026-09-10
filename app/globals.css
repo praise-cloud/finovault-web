@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source not "../specs";
 
 :root {
   --fv-bg: #f7faff;
@@ -67,17 +68,22 @@ body {
   --fv-hp-bg-white: #ffffff;
   --fv-hp-text-white: #ffffff;
   --fv-hp-text-dark: #1a1a1a;
+  --fv-hp-text-body: rgba(255, 255, 255, 0.88);
+  --fv-hp-text-dark-body: #374151;
   --fv-hp-text-muted: rgba(255, 255, 255, 0.6);
   --fv-hp-text-muted-dark: #6b7280;
-  --fv-hp-accent-purple: #6366f1;
-  --fv-hp-accent-purple-hover: #818cf8;
+  --fv-hp-accent: #1D4ED8;
+  --fv-hp-accent-hover: #2563EB;
+  --fv-hp-accent-light: rgba(29, 78, 216, 0.15);
+  --fv-hp-accent-border: rgba(29, 78, 216, 0.3);
+  --fv-hp-accent-glow: rgba(29, 78, 216, 0.06);
   --fv-hp-accent-gold: #d4a853;
   --fv-hp-positive: #22c55e;
   --fv-hp-negative: #ef4444;
   --fv-hp-neutral: #6b7280;
   --fv-hp-border: rgba(255, 255, 255, 0.12);
   --fv-hp-border-light: rgba(0, 0, 0, 0.08);
-  --fv-hp-border-accent: rgba(99, 102, 241, 0.3);
+  --fv-hp-border-accent: rgba(29, 78, 216, 0.3);
   --fv-hp-display-xl: clamp(2.5rem, 6vw, 4.5rem);
   --fv-hp-display-lg: clamp(2rem, 4vw, 3rem);
   --fv-hp-display-md: clamp(1.5rem, 3vw, 2rem);
@@ -112,7 +118,7 @@ body {
 
 /* ── Focus indicator (WCAG AA) ──────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #6366f1;
+  outline: 2px solid var(--fv-hp-accent);
   outline-offset: 2px;
 }
 

@@ -29,18 +29,18 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <h1
-          className="hp-display max-w-[12ch] text-[var(--fv-hp-display-xl)] leading-[1.05] text-white"
+          className="hp-display max-w-[14ch] text-[var(--fv-hp-display-xl)] font-bold leading-[1.05] text-white"
           style={{ textWrap: 'balance' }}
         >
           {t('hp.hero.headline')}
         </h1>
-        <p className="mt-6 max-w-[55ch] text-[var(--fv-hp-body-lg)] leading-[1.65] text-white/80">
+        <p className="mt-6 max-w-[55ch] text-[var(--fv-hp-body-lg)] font-medium leading-[1.65] text-[var(--fv-hp-text-body)]">
           {t('hp.hero.subheadline')}
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
           <a
             href="/login"
-            className="rounded-none bg-[#6366f1] px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[#818cf8] min-h-[48px] inline-flex items-center"
+            className="rounded-none bg-[var(--fv-hp-accent)] px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[var(--fv-hp-accent-hover)] min-h-[48px] inline-flex items-center"
           >
             {t('hp.hero.ctaPrimary')}
           </a>
@@ -60,12 +60,12 @@ export function Hero() {
           {stats.map(({ valueKey, labelKey }) => (
             <div key={valueKey}>
               <dt className="sr-only">{t(labelKey)}</dt>
-              <dd className="hp-display text-[var(--fv-hp-stat)] text-white">{t(valueKey)}</dd>
-              <dd className="mt-1 text-sm text-white/60">{t(labelKey)}</dd>
+              <dd className="hp-display text-[var(--fv-hp-stat)] font-extrabold text-white">{t(valueKey)}</dd>
+              <dd className="mt-1 text-sm font-medium text-[var(--fv-hp-text-muted)]">{t(labelKey)}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-6 text-[0.75rem] uppercase tracking-[0.08em] text-white/40">
+        <p className="mt-6 text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[var(--fv-hp-text-muted)]">
           {t('hp.illustrative')}
         </p>
       </div>
