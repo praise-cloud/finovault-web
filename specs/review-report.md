@@ -1,55 +1,36 @@
-# DS-006 Review Report — Dark Theme + Financial Layout QA
+# Design QA Report — DS-008 (FE-009: Expanded Sidebar + 6 New Pages)
 
-- **Reviewer**: @designer (Impeccable critique/audit runs — tokens, contrast §2, audit map #1–#10)
-- **Scope**: FE-005/FE-006 vs `specs/dark-financial-tokens.md` + `specs/dark-financial-layout.md`
-- **Source inspected**: `app/globals.css`, `components/ui/Button.tsx`, `components/VaultMark.tsx`, `components/notifications/NotificationBell.tsx`, `features/dashboard/components.tsx`, `features/dashboard/GreetingHeader.tsx`, `app/(app)/layout.tsx`, `app/(app)/profile/page.tsx`, `app/(app)/coach/page.tsx`, `app/(app)/vault/page.tsx`, `app/(app)/insights/page.tsx`, `lib/theme/ThemeProvider.tsx`, `lib/i18n/en|fr.json`
-- **Date**: 2026-09-10
+- Status: **PASS ✅**
+- QA by: @designer (impeccable critique + audit, Phase 3)
+- Date: 2026-09-11
+- Source of truth: `specs/sidebar-navigation.md` (DS-007) | Implementation: `specs/implementation-summary.md` (FE-009)
+- Verification status: `verified` — every spec item checked against actual code. (Code-level claims — tsc 0 errors, eslint exit 0, 60/60 tests — taken from FE-009 notes; not re-run in design QA.)
 
-## Verdict: PASS ✅
+## Checklist Results
 
-In-scope checklist items verified in code. Design QA approval granted for FE-005/FE-006.
+| # | Spec item | Result |
+|---|---|---|
+| 1 | Sidebar structure §1/§2: 7 groups, 18 items, icons, routes, pinned Account | ✅ PASS |
+| 2 | States §3: active wash+ink border+semibold+`aria-current`; idle `border-2 border-transparent` (zero shift); hover `--fv-border-subtle`; focus-visible global 2px `--fv-ink` (globals.css:153) | ✅ PASS |
+| 3 | Mobile `w-16`: group labels → `h-px` divider (`aria-hidden`), icon-only items + `aria-label` | ✅ PASS |
+| 4 | A11y §7: `role="group"` + `aria-labelledby` per group (incl. Account); touch targets `py-3` ≈ 48px ≥ 44px; focus ring never removed | ✅ PASS |
+| 5 | 6 new pages §4: titles + icons (CreditCard/TrendingUp/Landmark/FileBarChart/ScrollText) + copy; Help = native `<details>` FAQ ×3 + contact card (mailto) + Coach link | ✅ PASS |
+| 6 | i18n §6: full en+fr parity — `nav.groups.*` (7), `tabs.*` (18 incl. dashboard, no `home`), six page namespaces incl. 12 `help.*` keys; values match spec verbatim | ✅ PASS |
+| 7 | Dark mode: all new elements token-driven (`var(--fv-*)`); no hardcoded colors in changed files (only pre-existing chart colors in insights/page.tsx, out of scope) | ✅ PASS |
+| 8 | Icon swaps: Pay→`Send`, Accounts→`Wallet`, Cards→`CreditCard`; `Home` import removed; `tabs.home` zero code usage | ✅ PASS |
 
-## Confirmed — 3 frontend-flagged items
+## Flagged Items — Confirmed
 
-| # | Item | Result |
-|---|------|--------|
-| 1 | GreetingHeader pill | ✅ `text-[var(--fv-on-fill)] bg-[var(--fv-role-accent)]` (`GreetingHeader.tsx:21`). Dark on-fill `#1a1a2e` on persona accents = 5.7–10.4:1 AA; light `#ffffff` on `#4338ca` = 7.1:1 AA. 11px bold uppercase ≥4.5:1 everywhere. |
-| 2 | Insights palette | ✅ `COLORS = theme.mode === 'dark' ? DARK_COLORS : LIGHT_COLORS` (`insights/page.tsx:43`). Dark 8 slots (21) vs light 6 (14) — resolved-mode switch correct via ThemeProvider. Adjacent series want ≥3:1 — per-tone light pastels fail pairwise (≈1.0–1.5:1) but each slice vs `--fv-surface` passes 5.5–9.8:1; hues alternate warm/cool so colorblind differentiation held. Acceptable; `ponytail:` comment documents intent. |
-| 3 | Theme toggle | ✅ `layout.tsx:121–131` — cycles light→dark→system, `ThemeIcon` Sun/Moon/Monitor (42), `aria-label={t('settings.theme')}` (125), `aria-pressed={mode==='system'}` (126), localized title (127), `h-11 w-11` chrome duplicated correctly, placed left of `NotificationBell` (132). i18n keys present in both `en.json:246–249` and `fr.json:246–249`. |
+- **(a) `aria-labelledby` empty group name on mobile**: ✅ Acceptable per spec §7. On `w-16`, label `<span>` is `display:none` so `role="group"` announces without a name — a minor screen-reader degradation, not a WCAG failure (group names optional; every `<Link>` self-labels via `aria-label`). Divider `aria-hidden`. Conformant.
+- **(b) Help FAQ copy**: ✅ Confirmed tone. Copy is spec §6.3 verbatim — confident, reassurance-first bank tone ("read-only access", "bank-grade encryption", "never store your password"). The only placeholder is `SUPPORT_EMAIL` (help/page.tsx:17) with a `ponytail:` marker — swap when the support contract lands.
+- **(c) Sidebar geometry `w-16`/`w-56`**: ✅ Confirmed. `w-16 md:w-56 md:px-4`, primary nav `flex-1 overflow-y-auto`, Account `mt-auto`. Mobile pills centered shrink-to-fit (no `w-full`) = correct.
 
-## Audit map verification (spec §1)
+## Notes (P3 — non-blocking)
 
-| # | Item | Result |
-|---|------|--------|
-| 1 | Button hero text | ✅ `components/ui/Button.tsx` primary → `text-[var(--fv-on-fill)]` |
-| 2 | CoachCta title | ✅ on-fill (Components.tsx #2), no hardcoded white in file |
-| 3 | CoachCta body | ✅ on-fill/85 |
-| 4 | CoachCta forced-white override | ✅ removed — `variant="secondary"` (no `text-[var(--fv-ink)]` override) |
-| 5 | Profile avatar | ✅ `profile/page.tsx:112` `text-[var(--fv-on-fill)]` |
-| 6 | Coach user bubble | ✅ `coach/page.tsx:138` on-fill |
-| 7 | Coach send button | ✅ `coach/page.tsx:178` on-fill |
-| 8 | Notification bell badge | ✅ no hardcoded white (grep-clean); on-fill token |
-| 9 | VaultMark | ✅ `style={{ stroke }}` with `var(--fv-primary)` / `var(--fv-text-secondary, currentColor)` fallback — hex → var done |
-| 10 | Insights dark ramp | ✅ §above |
-
-## Token corrections (globals.css)
-
-- `.dark` block verified — `--fv-border-ink: rgba(242,243,255,0.8)` (73), shadows rgba(0,0,0,0.7) (74–75), `--fv-ink: #f2f3ff` (79), status `#4ade80/#facc15/#f87171` + `-bg` variants (80–85), `--fv-on-fill: #1a1a2e` (86), persona accent dark variants (89–107), `:focus-visible` → `var(--fv-ink, var(--fv-text))` (154).
-- Light `:root` intact: `--fv-on-fill: #ffffff` (30), status `#2e7d5b/#92600a/#8c3a3a` (18–23), ink `#1a1a2e`.
-- Switch off-tracks + skeleton dashes → `--fv-border-subtle`, knobs stay `bg-white` (per spec OK list).
-
-## Findings
-
-### P2 — Out-of-scope observation (pre-existing, not in FE-005/006 file list)
-`app/onboarding/role/page.tsx:76,88` and `app/onboarding/link-accounts/page.tsx:75` use `text-white` on `bg-[var(--fv-primary)]`. Root ThemeProvider applies `.dark` to onboarding too; dark `--fv-primary` #60a5fa + white ≈ 2.7:1 → fails AA. Fix is the same audit-map #1: `text-[var(--fv-on-fill)]`. Does NOT block DS-006 — suggest Fast-tier delegation to @frontend-react.
-
-### P3 — Note
-`aria-pressed={mode === 'system'}` on a 3-state cycling toggle is binary-toggle semantics on a non-binary control; current-state is already surfaced via localized `title`. Acceptable, no change required.
-
-## Status
-
-`verified` — all in-scope items confirmed in code. Out-of-scope onboarding contrast leak routed via @leader.
+1. **P3 — Double-active state on /profile** — `app/(app)/layout.tsx:111-113`: `active = pathname === item.href` is true for BOTH Settings and Profile (`/profile` each). Result: on /profile, two Account pills render active simultaneously (wash + border + semibold + `aria-current="page"`). Spec §1 declared both → /profile (intentional), but simultaneous double-active is a visible artifact, not the designed intent (Settings = primary entry, Profile = subpage).
+   Fix (when convenient): `const active = pathname === item.href && (item.href !== '/profile' || item.key === 'settings');` — or move Profile highlight to an anchor/sub-route. Optional, not blocking.
+2. **P3 nit** — `GroupLabel` renders the mobile `h-px` divider above the first group too (`isFirst` only adjusts md+ padding) — a hairline between logo and Dashboard on mobile. Harmless (acts as header/nav separator); informational only.
 
 ---
 
-**To @leader**: PASS ✅ for DS-006. Ready for Phase 3 closure / FE-005+006 acceptance.
+**Verdict: PASS ✅** — FE-009 conforms to DS-007 on all checklist items; 3 flagged items confirmed. P3 notes are optional polish, no rework required.

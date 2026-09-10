@@ -287,3 +287,29 @@ Layout geometry, persona module order, loading/empty/error standards: §5–§7 
 - **API**: no new endpoints — dashboard already consumes `useMoneySummary/useAccounts/useBudgets/useGoals/useInvoices/useVendors/useBillPayments`. Compliance rows remain static seeds (existing `ponytail:` note; backend item, not blocking).
 
 Full per-file spec: `specs/dark-financial-layout.md`.
+
+## 14. Sidebar Navigation — Expanded IA (DS-007)
+
+Full spec: `specs/sidebar-navigation.md`.
+
+**IA summary**: sidebar reorganized from flat 5-item nav into **7 labeled groups / 18 tabs**. Groups follow fintech job-to-be-done: Overview → Money → Grow → Operate → Reports → Support → Account. All tabs route to real pages — 6 new page files get `EmptyState` shells (no dead links).
+
+| Group | Tabs |
+|---|---|
+| Overview | Dashboard, Insights |
+| Money | Accounts, Cards (NEW), Transactions, Budgets |
+| Grow | Vault, Investments (NEW), Loans (NEW) |
+| Operate | Pay, Invoices, Vendors |
+| Reports | Reports (NEW), Statements (NEW) |
+| Support | Coach, Help (NEW) |
+| Account | Settings (→ /profile), Profile |
+
+**Icon assignments**: `LayoutDashboard`, `Wallet`, `CreditCard`, `ReceiptText`, `PieChart`, `PiggyBank`, `TrendingUp`, `Landmark`, `Send`, `FileText`, `Store`, `FileBarChart`, `ScrollText`, `MessageCircle`, `HelpCircle`, `Settings`, `User`. Pay icon changes from `CreditCard` → `Send`; Accounts uses `Wallet`.
+
+**Active state**: ink border (`border-2 border-[var(--fv-border)]`) + wash bg (`--fv-wash`) + bold text — zero layout shift (idle items have `border-transparent` already). Fully token-driven, dark mode automatic via §2.3.
+
+**Group labels** (md+ only): uppercase kicker style (§3), `role="group" aria-labelledby"` for screen readers. Collapses to divider lines on mobile. Touch targets bumped to `py-3` on mobile (≥44px per §9.1).
+
+**New page files**: `cards/page.tsx`, `investments/page.tsx`, `loans/page.tsx`, `reports/page.tsx`, `statements/page.tsx`, `help/page.tsx`. Help page is static content (FAQ + contact card); all others render `EmptyState`. No mock data surfaced in v1 — `ponytail:` skip until API.
+
+**i18n**: 7 group labels (`nav.groups.*`), 7 new tab labels (`tabs.{cards|investments|loans|reports|statements|help|settings}`), 6 page title + empty-state blocks (36 keys en+fr). Full list in spec §6.
