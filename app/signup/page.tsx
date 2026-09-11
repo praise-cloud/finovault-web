@@ -96,26 +96,50 @@ export default function SignupPage() {
               />
             )}
           />
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-[var(--fv-text-secondary)]">{t('auth.passwordStrength')}</span>
-            <span className="text-sm font-semibold text-[var(--fv-primary)]">
-              {passwordValue ? strengthLabels[strength] : ''}
-            </span>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--fv-text-secondary)]">
+                {t('auth.passwordStrength')}
+              </span>
+              <span className="text-xs font-black uppercase text-[var(--fv-primary)]">
+                {strength === 0 ? '' : strength === 1 ? 'Weak' : strength === 2 ? 'Fair' : strength === 3 ? 'Good' : 'Strong'}
+              </span>
+            </div>
+            <div className="flex gap-1.5">
+              {[1, 2, 3, 4].map((level) => {
+                const active = strength >= level;
+                const colors = ['', 'bg-red-500', 'bg-amber-500', 'bg-blue-500', 'bg-emerald-500'];
+                return (
+                  <div
+                    key={level}
+                    className={`h-2 flex-1 rounded-[3px] border border-[var(--fv-border-ink)] transition-colors ${
+                      active ? colors[strength] : 'bg-[var(--fv-border-subtle)]'
+                    }`}
+                  />
+                );
+              })}
+            </div>
           </div>
 
-          <p className="text-xs text-[var(--fv-text-secondary)]">{t('auth.terms')}</p>
+          <p className="text-xs leading-relaxed text-[var(--fv-text-secondary)]">{t('auth.terms')}</p>
 
           {formError ? (
-            <div className="rounded-[12px] bg-[var(--fv-error-bg)] p-3" role="alert">
-              <p className="text-[14px] text-[var(--fv-error)]">{formError}</p>
+            <div className="rounded-[10px] border-2 border-[var(--fv-error)] bg-[var(--fv-error-bg)] p-3 shadow-[2px_2px_0_0_var(--fv-error)]" role="alert">
+              <p className="text-xs font-bold text-[var(--fv-error)]">{formError}</p>
             </div>
           ) : null}
 
-          <Button label={t('common.createAccount')} onPress={handleSubmit(onSubmit)} loading={isSubmitting} fullWidth />
+          <Button
+            label={t('common.createAccount')}
+            onPress={handleSubmit(onSubmit)}
+            loading={isSubmitting}
+            fullWidth
+            className="mt-1 font-black uppercase tracking-wider"
+          />
 
-          <p className="py-4 text-center text-[15px] text-[var(--fv-text-secondary)]">
+          <p className="pt-2 text-center text-sm font-medium text-[var(--fv-text-secondary)]">
             {t('auth.alreadyHaveAccount')}{' '}
-            <Link href="/login" className="font-semibold text-[var(--fv-primary)]">
+            <Link href="/login" className="font-black text-[var(--fv-primary)] underline hover:text-[var(--fv-primary-light)]">
               {t('common.logIn')}
             </Link>
           </p>

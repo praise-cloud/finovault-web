@@ -64,15 +64,15 @@ export function EntrepreneurHome({ name, femaleFounder, summary, goals, currency
       <BusinessMetricsCard summary={summary} currency={currency} />
 
       {pensionGoal ? (
-        <div className="mb-4">
+        <div className="mb-5">
           <SectionHeader title={t('home.pensionTitle')} />
-          <div className={`${cardClass} flex items-center gap-3 p-3`}>
-            <span className="flex h-11 w-11 items-center justify-center rounded-[var(--fv-radius-control)] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)]">
+          <div className={`${cardClass} flex items-center gap-3.5 p-4`}>
+            <span className="flex h-12 w-12 items-center justify-center rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-wash)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]">
               <Icon name="lock" size={20} color="var(--fv-role-accent)" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-[14px] font-semibold text-[var(--fv-text)]">{pensionGoal.name}</p>
-              <p className="text-[12px] text-[var(--fv-text-secondary)]">
+              <p className="text-sm font-black uppercase tracking-tight text-[var(--fv-text)]">{pensionGoal.name}</p>
+              <p className="text-xs font-semibold text-[var(--fv-text-secondary)]">
                 {formatMoney(pensionGoal.currentAmount, currency)} / {formatMoney(pensionGoal.targetAmount, currency)}
               </p>
             </div>

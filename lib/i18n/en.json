@@ -90,7 +90,12 @@
     "unlockChecking": "Checking…",
     "unlockFallback": "Use password instead",
     "unlockPrompt": "Unlock Finovault",
-    "biometricFailed": "Authentication didn't succeed. Try again."
+    "biometricFailed": "Authentication didn't succeed. Try again.",
+    "demoAccounts": "Demo Role Quick Fill",
+    "demoIndividual": "Individual",
+    "demoFreelancer": "Freelancer",
+    "demoEntrepreneur": "Entrepreneur",
+    "demoSme": "SME Owner"
   },
   "onboarding": {
     "linkTitle": "Connect your money",
@@ -136,7 +141,10 @@
       "reports": "Reports",
       "support": "Support",
       "account": "Account"
-    }
+    },
+    "activeRole": "Active Role",
+    "switchRole": "Switch Role",
+    "roleSwitched": "Switched to {role}"
   },
   "vault": {
     "createGoal": "Create goal",

@@ -23,6 +23,13 @@ const roles: {
   { role: 'sme', icon: Building2, titleKey: 'role.sme', descKey: 'role.smeDesc' },
 ];
 
+const ROLE_CONFIG: Record<PrimaryRole, { accent: string; wash: string }> = {
+  individual: { accent: '#4338CA', wash: '#EEF0FF' },
+  freelancer: { accent: '#B42318', wash: '#FEF0EE' },
+  entrepreneur: { accent: '#92400E', wash: '#FEF6E5' },
+  sme: { accent: '#0F766E', wash: '#E6F9F6' },
+};
+
 export default function RolePage() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -59,34 +66,47 @@ export default function RolePage() {
       <div className="flex flex-col gap-3">
         {roles.map(({ role, icon: Icon, titleKey, descKey }) => {
           const active = selected === role;
+          const conf = ROLE_CONFIG[role];
           return (
             <button
               key={role}
               type="button"
               onClick={() => setSelected(role)}
               aria-pressed={active}
-              className={`flex items-center gap-3 rounded-[14px] border p-3.5 text-left transition-all ${
+              style={{
+                backgroundColor: active ? conf.wash : undefined,
+              }}
+              className={`flex items-center gap-3.5 rounded-[12px] border-2 border-[var(--fv-border-ink)] p-3.5 text-left transition-all ${
                 active
-                  ? 'border-[var(--fv-primary)] bg-[var(--fv-wash)]'
-                  : 'border-[var(--fv-primary-border)] bg-[var(--fv-surface)] hover:border-[var(--fv-primary-light)]'
+                  ? 'shadow-[4px_4px_0_0_#1A1A2E] dark:shadow-[4px_4px_0_0_#000000] -translate-y-0.5'
+                  : 'bg-[var(--fv-surface)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#1A1A2E] dark:hover:shadow-[3px_3px_0_0_#000000]'
               }`}
             >
               <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] transition-colors ${
-                  active ? 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)]' : 'bg-[var(--fv-wash)] text-[var(--fv-primary)]'
+                style={{
+                  backgroundColor: active ? conf.accent : undefined,
+                  color: active ? '#ffffff' : conf.accent,
+                }}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] border-2 border-[var(--fv-border-ink)] ${
+                  !active ? 'bg-[var(--fv-wash)]' : ''
                 }`}
               >
-                <Icon size={20} strokeWidth={1.8} />
+                <Icon size={20} strokeWidth={2.2} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold text-[var(--fv-text)]">{t(titleKey)}</span>
-                <span className="block text-[13px] text-[var(--fv-text-secondary)]">{t(descKey)}</span>
+                <span className="block text-[15px] font-black uppercase tracking-tight text-[var(--fv-text)]">
+                  {t(titleKey)}
+                </span>
+                <span className="block text-[12px] font-medium text-[var(--fv-text-secondary)]">
+                  {t(descKey)}
+                </span>
               </span>
               <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                  active
-                    ? 'border-[var(--fv-primary)] bg-[var(--fv-primary)] text-[var(--fv-on-fill)]'
-                    : 'border-[var(--fv-border)] text-transparent'
+                style={{
+                  backgroundColor: active ? conf.accent : undefined,
+                }}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] border-2 border-[var(--fv-border-ink)] ${
+                  active ? 'text-white' : 'text-transparent'
                 }`}
               >
                 <Check size={14} strokeWidth={3} />
@@ -96,20 +116,22 @@ export default function RolePage() {
         })}
 
         {selected === 'entrepreneur' ? (
-          <label className="mt-1 flex cursor-pointer items-center gap-3 rounded-[12px] border border-[var(--fv-primary-border)] bg-[var(--fv-wash)] px-3.5 py-3">
+          <label className="mt-1 flex cursor-pointer items-center gap-3 rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[#FEF6E5] dark:bg-[#3A3226] p-3.5 shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]">
             <input
               type="checkbox"
               checked={femaleFounder}
               onChange={(e) => setFemaleFounder(e.target.checked)}
-              className="h-4 w-4 accent-[var(--fv-primary)]"
+              className="h-4 w-4 rounded border-2 border-[var(--fv-border-ink)] accent-[#92400E]"
             />
-            <span className="text-sm font-medium text-[var(--fv-text)]">{t('role.femaleFounder')}</span>
+            <span className="text-xs font-black uppercase tracking-wider text-[var(--fv-text)]">
+              {t('role.femaleFounder')}
+            </span>
           </label>
         ) : null}
 
         {error ? (
-          <div className="rounded-[12px] bg-[var(--fv-error-bg)] p-3" role="alert">
-            <p className="text-[14px] text-[var(--fv-error)]">{error}</p>
+          <div className="rounded-[10px] border-2 border-[var(--fv-error)] bg-[var(--fv-error-bg)] p-3 shadow-[2px_2px_0_0_var(--fv-error)]" role="alert">
+            <p className="text-xs font-bold text-[var(--fv-error)]">{error}</p>
           </div>
         ) : null}
 
@@ -119,11 +141,12 @@ export default function RolePage() {
           disabled={!selected}
           loading={saving}
           fullWidth
+          className="mt-1 font-black uppercase tracking-wider"
         />
 
         <Link
           href="/signup"
-          className="flex items-center justify-center gap-1.5 py-2 text-sm font-medium text-[var(--fv-text-secondary)] hover:text-[var(--fv-primary)]"
+          className="flex items-center justify-center gap-2 py-2 text-xs font-black uppercase tracking-wider text-[var(--fv-text-secondary)] hover:text-[var(--fv-primary)]"
         >
           <ArrowLeft size={16} />
           {t('common.back')}

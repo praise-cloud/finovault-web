@@ -26,7 +26,7 @@ export function TextField({
   const id = React.useId();
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-[var(--fv-text-secondary)]">
+      <label htmlFor={id} className="text-xs font-black uppercase tracking-wider text-[var(--fv-text)]">
         {label}
       </label>
       <input
@@ -38,12 +38,14 @@ export function TextField({
         onChange={(e) => onChangeText(e.target.value)}
         onBlur={onBlur}
         aria-invalid={!!error}
-        className={`min-h-[48px] rounded-[10px] border bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  transition-colors focus:border-[var(--fv-primary)] ${
-          error ? 'border-[var(--fv-error)]' : 'border-[var(--fv-border)]'
+        className={`min-h-[48px] rounded-[10px] border-2 bg-[var(--fv-surface)] px-4 py-3 text-sm font-medium text-[var(--fv-text)] transition-all focus:outline-none ${
+          error
+            ? 'border-[var(--fv-error)] focus:border-[var(--fv-error)] shadow-[2px_2px_0_0_var(--fv-error)]'
+            : 'border-[var(--fv-border-ink)] focus:border-[var(--fv-primary)] focus:shadow-[2px_2px_0_0_#1D4ED8]'
         }`}
       />
       {error ? (
-        <p role="alert" className="text-sm text-[var(--fv-error)]">
+        <p role="alert" className="text-xs font-bold text-[var(--fv-error)]">
           {error}
         </p>
       ) : null}
