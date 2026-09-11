@@ -125,40 +125,44 @@ export function Nav() {
       {open && (
         <div
           id="mobile-menu"
-          className="fixed inset-0 top-[76px] z-40 flex flex-col items-center justify-center gap-6 bg-[#0a0e17] border-t-2 border-white/20 px-6"
+          className="fixed inset-0 top-[76px] z-40 flex flex-col items-center justify-start overflow-y-auto bg-[#070a13]/90 backdrop-blur-2xl backdrop-saturate-150 border-t border-white/15 px-6 py-10 transition-all duration-300"
           role="dialog"
           aria-label="Mobile navigation"
         >
-          {navLinks.map((item) =>
-            item.isRoute ? (
-              <Link
-                key={item.key}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 text-xl font-black uppercase tracking-tight text-emerald-400"
-              >
-                <Building2 size={20} />
-                <span>{t(`hp.nav.${item.key}`, 'Finovault for Business')}</span>
-              </Link>
-            ) : (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => handleNavClick(item)}
-                className="text-xl font-black uppercase tracking-tight text-white transition-colors hover:text-blue-400"
-              >
-                {t(`hp.nav.${item.key}`)}
-              </button>
-            )
-          )}
+          <div className="flex w-full max-w-sm flex-col items-stretch gap-4">
+            {navLinks.map((item) =>
+              item.isRoute ? (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-center gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-950/40 px-5 py-3.5 text-base font-black uppercase tracking-wider text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)] transition-all hover:bg-emerald-900/50 hover:border-emerald-400 active:scale-[0.98]"
+                >
+                  <Building2 size={18} className="text-emerald-400" />
+                  <span>{t(`hp.nav.${item.key}`, 'Finovault for Business')}</span>
+                </Link>
+              ) : (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => handleNavClick(item)}
+                  className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-5 py-3.5 text-center text-base font-black uppercase tracking-wider text-white shadow-sm transition-all hover:border-blue-500/50 hover:bg-blue-600/10 hover:text-blue-400 active:scale-[0.98]"
+                >
+                  {t(`hp.nav.${item.key}`)}
+                </button>
+              )
+            )}
 
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="mt-4 w-full max-w-xs text-center rounded-[6px] border-2 border-white/50 bg-[#1D4ED8] py-3.5 text-sm font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#ffffff]"
-          >
-            {t('hp.nav.enter')}
-          </Link>
+            <div className="my-2 h-px w-full bg-white/10" />
+
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center justify-center rounded-[6px] border-2 border-white/60 bg-[#1D4ED8] py-3.5 text-center text-sm font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#ffffff] transition-transform active:translate-x-0.5 active:translate-y-0.5"
+            >
+              {t('hp.nav.enter')}
+            </Link>
+          </div>
         </div>
       )}
     </header>

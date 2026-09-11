@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   Lock,
 } from 'lucide-react';
-import { VaultMark } from '@/components/VaultMark';
 import { ParticleCanvas } from '@/components/ui/ParticleCanvas';
 
 const stats = [
@@ -42,15 +41,6 @@ export function Hero() {
         aria-hidden
         className="pointer-events-none absolute -left-20 bottom-10 h-[400px] w-[400px] rounded-full bg-gradient-to-tr from-amber-500/10 to-transparent blur-3xl opacity-60"
       />
-
-      {/* Decorative Vault Mark */}
-      <div
-        aria-hidden
-        className="hp-vault-anim pointer-events-none absolute right-[2%] top-1/3 -translate-y-1/2 opacity-5 dark:opacity-10"
-        style={{ animation: 'vaultSequence var(--fv-hp-motion-vault) forwards' }}
-      >
-        <VaultMark size={420} subdued />
-      </div>
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         {/* Main Grid: Left Pitch, Right Telemetry Console */}

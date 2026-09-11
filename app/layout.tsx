@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Cinzel, Montserrat } from 'next/font/google';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { Providers } from '@/components/Providers';
 
 const cinzel = Cinzel({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`dark ${cinzel.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body>
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
