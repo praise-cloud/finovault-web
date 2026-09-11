@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cinzel.variable} ${montserrat.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${cinzel.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <body>
         <Providers>{children}</Providers>
       </body>

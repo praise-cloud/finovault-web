@@ -11,7 +11,6 @@ import {
   Activity,
   CheckCircle2,
   Lock,
-  Building2,
 } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
 import { ParticleCanvas } from '@/components/ui/ParticleCanvas';
@@ -83,15 +82,6 @@ export function Hero() {
               >
                 <span>{t('hp.hero.ctaPrimary')}</span>
                 <ArrowRight size={16} strokeWidth={3} />
-              </Link>
-
-              {/* Explore for Business CTA Button */}
-              <Link
-                href="/business"
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-[10px] border-2 border-emerald-600 dark:border-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 px-6 py-3.5 text-xs font-black uppercase tracking-[0.16em] text-emerald-800 dark:text-emerald-300 transition-all shadow-[4px_4px_0_0_#059669] hover:shadow-[6px_6px_0_0_#059669] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none cursor-pointer"
-              >
-                <Building2 size={16} strokeWidth={2.5} />
-                <span>{t('hp.nav.exploreBusiness', 'Explore for business')}</span>
               </Link>
 
               <button

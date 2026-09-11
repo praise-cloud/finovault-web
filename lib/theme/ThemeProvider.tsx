@@ -89,13 +89,13 @@ const STORAGE_KEY = 'finovault.themeMode.v1';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<ThemeMode>(() => {
-    if (typeof window === 'undefined') return 'light';
+    if (typeof window === 'undefined') return 'dark';
     const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    return stored === 'light' || stored === 'dark' ? stored : 'light';
+    return stored === 'dark' || stored === 'light' ? stored : 'dark';
   });
 
   const resolved: Exclude<ThemeMode, 'system'> =
-    mode === 'dark' ? 'dark' : 'light';
+    mode === 'light' ? 'light' : 'dark';
 
   const theme = useMemo(() => buildTheme(resolved), [resolved]);
 
