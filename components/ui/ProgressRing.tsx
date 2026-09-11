@@ -25,8 +25,11 @@ export function ProgressRing({
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
-      role="img"
+      role="progressbar"
       aria-label={accessibilityLabel}
+      aria-valuenow={clamped}
+      aria-valuemin={0}
+      aria-valuemax={100}
       className={className}
     >
       <circle
@@ -42,7 +45,7 @@ export function ProgressRing({
         cy={size / 2}
         r={radius}
         fill="none"
-        stroke="var(--fv-primary)"
+        stroke="var(--fv-role-accent, var(--fv-primary))"
         strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={circumference}

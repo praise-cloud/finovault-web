@@ -57,7 +57,7 @@ export default function AccountsPage() {
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as AccountType)}
-                className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+                className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
               >
                 {ACCOUNT_TYPES.map((at) => (
                   <option key={at} value={at}>

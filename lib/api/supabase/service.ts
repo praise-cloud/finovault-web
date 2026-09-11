@@ -131,6 +131,13 @@ export async function handleBffRequest(
       if (method === 'POST' && segments.length === 1) return res.payBill(supabase, token, body);
     }
 
+    // ── notifications ────────────────────────────────────────────────────
+    if (first === 'notifications') {
+      if (method === 'GET' && segments.length === 1) return res.listNotifications(supabase, token);
+      if (method === 'POST' && second === 'read-all') return res.markAllNotificationsRead(supabase, token);
+      if (method === 'POST' && third === 'read') return res.markNotificationRead(supabase, token, second);
+    }
+
     return fail('NOT_FOUND', `No BFF route for ${method} ${path}.`);
   } catch (err) {
     if (err && typeof err === 'object' && 'success' in err) return err as ApiResponse<never>;

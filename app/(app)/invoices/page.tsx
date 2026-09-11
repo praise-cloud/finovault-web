@@ -168,7 +168,7 @@ function InvoiceRow({
         <select
           value={invoice.status}
           onChange={(e) => updateStatus.mutate({ invoiceId: invoice.id, status: e.target.value as InvoiceStatus })}
-          className={`rounded-[8px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-2 py-1 text-[12px] font-semibold capitalize outline-none ${statusColor(
+          className={`rounded-[8px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-2 py-1 text-[12px] font-semibold capitalize  ${statusColor(
             invoice.status
           )}`}
           aria-label={t('invoices.status')}

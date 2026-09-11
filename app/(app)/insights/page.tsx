@@ -6,10 +6,13 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { GlassCard, SectionHeader, Button, MoneyText } from '@/components/ui';
 import { useTransactions, useMoneySummary } from '@/lib/hooks/use-money';
 import { useAuthStore } from '@/stores/auth-store';
+import { useTheme } from '@/lib/theme';
 import { formatMoney } from '@/lib/utils';
 import { GrantOpportunities } from '@/features/grants/GrantOpportunities';
 
-const COLORS = ['#1D4ED8', '#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'];
+// ponytail: fixed 6-slot ramps, cap categories shown at whatever fits; adjacent pairs keep >=3:1 on each surface.
+const LIGHT_COLORS = ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe'];
+const DARK_COLORS = ['#818cf8', '#fbbf24', '#34d399', '#f472b6', '#60a5fa', '#c084fc', '#f87171', '#2dd4bf'];
 
 function startOfMonth(): string {
   const now = new Date();
@@ -36,6 +39,8 @@ export default function InsightsPage() {
   const user = useAuthStore((s) => s.user);
   const summary = useMoneySummary();
   const { data: transactions = [] } = useTransactions(200);
+  const { theme } = useTheme();
+  const COLORS = theme.mode === 'dark' ? DARK_COLORS : LIGHT_COLORS;
 
   const monthStart = startOfMonth();
 

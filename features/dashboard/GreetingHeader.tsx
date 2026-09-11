@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Bell } from 'lucide-react';
 
 function timeOfDayKey(): string {
   const hour = new Date().getHours();
@@ -11,26 +10,22 @@ function timeOfDayKey(): string {
   return 'evening';
 }
 
-export function GreetingHeader({ name, onBellPress }: { name: string; onBellPress?: () => void }) {
+export function GreetingHeader({ name }: { name: string }) {
   const { t } = useTranslation();
   const firstName = name?.split(' ')[0] ?? '';
+  const dayPart = t(`home.${timeOfDayKey()}`);
 
   return (
-    <div className="mb-5 flex items-center justify-between">
-      <div>
-        <h1 className="text-[22px] font-bold tracking-tight text-[var(--fv-text)]">
-          {t('home.greeting', { timeOfDay: t(`home.${timeOfDayKey()}`), name: firstName })}
+    <div className="mb-3 flex items-start gap-3">
+      <div className="flex flex-col items-start gap-2">
+        <span className="rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[var(--fv-on-fill)] bg-[var(--fv-role-accent)]">
+          {dayPart}
+        </span>
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--fv-text)]">
+          {t('home.greeting', { timeOfDay: dayPart, name: firstName })}
         </h1>
-        <p className="mt-1 text-[13px] text-[var(--fv-text-secondary)]">{t('common.tagline')}</p>
+        <p className="text-[13px] text-[var(--fv-text-secondary)]">{t('common.tagline')}</p>
       </div>
-      <button
-        type="button"
-        onClick={onBellPress}
-        aria-label={t('home.notification')}
-        className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--fv-primary-border)] bg-[var(--fv-wash)] text-[var(--fv-primary)] transition-colors hover:bg-[var(--fv-accent)] hover:text-[var(--fv-secondary)]"
-      >
-        <Bell size={20} strokeWidth={1.8} />
-      </button>
     </div>
   );
 }

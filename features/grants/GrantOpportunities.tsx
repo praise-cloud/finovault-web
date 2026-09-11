@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { GlassCard, SectionHeader } from '@/components/ui';
 
 const GRANT_KEYS = [
-  { name: 'grants.list.seedFund', deadline: 'grants.list.seedFundDeadline' },
-  { name: 'grants.list.sheWins', deadline: 'grants.list.sheWinsDeadline' },
-  { name: 'grants.list.mra', deadline: 'grants.list.mraDeadline' },
-  { name: 'grants.list.afdb', deadline: 'grants.list.afdbDeadline' },
+  { name: 'home.grants.list.seedFund', deadline: 'home.grants.list.seedFundDeadline' },
+  { name: 'home.grants.list.sheWins', deadline: 'home.grants.list.sheWinsDeadline' },
+  { name: 'home.grants.list.mra', deadline: 'home.grants.list.mraDeadline' },
+  { name: 'home.grants.list.afdb', deadline: 'home.grants.list.afdbDeadline' },
 ] as const;
 
 /**
@@ -20,7 +20,7 @@ export function GrantOpportunities() {
   const { t } = useTranslation();
   return (
     <div>
-      <SectionHeader title={t('grants.title')} />
+      <SectionHeader title={t('home.grants.title')} />
       <GlassCard className="flex flex-col gap-3">
         {GRANT_KEYS.map(({ name, deadline }) => (
           <div

@@ -1,298 +1,315 @@
-# Design System
+# Finovault Web — Design System (Neo-Brutalist Persona Homes)
 
-## Visual Theme
+- Status: `partially_verified` — design spec complete; not yet implemented (Phase 2 = @frontend-react)
+- Author: @designer (DS-001)
+- Date: 2026-09-05
+- Inputs: `specs/web-realignment-plan.md` (APPROVED), `FLOVAULT_RESEARCH_REPORT.md` (Flutter reference), `app/globals.css` (current tokens), `lib/i18n/en|fr.json`, `types/index.ts`
+- Decisions (user-confirmed): **Full neo-brutalist restyle** of shared `--fv-*` tokens; PRODUCT.md deferred to @leader; Impeccable update failed (see notes) — do not retry.
 
-**Aesthetic**: Luxury brutalism — high contrast, large editorial typography, asymmetric layouts, sharp rectangular panels, thin borders. Not corporate fintech. Not friendly SaaS. Not dark-mode hacker.
+## 1. Design Principles
 
-**Color strategy**: Restrained. Deep navy-black background with white text. Single accent **blue** used sparingly (≤5% of surface). Gold for rare premium moments only (≤2%). Status colours for functional signals.
+1. **Honest edges** — every card/button/interactive surface gets a 2px ink border. No soft blurs on cards; shadows are hard offsets with zero blur.
+2. **One accent per role** — Color communicates persona. Each of the 4 personas owns one accent: indigo / coral / amber / teal. Global chrome stays blue.
+3. **Ink-first text** — Text reads on white or wash surfaces before color. Accent is for emphasis, never for body copy.
+4. **Pressed = moved** — Interactivity is physical: hover lifts 1px (shadow grows), press sinks 2px (shadow collapses).
+5. **Accessibility is not a style choice** — All accent-*text* tokens are AA-tested below; focus rings always visible; touch targets ≥ 44px.
 
-**Scene**: A sophisticated financial tool that looks like it was designed by people who take money seriously. The page should feel like opening a premium financial publication — authoritative, clean, intelligent.
+## 2. Color System
 
----
+### 2.1 Global neutrals (light)
 
-## Colour Palette
+| Token (globals.css) | Existing | New value | Notes |
+|---|---|---|---|
+| `--fv-bg` | `#f7faff` | `#F5F7FF` | Plan surface base |
+| `--fv-surface` | `#ffffff` | `#FFFFFF` | Cards |
+| `--fv-surface-glass` | `rgba(255,255,255,0.85)` | `rgba(255,255,255,0.92)` | Kept glass only for header/hero overlays |
+| `--fv-wash` | `#eff6ff` | `#EBEEFF` | Global (blue-tinted) wash; persona wash overrides per-role |
+| `--fv-text` | `#1a1a1a` | `#1A1A2E` | Ink |
+| `--fv-text-secondary` | `#43474d` | `#4B5563` | Muted; 7.56:1 on white, 6.67–7.03:1 on role washes (DS-003: was `#6B7280` 4.83 white / 4.27–4.50 washes — FAIL) |
+| `--fv-border` | `#c8d3e8` | `#1A1A2E` | **Ink border** (2px) — the big change |
+| `--fv-border-subtle` | (soft blue) | `rgba(26,26,46,0.30)` | Hairline dividers (1px) |
+| `--fv-primary-border` | `rgba(29,78,216,0.18)` | `rgba(26,26,46,0.85)` | Focus/hover outlines |
+| `--fv-primary` | `#1d4ed8` | `#1D4ED8` | Global action blue (outside persona homes) |
+| `--fv-primary-light` | `#3b82f6` | `#2563EB` | Global hovers/links; 5.17:1 on white (DS-003; alt `#1D4ED8` = 6.70) |
+| `--fv-secondary` | `#0f2557` | `#0F2557` | Global deep blue (header text) |
+| `--fv-accent` | `#7dd3fc` | `#7DD3FC` | Global accent (kept) |
+| `--fv-accent-strong` | `#38bdf8` | `#38BDF8` | Global accent strong (kept) |
+| `--fv-success` / `-bg` | `#2e7d5b` / var | unchanged | Status badges |
+| `--fv-warning` / `-bg` | `#c99a2e` / var | `#92600A` / var | Status badges; 5.38:1 on white (DS-003; alts `#B45309` 5.02, `#A16207` 4.92) |
+| `--fv-error` / `-bg` | `#8c3a3a` / var | unchanged | Errors |
+| `--fv-shadow-card` | `0 4px 24px rgba(15,37,87,0.08)` | **`4px 4px 0 0 rgba(26,26,46,0.85)`** | Hard offset, zero blur |
 
-### Backgrounds
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--fv-hp-bg-deep` | `#0a0e17` | Hero, dark sections |
-| `--fv-hp-bg-light` | `#faf8f5` | Alternating light sections |
-| `--fv-hp-bg-white` | `#ffffff` | Cards on light sections |
+New tokens:
 
-### Text
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--fv-hp-text-white` | `#ffffff` | Headings on dark backgrounds |
-| `--fv-hp-text-body` | `rgba(255,255,255,0.88)` | **Body text on dark** — high contrast, NOT washed out |
-| `--fv-hp-text-muted` | `rgba(255,255,255,0.55)` | Labels, captions, tertiary text on dark |
-| `--fv-hp-text-dark` | `#1a1a1a` | Text on light backgrounds |
-| `--fv-hp-text-dark-body` | `#374151` | **Body text on light** — slightly softer than heading |
-| `--fv-hp-text-muted-dark` | `#6b7280` | Secondary text on light |
+| Token | Value | Use |
+|---|---|---|
+| `--fv-ink` | `#1A1A2E` | Border + shadow color alias |
+| `--fv-shadow-hard` | `4px 4px 0 0 rgba(26,26,46,0.85)` | Resting cards |
+| `--fv-shadow-hover` | `6px 6px 0 0 rgba(26,26,46,0.9)` | Hover lifts |
+| `--fv-border-w` | `2px` | Default border width |
+| `--fv-radius-card` | `12px` | Cards, modal, panels |
+| `--fv-radius-control` | `10px` | Buttons |
+| `--fv-radius-chip` | `8px` | Chips, tags, inputs |
+| `--fv-radius-pill` | `999px` | Status badges only |
 
-### Accent (BRAND BLUE)
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--fv-hp-accent` | `#1D4ED8` | Primary accent, CTAs, links, icon highlights, focus rings |
-| `--fv-hp-accent-hover` | `#2563EB` | Hover state (slightly lighter) |
-| `--fv-hp-accent-light` | `rgba(29,78,216,0.15)` | Subtle accent backgrounds, bar fills |
-| `--fv-hp-accent-border` | `rgba(29,78,216,0.3)` | Accent borders, card hover borders |
-| `--fv-hp-accent-glow` | `rgba(29,78,216,0.06)` | Subtle radial glow for CTA sections |
+### 2.2 Role palette (light) — the persona accent system
 
-### Secondary Accent (RARE)
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--fv-hp-accent-gold` | `#d4a853` | Premium moments only (≤2%) — VaultMark, "PLANNED" labels |
+Each role defines 3 usable tokens. **Light-mode accents are darkened to their AA-safe values** (DS-003, 2026-09-06): the old bright `accent` values failed as text on white (2.15–4.47:1) and as button faces (3 of 4 < 3:1). `accent` and `accent-strong` now share the same darkened value in light mode; dark mode keeps the bright tint + light `strong` split (§2.3).
 
-### Status
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--fv-hp-positive` | `#22c55e` | Positive financial movement |
-| `--fv-hp-negative` | `#ef4444` | Negative financial movement |
-| `--fv-hp-neutral` | `#6b7280` | Neutral information |
+| Role | `accent` = `accent-strong` (fills/borders/rings/text — ≥4.5:1 on white) | `wash` (card tint ~8%) | On-accent text (button face) |
+|---|---|---|---|
+| Individual | `#4338CA` (7.90:1) | `#EEF0FF` | `#FFFFFF` (7.90:1) |
+| Freelancer | `#B42318` (6.57:1) | `#FEF0EE` | `#FFFFFF` (6.57:1) |
+| Entrepreneur | `#92400E` (7.09:1) | `#FEF6E5` | `#FFFFFF` (7.09:1) |
+| SME | `#0F766E` (5.47:1) | `#E6F9F6` | `#FFFFFF` (5.47:1) |
 
-### Borders
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--fv-hp-border` | `rgba(255,255,255,0.12)` | Borders on dark backgrounds |
-| `--fv-hp-border-light` | `rgba(0,0,0,0.08)` | Borders on light backgrounds |
-| `--fv-hp-border-accent` | `rgba(29,78,216,0.3)` | Accent borders (blue, not purple) |
+Rules:
+- **Button face (light) = role accent background + `#FFFFFF` text, 2px ink border.** Verified all 4 personas 5.47–7.90:1. Never accent-bg + ink text (ink on accent failed at 3.82:1).
+- Accent text on white is AA-safe at 14px with the darkened values (≥5.47:1). Keep the `accent-strong` token name for overlines/emphasis — same value as `accent` in light mode, so the `--fv-role-*-strong` var stays stable across modes.
+- Bright `accent` fills are gone in light mode; they survive only in dark mode (bright accent + ink text + light border, §2.3).
+- Accent fills must carry the 2px ink border (brutalist signature).
+- Percentage change: use `success`/`error` tokens (unchanged) + role color never replaces semantic green/red.
 
----
+CSS var naming: `--fv-role-{role}-{tone}` where tone ∈ `accent | accent-strong | wash`, mapped from the role's `PrimaryRole` → accent via one map (see §6.4). Light mode: set `accent` and `accent-strong` to the same darkened value.
 
-## Typography
+### 2.3 Dark mode
 
-### Font Families
-| Role | Family | Source | Usage |
-|------|--------|--------|-------|
-| Display | Cinzel | Google Fonts (existing) | Headlines, section titles — **always bold (700)** |
-| Body | Montserrat | Google Fonts (existing) | Body text, UI elements, emphasis |
+| Token | Value | Notes |
+|---|---|---|
+| `--fv-bg` | `#12121E` | Deep ink base |
+| `--fv-surface` | `#1E1E2C` | Cards |
+| `--fv-surface-glass` | `rgba(30,30,44,0.92)` | Overlays |
+| `--fv-wash` | `#23233A` | Global wash |
+| `--fv-text` | `#F2F3FF` | Light ink |
+| `--fv-text-secondary` | `#9CA3AF` | Muted (7.2:1 on `#1E1E2C`) |
+| `--fv-border` | `#F2F3FF` | **Border flips to light ink** in dark |
+| `--fv-border-subtle` | `rgba(242,243,255,0.25)` | Hairlines |
+| `--fv-primary-border` | `rgba(242,243,255,0.8)` | Outlines |
+| `--fv-shadow-card` / hard / hover | `4px 4px 0 0 rgba(0,0,0,0.55)` / `6px 6px 0 0 rgba(0,0,0,0.6)` | Hard black offsets |
+| `--fv-primary` | `#60A5FA` | Blue-400 for links/CTAs on dark |
+| `--fv-secondary` | `#BBD3FF` | Deep-blue text |
 
-**Note**: Both fonts already loaded in `app/layout.tsx`. No new dependencies needed.
+Role palette (dark):
 
-### Type Scale (Homepage)
+| Role | accent | accent-strong | wash | On-accent |
+|---|---|---|---|---|
+| Individual | `#818CF8` | `#A5B4FC` | `#26264A` | `#1A1A2E` on `#818CF8` (5.9:1) |
+| Freelancer | `#FCA5A5` | `#FEE2E2` | `#3A2626` | `#1A1A2E` on `#FCA5A5` (7.3:1) |
+| Entrepreneur | `#FBBF24` | `#FDE68A` | `#3A3226` | `#1A1A2E` on `#FBBF24` (8.7:1) |
+| SME | `#2DD4BF` | `#99F6E4` | `#1F3836` | `#1A1A2E` on `#2DD4BF` (7.1:1) |
 
-| Token | Size | Weight | Line-height | Letter-spacing | Usage |
-|-------|------|--------|-------------|----------------|-------|
-| `--fv-hp-display-xl` | `clamp(2.5rem, 6vw, 4.5rem)` | 700 | 1.05 | -0.02em | Hero headline |
-| `--fv-hp-display-lg` | `clamp(2rem, 4vw, 3rem)` | 700 | 1.1 | -0.02em | Section headlines |
-| `--fv-hp-display-md` | `clamp(1.5rem, 3vw, 2rem)` | 700 | 1.15 | -0.01em | Sub-section headlines, card headings |
-| `--fv-hp-body-lg` | `1.25rem` | **500** | **1.7** | 0 | Lead paragraphs |
-| `--fv-hp-body` | `1rem` | 400 | **1.7** | 0 | Body text |
-| `--fv-hp-body-sm` | `0.875rem` | 400 | 1.6 | 0 | Captions, secondary info |
-| `--fv-hp-label` | `0.75rem` | **700** | 1.4 | **0.1em** | Uppercase labels, eyebrows, category tags |
-| `--fv-hp-stat` | `clamp(2rem, 5vw, 3.5rem)` | **800** | 1 | -0.02em | Statistics, metrics — extra bold |
+Dark rule: on dark surfaces, `accent-strong` is the *light* tint used for emphasis text; `accent` fills still take ink text + light border.
 
-### Typography Rules
+## 3. Typography (Montserrat; keep Cinzel `.font-display` for brand display)
 
-- **Headlines**: Cinzel, always uppercase, weight 700, tracking -0.02em
-- **Body on dark**: `color: var(--fv-hp-text-body)` (rgba 255,255,255,0.88) — NEVER lower than 0.80 opacity
-- **Body on light**: `color: var(--fv-hp-text-dark-body)` (#374151) — softer than heading, still high contrast
-- **Emphasis in body**: Montserrat `font-weight: 600` (semiBold) — NOT italic, NOT color change
-- **Labels**: Montserrat, uppercase, weight 700, tracking 0.1em — punchy, not whispery
-- **No italic on headlines** — weight and size carry emphasis
-- **Line length**: Cap body text at `max-width: 60ch` (slightly tighter than 65ch for better readability on large screens)
-- **Light-on-dark compensation**: Add 0.05 to line-height for light text on dark backgrounds (already in scale: 1.7 for body-lg)
-- **`text-wrap: balance`** on h1–h3 for even line lengths
-- **`text-wrap: pretty`** on long prose paragraphs to reduce orphans
-- **Minimum font-weight for readability**: Body text on dark backgrounds must be 400 weight minimum, with `--fv-hp-text-body` color (0.88 opacity). Never `text-white/60` or lower for readable body copy.
+| Token / role | Size | Weight | Line | Notes |
+|---|---|---|---|---|
+| Hero numeral | 32px | 800 | 1.2 | Use `16px font-display` prefix? No — Montserrat 800, tabular for sums |
+| Section title | 24px | 700 | 1.3 | `font-display` optional for marketing only |
+| Kicker / overline | 11px | 600 | 1.4 | Uppercase, `0.08em` tracking, accent-strong color |
+| Body | 15px | 400/500 | 1.5 | Base |
+| Caption | 13px | 500 | 1.45 | Metadata; `text-secondary` |
+| Button label | 15px | 700 | 1 | Uppercase optional (Chrome only) |
+| Numeric | 15px | 600 | 1.3 | `font-variant-numeric: tabular-nums` on all money values |
 
----
+No new font loads. Do not exceed 2 weights per surface (one regular one bold) on cards.
 
-## Spacing Scale
+## 4. Spacing, Radius, Borders
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--fv-hp-space-xs` | `0.25rem` | Tight gaps |
-| `--fv-hp-space-sm` | `0.5rem` | Small gaps |
-| `--fv-hp-space-md` | `1rem` | Default gaps |
-| `--fv-hp-space-lg` | `1.5rem` | Between heading and sub-elements |
-| `--fv-hp-space-xl` | `2rem` | Card padding, content gaps |
-| `--fv-hp-space-2xl` | `3rem` | Section internal grouping |
-| `--fv-hp-space-3xl` | `4rem` | Between major content blocks within a section |
-| `--fv-hp-space-4xl` | `6rem` | Section vertical padding (min) |
-| `--fv-hp-space-5xl` | `8rem` | Section vertical padding (max), hero |
+- Base unit: **4px**. Scale: 4/8/12/16/24/32/48.
+- Card padding: 16px compact / 24px hero.
+- Module gap (vertical): 16px; section group gap: 24px.
+- Page rail: max-width 720px centered (mobile-first Home column); desktop grid cols: 12, module spans listed in §6.3.
+- Radius: cards 12px, controls 10px, chips/inputs 8px, badges pill. **No radius >12px on surfaces** (except badges/avatars).
+- Border: 2px solid `--fv-border` on cards/buttons/inputs; 1px `--fv-border-subtle` on dividers/table hairlines.
 
-### Section Vertical Rhythm
-- All sections: `py-24 md:py-32` (6rem to 8rem) — consistent rhythm
-- Between heading and content within a section: `mt-12` to `mt-16` (3rem to 4rem)
-- Between sub-content and CTA: `mt-10` (2.5rem)
-- Within lists/capabilities: `gap-6` (1.5rem)
-- **Heading-to-body gap**: Always `mt-4` to `mt-6` (1rem to 1.5rem) — tight, connected
-- **Body-to-next-element gap**: `mt-6` to `mt-10` (1.5rem to 2.5rem)
+## 5. Motion
 
----
+| Moment | Token | Value |
+|---|---|---|
+| Hover | lift | `translate(-2px, -2px)` + `--fv-shadow-hover`, 120ms `ease-out` |
+| Press | sink | `translate(2px, 2px)` + shadow 0, 120ms `ease-out` |
+| Panel/module swap | fade | 200ms `ease-out`, opacity + 4px slide |
+| Progress ring update | slide | 300ms spring-ish ease |
+| Focus ring | show | instant 2px outline `accent-strong`, offset 2px |
 
-## Layout
+- `prefers-reduced-motion: reduce` → all transforms/eases → instant (0ms), keep opacity.
+- No infinite animation except loading pulse (§7 skeletons).
 
-### Container
-- Max width: `1280px` (Tailwind `max-w-7xl`)
-- Horizontal padding: `1.5rem` mobile, `2rem` tablet, `3rem` desktop
-- All content sections use the same container for consistency
+## 6. Component Architecture
 
-### Grid
-- **4-card grids**: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6`
-- **2-column split**: `grid grid-cols-1 lg:grid-cols-2 gap-12 items-center`
-- **Comparison table**: Horizontal scroll on mobile, full table on desktop
-- **Pricing tiers**: `grid grid-cols-1 md:grid-cols-3 gap-8`
+### 6.1 Existing components → restyled (no API change)
 
-### Asymmetric Layouts
-- Hero: Left-aligned text, right-side visual/animation
-- Split sections: Alternate text-left/visual-right and visual-left/text-right
-- Stats bar: Full-width, evenly distributed metrics
-- Philosophy section: Full-width centered statement
+| Component | Change |
+|---|---|
+| `GlassCard` | White surface, 2px ink border, `--fv-shadow-hard`, radius 12px. Glass variant stays for hero overlay only. |
+| `SectionHeader` | Add optional `kicker` prop (overline, accent-strong). Title 24px/700. |
+| `Button` | 2px ink border, hard shadow, radius 10px; active/press state per §5; primary = accent fill w/ ink border; `variant="outline"` = white + ink border + ink text. |
+| `Icon` | Unchanged (exists); icon-only buttons ≥44px, `aria-label` required. |
+| `MoneyText` | Unchanged API; add `tabular-nums`. |
+| `ProgressRing` | Thickness 8px; track = `--fv-border-subtle`, fill = role accent; `aria-valuenow` required. |
+| `EmptyState` | Reuse; icon in wash circle with 2px ink border. |
+| `TextField` | 2px ink border, radius 8px, focus outline `accent-strong`. |
+| `GreetingHeader` | Greeting 24px/700 ink; time-of-day chip = role accent fill + ink text (from `home.greeting` i18n). |
 
-### Responsive Breakpoints
-- Mobile: < 768px (single column, stacked)
-- Tablet: 768px - 1024px (2-column where appropriate)
-- Desktop: > 1024px (full layout)
+### 6.2 New components (all 4 personas unless noted)
 
----
+| Component | Personas | Purpose |
+|---|---|---|
+| `InsightsCard` | all | Primary per-role insight line + 2 bullet points, from `coach.*` templates |
+| `GoalsProgressList` | all | Top 2-3 SavingsGoal rows: name, ProgressRing %, amount, status badge |
+| `RecentTransactionsMini` | **Individual only** | Last 3 transactions, icon + merchant + date + amount |
+| `CoachCtaCard` | all | Static CTA card → Coach tab: avatar-ish icon, greeting copy, "Ask Money Coach" action |
+| `BusinessMetricsCard` | Entrepreneur only | 2×2 net: MRR, burn rate, runway (+multiple), revenue |
+| `ComplianceCard` | SME only | 5 static MRA deadlines (approved mock plan) |
+| `CashFlowCard` | SME only | Cash position + runway bar + pay-vendor quick action |
 
-## Components
+### 6.3 Persona home module order
 
-### Homepage-Specific Components
+```
+Hero (metric numerals)        → spans 12
+Quick actions (chips)         → spans 12
+[Role-specific card(s)]       → Entrepreneur: BusinessMetricsCard; SME: ComplianceCard + CashFlowCard
+InsightsCard                  → spans 12
+GoalsProgressList             → spans 12
+RecentTransactionsMini        → spans 12 (Individual only)
+CoachCtaCard                  → spans 12
+```
 
-#### Nav
-- **Type**: Sticky, transparent on hero, solid dark on scroll
-- **Layout**: Logo left, nav links center, CTA right
-- **Mobile**: Hamburger menu with slide-in overlay
-- **Height**: 72px desktop, 64px mobile
-- **Transition**: Background opacity on scroll (CSS transition, no JS animation loop)
-- **CTA button**: `bg: var(--fv-hp-accent)`, white text
+Desktop: cards can pair 6/6 for role-specific pairs (SME: Compliance + CashFlow). Mobile: single column, 16px gaps.
 
-#### Hero
-- **Layout**: Full viewport height, left-aligned text
-- **Background**: Deep navy-black (#0a0e17)
-- **Content**: Headline + subheadline + 2 CTAs
-- **Animation**: Vault-opening sequence (opacity/transform only, respects prefers-reduced-motion)
-- **Stats bar**: Below hero, 3 metrics, clearly labelled "ILLUSTRATIVE"
+### 6.4 Role accent utility (frontend)
 
-#### GlassCard (Homepage Variant)
-- **Use**: Feature cards, comparison cells
-- **Style**: `border: 1px solid rgba(255,255,255,0.12)`, no glassmorphism blur
-- **Background**: `rgba(255,255,255,0.04)` on dark, `#ffffff` on light
-- **Border-radius**: 0 (sharp corners — luxury brutalism)
-- **Padding**: 24px desktop, 20px mobile
-- **Hover**: Border transitions to `var(--fv-hp-accent-border)`
+```ts
+// lib/role-accent.ts — single source of truth (map PrimaryRole → --fv-role-* var names)
+const ROLE_VARS = {
+  individual:   { accent: '--fv-role-individual-accent',   strong: '--fv-role-individual-strong',   wash: '--fv-role-individual-wash' },
+  freelancer:   { accent: '--fv-role-freelancer-accent',   strong: '--fv-role-freelancer-strong',   wash: '--fv-role-freelancer-wash' },
+  entrepreneur: { accent: '--fv-role-entrepreneur-accent', strong: '--fv-role-entrepreneur-strong', wash: '--fv-role-entrepreneur-wash' },
+  sme:          { accent: '--fv-role-sme-accent',          strong: '--fv-role-sme-strong',          wash: '--fv-role-sme-wash' },
+}
+```
 
-#### Button (Homepage Variant)
-- **Primary**: `bg: var(--fv-hp-accent)` (#1D4ED8), `color: white`, `border-radius: 0`, uppercase, tracking 0.08em, font-weight 600
-- **Primary Hover**: `bg: var(--fv-hp-accent-hover)` (#2563EB)
-- **Secondary**: `border: 1px solid rgba(255,255,255,0.3)`, `color: white`, `bg: transparent`, border-radius 0
-- **Ghost**: `color: rgba(255,255,255,0.7)`, underline on hover
-- **Hover**: Opacity change + subtle scale (0.98 on active)
-- **Touch target**: Minimum 48px height
+Theme CSS sets `--fv-role-*` per mode (§2.2/§2.3); components consume names only. Class: wrap Home in a `data-role="<role>"` container and set vars on it; no per-component accent props.
 
-#### SectionDivider
-- **Type**: Thin horizontal line (`1px solid rgba(255,255,255,0.08)`)
-- **Usage**: Between major dark sections
-- **Width**: Full container width
+## 7. Loading / Empty / Error Standards
 
-#### IllustrativeLabel
-- **Type**: Small uppercase text with tracking
-- **Content**: "ILLUSTRATIVE — Product in development" or "PLANNED — Part of Phase 2-3 roadmap"
-- **Style**: `font-size: 0.75rem`, `letter-spacing: 0.1em`, `font-weight: 700`, `color: rgba(255,255,255,0.4)`
-- **Usage**: Below statistics, mockups, and future feature sections
+- **Loading**: skeleton = 2px dashed `--fv-border` blocks, pulse-opacity 1s ease-in-out infinite, respecting reduced motion (static). Match module geometry.
+- **Empty**: `EmptyState` with role-accent icon chip; copy from existing keys (`home.emptyTitle/Body/Cta`, `home.sme.noVendors`, etc.).
+- **Error**: `EmptyState` error variant (`--fv-error`), retry = `Button` outline; never raw error strings.
+- All data-dependent modules render skeleton → empty → data (existing `use-money` hooks return data/loading; follow their pattern).
 
----
+## 8. i18n Strategy
 
-## Interaction Patterns
+- Reuse existing keys where they exist (`home.savingsTitle`, `home.needsAttentionTitle`, `home.metrics.*`, `home.actions.*`, `home.sub.*`, `coach.*`). See `specs/persona-home.md` per-module mapping.
+- **New keys** (add to both `en.json` + `fr.json` under `home`):
 
-### Scroll-Triggered Reveals
-- Elements fade in + translate up on viewport entry
-- **CSS-only approach**: Use `@keyframes` with `animation-timeline: view()` for modern browsers, with a JS IntersectionObserver fallback
-- **Stagger**: 100ms delay between sequential elements
-- **Reduced motion**: Instant appearance (no animation)
+| Key | en | fr |
+|---|---|---|
+| `home.recentActivityTitle` | Recent activity | Activité récente |
+| `home.seeAll` | See all | Voir tout |
+| `home.coachCtaTitle` | Your Money Coach | Votre Money Coach |
+| `home.coachCtaBody` | Ask me anything about your money — automating savings, tax, cash flow. | Posez-moi toutes vos questions sur votre argent — épargne auto, impôts, trésorerie. |
+| `home.coachCtaAction` | Ask Money Coach | Demander au coach |
+| `home.ofGoal` | of goal | de l'objectif |
+| `home.complianceTitle` | Compliance | Conformité |
+| `home.complianceNote` | Static demo deadlines (mock) | Échéances de démo statiques (maquette) |
 
-### Hover States
-- Cards: Border colour change to `var(--fv-hp-accent-border)` (not scale, not shadow)
-- Buttons: Background change to `var(--fv-hp-accent-hover)`
-- Links: Colour change + underline transition
+- Compliance deadline rows (5, static per approved plan): label + date only. Example set (en/fr): "MRA tax deposit — Sep 30 2026", "MRA tax deposit — Oct 15 2026", "MRA filing Q3 — Oct 31 2026", "Annual return — Dec 31 2026", "MRA tax deposit — Jan 15 2027". Deterministic, no API.
 
-### Focus States
-- `outline: 2px solid var(--fv-hp-accent)` with `outline-offset: 2px`
-- Visible on all interactive elements
-- Never `outline: none` without replacement
+## 9. Interaction & Accessibility Standards (WCAG 2.1 AA)
 
-### Vault Animation (Hero)
-- **Sequence**: Near darkness → logo reveal → vault mechanism → unlock → dashboard glimpse → headline
-- **Technique**: CSS keyframes on opacity and transform (translateY, scale)
-- **Duration**: 3-4 seconds total
-- **Trigger**: On page load (once)
-- **Reduced motion**: Show headline immediately, skip animation
-- **Implementation**: Pure CSS `@keyframes` with `animation-fill-mode: forwards`
+1. Touch targets ≥ 44×44 (quick actions 48px). Icon-only = `aria-label`.
+2. Focus visibility on every interactive element: 2px outline `accent-strong`, offset 2px; never removed.
+3. Landmarks: Home = 1 `main`, modules = `<section aria-labelledby>` with `h2`.
+4. `ProgressRing` exposes `role="progressbar"` + `aria-valuenow` + accessible label (goal name).
+5. Buttons use real `<button>`; Quick actions = `<a>` only when they navigate.
+6. Color never the sole signal: paired with icon + label (e.g., warnings use `warning` badge text, not tint alone; ComplianceCard/status chips = icon + text label, color dot is reinforcement only).
+7. Contrast guarantees come from §2 tables; do not override token values without re-checking AA.
 
----
+## 10. Token Reconciliation Summary (plan hex vs current)
 
-## Motion
+| Plan (Flutter) | Current web token | Action |
+|---|---|---|
+| Base `#F5F7FF` | `--fv-bg #f7faff` | Override to `#F5F7FF` |
+| Ink `#1A1A2E` | `--fv-text #1a1a1a` | Override to `#1A1A2E` |
+| Muted `#6B7280` | `--fv-text-secondary #43474d` | Override to `#4B5563` (DS-003; `#6B7280` = 4.83 white / 4.27–4.50 washes — FAIL) |
+| 2px ink borders | `--fv-border #c8d3e8` | **Override to ink** |
+| Hard 3px offset shadow | `--fv-shadow-card` soft blur | **Override to `4px 4px 0 0`** |
+| 12px radius | various 12–16px | Standardize to scale above |
+| Role accents (4) | none | Add `--fv-role-*` vars (§2.2/2.3) |
+| Type 400–800 Montserrat | Montserrat loaded | No change; enforce weights via scale |
+| White surfaces | `--fv-surface #fff` | Keep |
 
-### Tokens
-| Name | Duration | Easing | Usage |
-|------|----------|--------|-------|
-| `--fv-hp-motion-fast` | 150ms | ease-out | Button hover, link underline |
-| `--fv-hp-motion-normal` | 250ms | ease-out | Card transitions, nav background |
-| `--fv-hp-motion-slow` | 400ms | ease-out | Section reveals, scroll animations |
-| `--fv-hp-motion-vault` | 3000ms | cubic-bezier(0.4, 0, 0.2, 1) | Hero vault animation |
+## 11. Notes / Blocked / Skipped
 
-### Rules
-- **Only animate**: `opacity`, `transform`, `filter` (never layout properties)
-- **Ease-out** for all reveals (exponential curve)
-- **No bounce, no elastic** — premium restraint
-- **Reduced motion**: All animations wrapped in `@media (prefers-reduced-motion: reduce)` with instant alternative
-- **CSS-only preferred**: Use `@keyframes` + `animation` for hero sequence; IntersectionObserver for scroll reveals
+- `ponytail:` no theme-switch machine in tokens — role accent is one 5-line map, not a plugin. Add per-role theme provider only if a third persona style appears.
+- PRODUCT.md: deferred to @leader (out of DS-001 scope) — flagged.
+- Impeccable update: attempted `npx impeccable update` → `Download failed: invalid zip data` + pulled npm `impeccable@3.5.0`. Not retried (skill: ask once). Run manually later if desired.
+- Verification: `partially_verified` — spec-only; frontend must apply tokens then re-run AA checks (§9).
 
----
+## 12. Dark Theme Application (DS-005)
 
-## Homepage Section Architecture
+**Mode strategy** — globals.css CSS variables = single source of truth. `ThemeProvider` (`lib/theme/*`) is already mounted in `components/Providers.tsx` and consumed by `app/(app)/profile/page.tsx` (mode select: light/dark/system). Root layout inline script + `suppressHydrationWarning` already prevent FOUC. **No new dependencies.**
 
-### Colour Pattern
-| # | Section | Background | Text |
-|---|---------|------------|------|
-| 1 | Nav | Transparent → solid dark | White |
-| 2 | Hero | Deep navy (#0a0e17) | White |
-| 3 | Stats Bar | Deep navy | White |
-| 4 | Philosophy | Deep navy | White |
-| 5 | Features | Deep navy | White |
-| 6 | Financial Mirror | Deep navy | White |
-| 7 | Personal Finance | Light (#faf8f5) | Dark (#1a1a1a) |
-| 8 | Business | Deep navy | White |
-| 9 | Roadmap | Deep navy | White |
-| 10 | Security | Light (#faf8f5) | Dark |
-| 11 | Comparison | Deep navy | White |
-| 12 | Pricing | Deep navy | White |
-| 13 | Final CTA | Deep navy | White |
-| 14 | Footer | Deep navy | White (muted) |
+**Required corrections in `app/globals.css` `.dark` block** (full rationale + contrast: `specs/dark-financial-tokens.md`):
 
-### Section Spacing
-- Dark-to-dark sections: 1px divider line or `gap: 0` with visual separator
-- Dark-to-light transitions: No gap, clean colour boundary
-- Light-to-dark transitions: No gap, clean colour boundary
-- Internal section padding: `py-24` (6rem) to `py-32` (8rem) — **consistent across all sections**
+| Token | Current (guessed) | Confirm | Why |
+|---|---|---|---|
+| `--fv-border-ink` | `rgba(255,255,255,0.55)` | `rgba(242,243,255,0.8)` | = `--fv-primary-border`; blends ≈ `#C8C9D5` → 10:1 vs surface (UI ≥3:1) |
+| `--fv-shadow-card` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | 0.55 ≈ invisible on `#12121E` |
+| `--fv-shadow-hard` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | same |
+| `--fv-shadow-hard-sm` | `rgba(0,0,0,0.55)` | `rgba(0,0,0,0.7)` | same |
+| `--fv-shadow-hover` | `rgba(0,0,0,0.6)` | `rgba(0,0,0,0.75)` | 6px hover step reads |
+| `--fv-ink` | (missing override) | `#f2f3ff` | flips with mode → fixes global `:focus-visible` ring (line 146); matches `--fv-text` |
+| `--fv-success` | (missing) | `#4ade80` | 9.3:1 on `#12121E` |
+| `--fv-warning` | (missing) | `#facc15` | 10.5:1 |
+| `--fv-error` | (missing) | `#f87171` | 5.8:1 |
+| `--fv-success-bg` / `--fv-warning-bg` / `--fv-error-bg` | (missing) | 12%-alpha tints of the above | status chips |
 
----
+**New token `--fv-on-fill`** — text color on saturated fills (primary buttons, role-accent cards, avatar, error badge):
+`:root { --fv-on-fill: #ffffff; }` · `.dark { --fv-on-fill: #1a1a2e; }`
 
-## Existing System Integration
+Rationale: dark-mode fills flip to light pastels (`--fv-primary #60a5fa`, accents `#818cf8`/`#fca5a5`/`#fbbf24`/`#2dd4bf`, `--fv-error #f87171`). White text on those fails AA (2.3–2.4:1); ink `#1a1a2e` passes everywhere (≈5.8–10.4:1). In light mode fills are deep → white stays correct. All AA-verified in `specs/dark-financial-tokens.md` §Contrast.
 
-### Reuse These Components
-- **VaultMark** (`components/VaultMark.tsx`): Logo in nav, hero, footer. Use `size` prop for responsive sizing.
-- **Button** (`components/ui/Button.tsx`): CTAs. Override with homepage variant classes.
-- **GlassCard** (`components/ui/GlassCard.tsx`): Feature cards, comparison cells.
+**`--fv-ink` semantics** — it is the *chrome* ink (borders/shadows/focus). It now flips (`#1a1a2e` light → `#f2f3ff` dark), so the forced-white CoachCta button override `bg-white! text-[var(--fv-ink)]!` must be **removed** (see audit map) — the button now relies on `variant="secondary"` (surface bg + `--fv-primary` text, both flip).
 
-### Extend These Tokens
-All new homepage tokens use `--fv-hp-*` prefix to avoid collision with app tokens in `globals.css`.
+**Hardcoded-color audit map** (8 fixes + 2 OK items): `specs/dark-financial-tokens.md` §Audit.
 
-### i18n Pattern
-All text via `useTranslation()` hook from `react-i18next`. Keys follow `hp.*` namespace for homepage content.
+## 13. Financial App Shell & Dark-Financial Module Refinements (DS-005)
 
----
+Layout geometry, persona module order, loading/empty/error standards: §5–§7 unchanged. Dark-specific refinements:
 
-## Legal Constraints
+- **Shell** (`app/(app)/layout.tsx`): add mode toggle (compact, cycles light→dark→system, icon + `aria-label` from existing `settings.theme*` i18n keys) in top bar, immediately left of `NotificationBell`. Profile page select remains the canonical full control (same state via `useTheme`). No sidebar changes — fully token-driven.
+- **Charts** (`app/(app)/insights/page.tsx`): fixed indigo `COLORS` ramp needs a dark-aware variant (adjacent series ≥3:1); non-blocking visual QA item.
+- **Module dark notes** (per module, states that need attention in dark): skeleton dashes `border-[var(--fv-border)]` → use `--fv-border-subtle` (dark `--fv-border` = full white, too loud); switch off-track `bg-[var(--fv-border)]` → `--fv-border-subtle` so the white knob stays visible; `BusinessMetricsCard` success/error tones need the dark status tokens (§12).
+- **i18n**: no new keys — `settings.theme/themeLight/themeDark/themeSystem` already exist in `en.json` (and mirror in `fr.json`); reuse `settings.theme` as toggle aria-label.
+- **API**: no new endpoints — dashboard already consumes `useMoneySummary/useAccounts/useBudgets/useGoals/useInvoices/useVendors/useBillPayments`. Compliance rows remain static seeds (existing `ponytail:` note; backend item, not blocking).
 
-- ALL statistics/testimonials labelled "ILLUSTRATIVE — Product in development"
-- NO unverified traction claims
-- NO "bank-level security" or compliance claims
-- NO fake testimonials or endorsements
-- Pricing labelled "PROPOSED / EARLY ACCESS"
-- Future capabilities marked "PLANNED" or "FUTURE"
-- Privacy-first messaging only
-- "See it. Understand it. Own it." and "Never enter debt." as approved taglines
+Full per-file spec: `specs/dark-financial-layout.md`.
+
+## 14. Sidebar Navigation — Expanded IA (DS-007)
+
+Full spec: `specs/sidebar-navigation.md`.
+
+**IA summary**: sidebar reorganized from flat 5-item nav into **7 labeled groups / 18 tabs**. Groups follow fintech job-to-be-done: Overview → Money → Grow → Operate → Reports → Support → Account. All tabs route to real pages — 6 new page files get `EmptyState` shells (no dead links).
+
+| Group | Tabs |
+|---|---|
+| Overview | Dashboard, Insights |
+| Money | Accounts, Cards (NEW), Transactions, Budgets |
+| Grow | Vault, Investments (NEW), Loans (NEW) |
+| Operate | Pay, Invoices, Vendors |
+| Reports | Reports (NEW), Statements (NEW) |
+| Support | Coach, Help (NEW) |
+| Account | Settings (→ /profile), Profile |
+
+**Icon assignments**: `LayoutDashboard`, `Wallet`, `CreditCard`, `ReceiptText`, `PieChart`, `PiggyBank`, `TrendingUp`, `Landmark`, `Send`, `FileText`, `Store`, `FileBarChart`, `ScrollText`, `MessageCircle`, `HelpCircle`, `Settings`, `User`. Pay icon changes from `CreditCard` → `Send`; Accounts uses `Wallet`.
+
+**Active state**: ink border (`border-2 border-[var(--fv-border)]`) + wash bg (`--fv-wash`) + bold text — zero layout shift (idle items have `border-transparent` already). Fully token-driven, dark mode automatic via §2.3.
+
+**Group labels** (md+ only): uppercase kicker style (§3), `role="group" aria-labelledby"` for screen readers. Collapses to divider lines on mobile. Touch targets bumped to `py-3` on mobile (≥44px per §9.1).
+
+**New page files**: `cards/page.tsx`, `investments/page.tsx`, `loans/page.tsx`, `reports/page.tsx`, `statements/page.tsx`, `help/page.tsx`. Help page is static content (FAQ + contact card); all others render `EmptyState`. No mock data surfaced in v1 — `ponytail:` skip until API.
+
+**i18n**: 7 group labels (`nav.groups.*`), 7 new tab labels (`tabs.{cards|investments|loans|reports|statements|help|settings}`), 6 page title + empty-state blocks (36 keys en+fr). Full list in spec §6.

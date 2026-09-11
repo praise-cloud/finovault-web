@@ -17,6 +17,7 @@ import type {
   PensionContribution,
   AccountType,
   TransactionDirection,
+  AppNotification,
 } from '@/types';
 import { loadMockDbSnapshot, persistMockDb, MockDbSnapshot } from './persistence';
 
@@ -49,6 +50,7 @@ const billPayments = new Map<string, BillPayment[]>();
 const payees = new Map<string, Payee[]>();
 const pensions = new Map<string, PensionPlan>();
 const pensionContributions = new Map<string, PensionContribution[]>();
+const notifications = new Map<string, AppNotification[]>();
 
 const passwordResetTokens = new Map<string, string>(); // token -> email
 const passwordResetIssuedAt = new Map<string, string>(); // token -> ISO
@@ -76,6 +78,7 @@ function snapshot(): MockDbSnapshot {
     payees: mapToObject(payees),
     pensions: mapToObject(pensions),
     pensionContributions: mapToObject(pensionContributions),
+    notifications: mapToObject(notifications),
   };
 }
 
@@ -111,6 +114,7 @@ export async function hydrateMockDb(): Promise<void> {
   payees.clear();
   pensions.clear();
   pensionContributions.clear();
+  notifications.clear();
   for (const [k, v] of objToMap(persisted.accounts)) accounts.set(k, v as Account[]);
   for (const [k, v] of objToMap(persisted.transactions)) transactions.set(k, v as Transaction[]);
   for (const [k, v] of objToMap(persisted.budgets)) budgets.set(k, v as Budget[]);
@@ -126,6 +130,8 @@ export async function hydrateMockDb(): Promise<void> {
   for (const [k, v] of objToMap(persisted.pensions)) pensions.set(k, v as PensionPlan);
   for (const [k, v] of objToMap(persisted.pensionContributions))
     pensionContributions.set(k, v as PensionContribution[]);
+  for (const [k, v] of objToMap(persisted.notifications))
+    notifications.set(k, v as AppNotification[]);
 }
 
 function save(): void {
@@ -261,6 +267,9 @@ export function pensionFor(userId: string): PensionPlan | undefined {
 export function pensionContributionsFor(userId: string): PensionContribution[] {
   return pensionContributions.get(userId) ?? [];
 }
+export function notificationsFor(userId: string): AppNotification[] {
+  return notifications.get(userId) ?? [];
+}
 
 export function setAccounts(userId: string, list: Account[]): void {
   accounts.set(userId, list);
@@ -318,6 +327,10 @@ export function setPensionContributions(userId: string, list: PensionContributio
   pensionContributions.set(userId, list);
   save();
 }
+export function setNotifications(userId: string, list: AppNotification[]): void {
+  notifications.set(userId, list);
+  save();
+}
 
 function push<T>(map: Map<string, T[]>, userId: string, value: T): void {
   const list = map.get(userId) ?? [];
@@ -352,6 +365,9 @@ export function addPayee(userId: string, payee: Payee): void {
 }
 export function addPensionContribution(userId: string, contribution: PensionContribution): void {
   push(pensionContributions, userId, contribution);
+}
+export function addNotification(userId: string, notification: AppNotification): void {
+  push(notifications, userId, notification);
 }
 
 // ---- password reset (mock) --------------------------------------------------
@@ -417,6 +433,7 @@ const DEMO_ACCOUNTS: Array<{
   { email: 'entrepreneur@finovault.app', password: 'Vault123!', role: 'entrepreneur', scheme: 'female_founder' },
   { email: 'sme@finovault.app', password: 'Vault123!', role: 'sme', scheme: 'standard' },
   { email: 'demo@finovault.app', password: 'Vault123!', role: 'entrepreneur', scheme: 'female_founder' },
+  { email: 'individual@finovault.app', password: 'Vault123!', role: 'individual', scheme: 'standard' },
 ];
 
 /** Seed a demo account for convenience during Phase 0 development. */
@@ -447,8 +464,10 @@ function seedFromDemoAccount(acc: (typeof DEMO_ACCOUNTS)[number]): void {
       seedSmeData(uid, acc.email, name);
       break;
     case 'entrepreneur':
-    case 'individual':
       seedEntrepreneurData(uid, acc.email, name);
+      break;
+    case 'individual':
+      seedIndividualData(uid, acc.email, name);
       break;
   }
 }
@@ -647,6 +666,32 @@ function seedEntrepreneurData(uid: string, email: string, fullName: string): Moc
       customerRef: 'ACC-2291',
     },
   ]);
+  setNotifications(uid, [
+    {
+      id: nextId('ntf'),
+      title: 'Transfer received',
+      body: 'MUR 15,000.00 received from Nova Studio.',
+      type: 'transfer',
+      link: '/transfers',
+      createdAt: isoDaysAgo(1),
+    },
+    {
+      id: nextId('ntf'),
+      title: 'Bill due soon',
+      body: 'Your CEB electricity bill of MUR 1,450.00 is due in 3 days.',
+      type: 'bill',
+      readAt: isoDaysAgo(1),
+      createdAt: isoDaysAgo(2),
+    },
+    {
+      id: nextId('ntf'),
+      title: 'Security alert',
+      body: 'A new device signed in from Windows PC · Home office.',
+      type: 'security',
+      readAt: isoDaysAgo(0),
+      createdAt: isoDaysAgo(2),
+    },
+  ]);
   return user;
 }
 
@@ -832,4 +877,114 @@ function seedSmeData(uid: string, email: string, fullName: string): MockUser {
   ]);
   setSecurityOverview(uid, { score: 79, twoFactorEnabled: false });
   return user;
+}
+
+function seedIndividualData(uid: string, email: string, fullName: string): MockUser {
+  const user = createUser({ email, password: 'Vault123!', fullName, id: uid });
+  updateProfile(uid, { primaryRole: 'individual', scheme: 'standard' });
+  updatePrefs(uid, {
+    financialGoals: ['emergency', 'vacation'],
+    riskTolerance: 'moderate',
+    onboardingCompleted: true,
+  });
+
+  const accs = makeAccounts(uid, [
+    { name: 'MCB Current', type: 'bank', institution: 'MCB', balance: 85000 },
+    { name: 'MyT Growth', type: 'mobileMoney', institution: 'MyT', balance: 15000 },
+  ]);
+  setAccounts(uid, accs);
+  setTransactions(
+    uid,
+    makeTransactions(uid, accs, [
+      { accountIndex: 0, daysAgo: 5, amount: 2500000, direction: 'in', category: 'Salary', merchantName: 'Mon Trésor Ltd' },
+      { accountIndex: 0, daysAgo: 5, amount: 850000, direction: 'out', category: 'Rent', merchantName: 'Skyline Properties' },
+      { accountIndex: 1, daysAgo: 2, amount: 450000, direction: 'out', category: 'Groceries', merchantName: 'Winners Supermarket' },
+    ])
+  );
+  setBudgets(uid, [
+    { id: nextId('bud'), category: 'Groceries', amount: 400000, period: 'monthly' },
+    { id: nextId('bud'), category: 'Transport', amount: 150000, period: 'monthly' },
+    { id: nextId('bud'), category: 'Dining', amount: 200000, period: 'monthly' },
+  ]);
+
+  const rainyId = nextId('goal');
+  const vacationId = nextId('goal');
+  setGoals(uid, [
+    {
+      id: rainyId,
+      name: 'Rainy Day Fund',
+      type: 'emergency',
+      targetAmount: 500000,
+      currentAmount: 250000,
+      completed: false,
+      contributions: [
+        {
+          id: nextId('con'),
+          goalId: rainyId,
+          amount: 250000,
+          date: isoDaysAgo(20),
+          sourceAccountId: accs[0].id,
+        },
+      ],
+    },
+    {
+      id: vacationId,
+      name: 'Vacation Fund',
+      type: 'general',
+      targetAmount: 800000,
+      currentAmount: 300000,
+      completed: false,
+      contributions: [
+        {
+          id: nextId('con'),
+          goalId: vacationId,
+          amount: 300000,
+          date: isoDaysAgo(10),
+          sourceAccountId: accs[1].id,
+        },
+      ],
+    },
+  ]);
+  setInvoices(uid, []);
+  setVendors(uid, []);
+  setPayees(uid, []);
+  setBillPayments(uid, []);
+  setDevices(uid, [{ id: nextId('dev'), name: 'iPhone 15 · Port Louis', lastSeen: isoDaysAgo(0), trusted: true }]);
+  setSecurityEvents(uid, []);
+  setSecurityOverview(uid, { score: 64, twoFactorEnabled: false });
+  return user;
+}
+
+// ---- simulate incoming notification (mock only) --------------------------------
+
+const MAX_UNREAD_SIMULATED = 5;
+
+const SIMULATED_TEMPLATES: Array<{ title: string; body: string; type: AppNotification['type'] }> = [
+  { title: 'Transfer received', body: 'MUR 8,500.00 received from Kite Media.', type: 'transfer' },
+  { title: 'Bill due soon', body: 'Your water bill is due in 2 days.', type: 'bill' },
+  { title: 'Security alert', body: 'A new sign-in was detected from an unrecognized device.', type: 'security' },
+  { title: 'Goal milestone', body: 'Your Emergency Fund has reached 50% of its target!', type: 'goal' },
+  { title: 'System update', body: 'Finovault has been updated with new features.', type: 'system' },
+];
+
+/**
+ * Appends a new simulated notification to the current user's mock db.
+ * Idempotent-safe: caps unread simulated notifications at 5.
+ * Returns the new notification if created, or null if skipped.
+ */
+export function simulateIncomingNotification(userId: string): AppNotification | null {
+  const existing = notificationsFor(userId);
+  const unreadCount = existing.filter((n) => !n.readAt).length;
+  if (unreadCount >= MAX_UNREAD_SIMULATED) return null;
+
+  const template = SIMULATED_TEMPLATES[existing.length % SIMULATED_TEMPLATES.length];
+  const notification: AppNotification = {
+    id: nextId('ntf'),
+    title: template.title,
+    body: template.body,
+    type: template.type,
+    createdAt: new Date().toISOString(),
+  };
+  addNotification(userId, notification);
+  return notification;
 }

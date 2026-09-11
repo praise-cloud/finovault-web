@@ -72,7 +72,7 @@ export default function LinkAccountsPage() {
                 className={`flex shrink-0 items-center gap-1 rounded-[10px] px-3.5 py-2 text-sm font-semibold transition-colors ${
                   isLinked
                     ? 'bg-[var(--fv-primary-border)] text-[var(--fv-primary)]'
-                    : 'bg-[var(--fv-primary)] text-white hover:bg-[var(--fv-primary-light)]'
+                    : 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)] hover:bg-[var(--fv-primary-light)]'
                 } ${isLinked || isLoading ? 'cursor-default opacity-100' : ''}`}
               >
                 {isLoading ? (

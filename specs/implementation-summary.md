@@ -1,52 +1,47 @@
-# FE-006 Implementation Summary — DS-004 Redesign (Blue + Brutalism + Readability)
+# Implementation Summary — FE-009 (Expanded Sidebar Navigation + 6 New Pages)
 
-## What Changed
+Status: **implemented, verified** (tsc 0 errors, eslint 0 errors on changed files, 60/60 tests pass)
 
-Full DS-004 redesign applied across all 14 homepage files. Purple accent `#6366f1` → brand blue `#1D4ED8`; body text on dark raised to 0.88 opacity; body text on light darkened to `#374151`; all headings/labels/eyebrows bold (700), stats extrabold (800), body medium (500); text columns capped at 50ch (45ch in Philosophy); hero headline widened to 14ch. Zero structural change — same sections, order, backgrounds, i18n keys.
+Spec: `specs/sidebar-navigation.md` (DS-007). Scope was code-only — design decisions final. No API/mock changes; pages are static-first empty states (per spec §4).
 
-## Files Touched
+## Files changed
 
-| File | Changes |
-|------|---------|
-| `app/globals.css` | Removed `--fv-hp-accent-purple(-hover)`, purple `--fv-hp-border-accent`. Added `--fv-hp-accent` `#1D4ED8`, `--fv-hp-accent-hover` `#2563EB`, `--fv-hp-accent-light` `rgba(29,78,216,0.15)`, `--fv-hp-accent-border` `rgba(29,78,216,0.3)`, `--fv-hp-accent-glow` `rgba(29,78,216,0.06)`, `--fv-hp-text-body` `rgba(255,255,255,0.88)`, `--fv-hp-text-dark-body` `#374151`. Focus ring `*:focus-visible` → `var(--fv-hp-accent)`. |
-| `features/homepage/Nav.tsx` | Desktop CTA + mobile CTA → blue (`bg-[var(--fv-hp-accent)]`/hover, `min-h-[48px]`). Desktop links `font-medium`, mobile links `font-bold`. |
-| `features/homepage/Hero.tsx` | Headline `max-w-[14ch]` + `font-bold`. Subheadline → `text-[var(--fv-hp-text-body)]` + `font-medium`. Primary CTA blue. Stat values `font-extrabold`, labels `font-medium` + `text-muted`, footnote `font-bold` + `tracking-[0.1em]` + `text-muted`. |
-| `features/homepage/Philosophy.tsx` | Messages → `text-[var(--fv-hp-text-body)]` + `font-medium` + `max-w-[45ch]`. Headline `font-bold`. |
-| `features/homepage/Features.tsx` | Card hover `border-[var(--fv-hp-accent-border)]`, icons `text-[var(--fv-hp-accent)]`, titles `font-bold`, descriptions `text-body` + `font-medium`. Headline `font-bold`. |
-| `features/homepage/Mirror.tsx` | Eyebrow → blue + `font-bold` + `tracking-[0.1em]`. Statement `text-body` + `font-medium`. Bars blue. Labels `text-body` + `font-medium`, pct `font-bold`. Footnote `font-bold` + `text-muted`. |
-| `features/homepage/Personal.tsx` | Text column `max-w-[50ch]`. Capability titles `font-bold`, desc `text-[var(--fv-hp-text-dark-body)]` + `font-medium`. CTA blue. Decorative bar `bg-[var(--fv-hp-accent-light)]`. |
-| `features/homepage/Business.tsx` | Text column `max-w-[50ch]`. Planned label `font-bold` + `tracking-[0.1em]`. Titles `font-bold`, desc `text-body` + `font-medium`. Decorative bar `bg-[var(--fv-hp-accent-light)]`. Gold kept. |
-| `features/homepage/Roadmap.tsx` | Phase1 status blue (`text-[var(--fv-hp-accent)] border-[var(--fv-hp-accent-border)]`). Titles/badges `font-bold`. List items `text-body` + `font-medium`. Bullets blue. |
-| `features/homepage/Security.tsx` | Text column `max-w-[50ch]`. Shield icon blue. Statement `text-dark-body` + `font-medium`. Principles `font-bold`, desc `text-dark-body` + `font-medium`. |
-| `features/homepage/Comparison.tsx` | Column headers `font-bold` + `tracking-[0.1em]`, FV column blue. Row labels `font-bold`, FV cells `font-semibold`, other cells `text-body` + `font-medium`. |
-| `features/homepage/Pricing.tsx` | Disclaimer `font-bold`. Featured border `border-[var(--fv-hp-accent-border)]`. Tier names `font-bold`, prices `font-extrabold`, period `font-medium`. Features `text-body` + `font-medium`, bullets blue. Featured CTA blue. Footnote `font-medium` + `text-muted`. |
-| `features/homepage/FinalCta.tsx` | Glow `rgba(29,78,216,0.06)`. Headline `font-bold`. Subline `text-body` + `font-medium`. Input focus blue, submit button blue. |
-| `features/homepage/Footer.tsx` | Tagline/nav/legal/social → `text-[var(--fv-hp-text-muted)]` + `font-medium`. |
+| File | Change |
+|---|---|
+| `app/(app)/layout.tsx` | Sidebar rewritten: 7 labeled groups (Overview, Money, Grow, Operate, Reports, Support) + pinned Account group. `NavLink` + `GroupLabel` components. Primary nav `flex-1 flex-col gap-1 overflow-y-auto`; Account nav `mt-auto`. Removed `Home` import; `CreditCard` moved to /cards, Pay now uses `Send`. |
+| `app/(app)/cards/page.tsx` | New — `EmptyPageShell` + `CreditCard` icon |
+| `app/(app)/investments/page.tsx` | New — `EmptyPageShell` + `TrendingUp` icon |
+| `app/(app)/loans/page.tsx` | New — `EmptyPageShell` + `Landmark` icon |
+| `app/(app)/reports/page.tsx` | New — `EmptyPageShell` + `FileBarChart` icon |
+| `app/(app)/statements/page.tsx` | New — `EmptyPageShell` + `ScrollText` icon |
+| `app/(app)/help/page.tsx` | New — FAQ page: native `<details>`/`<summary>` (3 items), GlassCard contact card (`mailto:support@finovault.app` placeholder), link to /coach |
+| `components/ui/EmptyState.tsx` | Added optional `icon?: LucideIcon` prop — renders in 64px wash circle with 2px `--fv-border` border; VaultMark fallback unchanged |
+| `components/ui/EmptyPageShell.tsx` | New shared shell: h1 (24px/700) + `EmptyState`; exported from `components/ui/index.ts` |
+| `lib/i18n/en.json` + `fr.json` | `tabs.*` (dashboard replaces home; added cards/investments/loans/reports/statements/help/settings), `nav.groups.*` (7 keys), and namespaces `cards.*`, `investments.*`, `loans.*`, `reports.*`, `statements.*`, `help.*` in both locales |
 
-## State Handling
+## Navigation structure
 
-No state logic touched (Nav scroll/menu, FinalCta form). Pure class/color/token changes.
+`primaryGroups` (data-driven): Overview `/dashboard` `LayoutDashboard`, `/insights` `BarChart3` · Money `/accounts` `Wallet`, `/cards` `CreditCard`, `/transactions` `ReceiptText`, `/budgets` `PieChart` · Grow `/vault` `PiggyBank`, `/investments` `TrendingUp`, `/loans` `Landmark` · Operate `/pay` `Send`, `/invoices` `FileText`, `/vendors` `Store` · Reports `/reports` `FileBarChart`, `/statements` `ScrollText` · Support `/coach` `MessageCircle`, `/help` `HelpCircle` · Account `/profile` `Settings`, `/profile` `User` (both → /profile per spec).
 
-## Verification Checklist (10/10 PASS)
+## State handling
 
-1. No `#6366f1` in homepage .tsx — 0 matches
-2. No `818cf8` — 0 matches
-3. No `rgba(99,102,241` — 0 matches (globals.css also clean)
-4. Body on dark = 0.88 — `--fv-hp-text-body` used, no `text-white/70|80` body text remains (only nav-link whites kept per spec + input placeholder)
-5. Body on light = `#374151` — `--fv-hp-text-dark-body` used in Personal/Security
-6. All headings `font-bold` — all 17 h1/h2/h3 verified
-7. Stats `font-extrabold` — Hero stats, Pricing prices
-8. Labels/eyebrows `font-bold` — Mirror/Roadmap/Pricing/Business/Hero footnotes
-9. `max-w-[50ch]` in Personal/Business/Security, `max-w-[45ch]` in Philosophy, Hero `max-w-[14ch]`
-10. Focus rings blue — `*:focus-visible` + FinalCta input focus border
+- Active state: `pathname === href` → `aria-current="page"`, `bg-[var(--fv-wash)]` + `border-2 border-[var(--fv-border)]` + semibold. Idle: `border-2 border-transparent` (no layout shift). Icons `size={20} strokeWidth={1.8}`.
+- Touch targets: `py-3 md:py-2.5` (48px mobile ≥ 44px per DESIGN.md §9.1).
+- Group labels: `<li role="presentation" id="nav-group-{slug}">` targeted by `<ul role="group" aria-labelledby>`. Mobile: `aria-hidden` `h-px` divider replaces kicker; md+: 11px/600/uppercase/0.08em `--fv-text-secondary` (DESIGN.md Kicker token).
+- A11y: `aria-label={`t(tabs.{key})`}` on every `<Link>` (mobile icon-only accessible; text span `hidden md:inline`).
+- i18n: `tabs.home` removed — grep confirms zero code usage (only spec mentions). Parity test covers en/fr key match.
+- Help page: `SUPPORT_EMAIL = 'support@finovault.app'` placeholder with `ponytail:` comment — swap when real support email contract lands.
 
-## Verification Commands
+## Verification
 
-- `npx tsc --noEmit` — PASS (0 errors)
-- `npm run lint` — PASS (0 errors; 27 pre-existing warnings outside scope, none in affected files)
+- JSON both locales parse OK
+- `npx tsc --noEmit` → 0 errors
+- `node node_modules/eslint/bin/eslint.js` on all 10 changed files → exit 0 (note: `npx eslint` wrongly fetches eslint 10; use direct node invocation)
+- `node node_modules/vitest/vitest.mjs run --pool=threads` → 11 files / 60 tests pass (first `npm test --pool=threads` hit the known forks-pool worker timeout flake; rerun per contract passed)
 
-## Notes for Designer QA
+## Design QA notes for @designer
 
-- `app/(app)/insights/page.tsx` still contains `#6366f1` in a chart COLORS array — outside the 15-file scope, flagged for @leader.
-- Gold `#d4a853` retained for "PLANNED" (Business) + "PROPOSED" (Pricing) labels per spec.
-- Line-height/leading values not in DS-004 changelog (e.g. Hero `leading-[1.65]`, Mirror statement) left untouched — structural safety.
+- Sidebar geometry: aside `w-16` (mobile, center pills) / `w-56` (md+, `md:px-4`); primary nav scrolls, Account pinned bottom via `mt-auto`. Navs intentionally have no `w-full` — preserves centered shrink-to-fit pills at `w-16`.
+- 5 new pages are identical shells (h1 + empty state) — variability lands with their APIs.
+- Help page uses native `<details>` (keyboard/AT free); FAQ copy is placeholder — confirm tone with product.
+- `aria-labelledby` group names resolve empty on mobile (labels are `display:none`) — acceptable per spec §7 (dividers `aria-hidden`, links carry labels); flagged for QA.

@@ -108,17 +108,35 @@
     "finish": "Entrer dans Finovault"
   },
   "tabs": {
-    "home": "Accueil",
+    "dashboard": "Tableau de bord",
     "insights": "Aperçus",
     "vault": "Coffre",
     "pay": "Payer",
     "profile": "Profil",
     "coach": "Coach",
     "accounts": "Comptes",
-    "invoices": "Factures",
+    "cards": "Cartes",
     "transactions": "Opérations",
     "budgets": "Budgets",
-    "vendors": "Fournisseurs"
+    "investments": "Placements",
+    "loans": "Prêts",
+    "invoices": "Factures",
+    "vendors": "Fournisseurs",
+    "reports": "Rapports",
+    "statements": "Relevés",
+    "help": "Aide",
+    "settings": "Paramètres"
+  },
+  "nav": {
+    "groups": {
+      "overview": "Aperçu",
+      "money": "Argent",
+      "grow": "Croissance",
+      "operate": "Opérations",
+      "reports": "Rapports",
+      "support": "Assistance",
+      "account": "Compte"
+    }
   },
   "vault": {
     "createGoal": "Créer un objectif",
@@ -149,7 +167,9 @@
     "emptyTitle": "Configurons votre coffre",
     "emptyBody": "Connectez votre premier compte ou créez un objectif d'épargne.",
     "emptyCta": "Connecter un compte",
+    "pensionTitle": "Retraite",
     "metrics": {
+      "title": "Métriques d'entreprise",
       "combinedWealth": "Patrimoine combiné",
       "revenueMrr": "Revenu / MRR",
       "burnRate": "Taux de dépenses",
@@ -188,6 +208,20 @@
       "goal": "Objectif {amount}",
       "thisMonth": "ce mois-ci",
       "metricLine": "{metric} : {amount}"
+    },
+    "recentActivityTitle": "Activité récente",
+    "quickActionsTitle": "Actions rapides",
+    "seeAll": "Tout voir",
+    "coachCtaTitle": "Une question pour votre Money Coach ?",
+    "coachCtaBody": "Posez-moi toutes vos questions — budgets, épargne, factures, impôts.",
+    "coachCtaAction": "Demander au coach",
+    "ofGoal": "sur {amount}",
+    "complianceTitle": "Conformité",
+    "complianceNote": "Gardez les dates de dépôt dans votre agenda pour éviter les pénalités MRA.",
+    "compliance": {
+      "statusOk": "Conforme",
+      "statusWarn": "Attention",
+      "statusExpired": "Expiré"
     },
     "opportunitiesTitle": "Opportunités",
     "recentProjectsTitle": "Projets récents",
@@ -323,223 +357,52 @@
     "emptyTitle": "Aucun fournisseur connecté",
     "emptyBody": "Ajoutez vos principaux fournisseurs pour suivre les dépenses et la fiabilité."
   },
-  "hp": {
-    "illustrative": "ILLUSTRATIF — Produit en développement",
-    "nav": {
-      "features": "Fonctionnalités",
-      "howItWorks": "Comment ça marche",
-      "security": "Sécurité",
-      "pricing": "Tarifs",
-      "enter": "ENTRER DANS FINOVAULT",
-      "openMenu": "Ouvrir le menu",
-      "closeMenu": "Fermer le menu"
-    },
-    "hero": {
-      "headline": "NE JAMAIS S'ENDETTER.",
-      "subheadline": "Possédez ce que vous n'auriez jamais cru possible, avec FINOVAULT.",
-      "ctaPrimary": "ENTRER DANS FINOVAULT",
-      "ctaSecondary": "VOIR COMMENT ÇA MARCHE",
-      "stat1Value": "100%",
-      "stat1Label": "Vos données, sur votre appareil",
-      "stat2Value": "24/7",
-      "stat2Label": "Reconnaissance de schémas à votre service",
-      "stat3Value": "0",
-      "stat3Label": "Tiers ayant accès à vos données financières"
-    },
-    "philosophy": {
-      "headline": "VOTRE ARGENT PARLE.",
-      "message1": "Votre argent a une opinion. Chaque achat est un vote — pour ce qui compte pour vous et pour ce qui ne compte pas.",
-      "message2": "Votre argent a une histoire. Les schémas de vos gains et dépenses racontent votre vie, que vous les lisiez ou non.",
-      "message3": "Votre argent a du potentiel. La plupart des gens ne voient jamais l'intelligence cachée dans leurs propres transactions. FINOVAULT, si."
-    },
-    "features": {
-      "title": "CE QUE FAIT FINOVAULT",
-      "see": {
-        "title": "VOIR",
-        "desc": "Chaque compte, devise et transaction — une image claire de votre argent."
-      },
-      "understand": {
-        "title": "COMPRENDRE",
-        "desc": "La reconnaissance de schémas révèle ce que votre argent vous dit, automatiquement."
-      },
-      "protect": {
-        "title": "PROTÉGER",
-        "desc": "Conçu avec la sécurité et la confidentialité comme exigences fondamentales."
-      },
-      "decide": {
-        "title": "DÉCIDER",
-        "desc": "Transformez les informations en actions en toute confiance — objectifs, budgets et décisions."
-      }
-    },
-    "mirror": {
-      "eyebrow": "Miroir financier",
-      "title": "CE N'EST PAS DE LA BUDGÉTISATION. C'EST DE LA RECONNAISSANCE DE SCHÉMAS.",
-      "statement": "FINOVAULT lit vos transactions et révèle les schémas que d'autres manquent — pour que vous puissiez agir.",
-      "cat1": "Frais de subsistance",
-      "cat1pct": "42%",
-      "cat2": "Épargne & investissements",
-      "cat2pct": "18%",
-      "cat3": "Service de la dette",
-      "cat3pct": "11%",
-      "cat4": "Revenus d'entreprise",
-      "cat4pct": "29%"
-    },
-    "personal": {
-      "title": "VOTRE ARGENT. VOS RÈGLES.",
-      "cap1": "Connectez tout",
-      "cap1desc": "Comptes bancaires, mobile money et espèces — connectés en une vue sécurisée.",
-      "cap2": "Repérez vos schémas",
-      "cap2desc": "Comprenez vos dépenses, épargnes et revenus grâce à une analyse intelligente.",
-      "cap3": "Protégez votre avenir",
-      "cap3desc": "Construisez des fonds d'urgence, des objectifs d'épargne et des pensions à votre façon.",
-      "cap4": "Décidez en confiance",
-      "cap4desc": "Sachez ce que chaque mouvement financier signifie avant de le faire.",
-      "cta": "COMMENCEZ À VOIR VOTRE ARGENT"
-    },
-    "business": {
-      "title": "L'ARGENT DES ENTREPRISES BOUGE DIFFÉREMMENT.",
-      "planned": "PLANIFIÉ — Partie de la feuille de route phases 2-3",
-      "cap1": "Trésorerie en direct",
-      "cap1desc": "Voyez exactement où est l'argent de votre entreprise, jour par jour.",
-      "cap2": "Intelligence fournisseurs",
-      "cap2desc": "Comprenez les dépenses, la fiabilité et les conditions de chaque fournisseur.",
-      "cap3": "Préparation fiscale",
-      "cap3desc": "Mettez de côté ce que vous devez automatiquement. Jamais pris au dépourvu.",
-      "cap4": "Clarté du runway",
-      "cap4desc": "Sachez combien de temps votre entreprise peut fonctionner, et ce qui change cela.",
-      "cta": "EXPLORER POUR L'ENTREPRISE"
-    },
-    "roadmap": {
-      "title": "D'APPLICATION FINANCIÈRE À INTELLIGENCE FINANCIÈRE",
-      "phase1": {
-        "title": "FONDAMENTAL",
-        "phase": "Phase 1",
-        "status": "FONDATION — ACTUEL",
-        "item1": "Image financière personnelle",
-        "item2": "Reconnaissance de schémas & informations",
-        "item3": "Objectifs, épargne & budgets"
-      },
-      "phase2": {
-        "title": "AMÉLIORATION",
-        "phase": "Phase 2",
-        "status": "FUTUR",
-        "item1": "Banque & trésorerie d'entreprise",
-        "item2": "Intelligence fournisseurs & factures",
-        "item3": "Préparation fiscale automatisée"
-      },
-      "phase3": {
-        "title": "TRANSFORMATION",
-        "phase": "Phase 3",
-        "status": "FUTUR",
-        "item1": "Plateforme ouverte & intégrations",
-        "item2": "Marché de gestion de patrimoine",
-        "item3": "Intelligence financière prédictive"
-      }
-    },
-    "security": {
-      "title": "VOTRE ARGENT EST PRIVÉ.",
-      "statement": "Nous ne faisons pas de promesses que nous ne pouvons pas tenir. La sécurité et la confidentialité sont intégrées dès le départ — parce que votre argent mérite rien de moins.",
-      "principle1": {
-        "title": "Vos données, à vous",
-        "desc": "Vous contrôlez vos données financières. Nous ne les vendons jamais."
-      },
-      "principle2": {
-        "title": "Traitement local d'abord",
-        "desc": "Dans la mesure du possible, vos informations sont traitées sur votre propre appareil."
-      },
-      "principle3": {
-        "title": "Chiffré par défaut",
-        "desc": "Vos données financières sont chiffrées en transit et au repos."
-      },
-      "principle4": {
-        "title": "Aucun partage à des tiers",
-        "desc": "Nous ne partageons pas vos données avec des tiers. Point final."
-      }
-    },
-    "comparison": {
-      "title": "COMMENT FINOVAULT SE COMPARE",
-      "colFinovault": "FINOVAULT",
-      "colTraditional": "Banque traditionnelle",
-      "colBudgeting": "Applications de budget",
-      "colWealth": "Gestion de patrimoine",
-      "approach": "Approche",
-      "dataControl": "Contrôle des données",
-      "intelligence": "Intelligence",
-      "cost": "Coût",
-      "focus": "Objectif",
-      "approachF": "Intelligence financière",
-      "approachT": "Transactions & prêts",
-      "approachB": "Catégorisation",
-      "approachW": "Conseil en actifs",
-      "dataF": "Vous en êtes propriétaire, local d'abord",
-      "dataT": "La banque détient vos données",
-      "dataB": "Le fournisseur agrège les données",
-      "dataW": "Le conseiller détient vos données",
-      "intelF": "Reconnaissance de schémas intégrée",
-      "intelT": "Relevés bruts",
-      "intelB": "Budgets statiques",
-      "intelW": "Expertise humaine uniquement",
-      "costF": "Transparent, équitable",
-      "costT": "Frais cachés courants",
-      "costB": "Publicités & monétisation des données",
-      "costW": "Frais AUM élevés",
-      "focusF": "Toute votre image financière",
-      "focusT": "Vente de produits",
-      "focusB": "Budgétisation seule",
-      "focusW": "Réservé aux aisés"
-    },
-    "pricing": {
-      "proposed": "PROPOSÉ / ACCÈS ANTICIPÉ",
-      "title": "TARIFS",
-      "note": "Les tarifs sont proposés et seront validés avant le lancement.",
-      "tierFree": {
-        "name": "GRATUIT",
-        "price": "0 MUR",
-        "period": "/mois",
-        "f1": "Image financière personnelle",
-        "f2": "Reconnaissance de schémas de base",
-        "f3": "Comptes illimités",
-        "f4": "Support communautaire",
-        "cta": "COMMENCER"
-      },
-      "tierPlus": {
-        "name": "PLUS",
-        "price": "MUR 199",
-        "period": "/mois",
-        "f1": "Tout ce qui est inclus dans Gratuit",
-        "f2": "Intelligence avancée des schémas",
-        "f3": "Informations et alertes automatiques",
-        "f4": "Support prioritaire",
-        "cta": "CHOISIR PLUS"
-      },
-      "tierBiz": {
-        "name": "ENTREPRISE",
-        "price": "MUR 5 000",
-        "period": "/mois",
-        "f1": "Tout ce qui est inclus dans Plus",
-        "f2": "Tableaux de bord de trésorerie d'entreprise",
-        "f3": "Intelligence fournisseurs & factures",
-        "f4": "Intégration dédiée",
-        "cta": "NOUS CONTACTER"
-      }
-    },
-    "cta": {
-      "headline": "DONNEZ UNE CHANCE À VOTRE ARGENT.",
-      "subline": "Soyez parmi les premiers à voir votre argent différemment.",
-      "emailPlaceholder": "Entrez votre e-mail",
-      "button": "REJOINDRE LA LISTE D'ATTENTE",
-      "success": "Vous êtes sur la liste. Nous vous contacterons."
-    },
-    "footer": {
-      "tagline": "Voyez-le. Comprenez-le. Possédez-le.",
-      "copyright": "© {year} FINOVAULT. Tous droits réservés.",
-      "terms": "Conditions",
-      "privacy": "Confidentialité",
-      "contact": "Contact",
-      "features": "Fonctionnalités",
-      "howItWorks": "Comment ça marche",
-      "security": "Sécurité",
-      "pricing": "Tarifs"
-    }
+  "cards": {
+    "title": "Cartes",
+    "emptyTitle": "Aucune carte",
+    "emptyBody": "Connectez une carte pour gérer plafonds, code PIN et dépenses ici."
+  },
+  "investments": {
+    "title": "Placements",
+    "emptyTitle": "Aucun placement",
+    "emptyBody": "Suivez vos fonds, ETF et rendements ici dès que vous investissez."
+  },
+  "loans": {
+    "title": "Prêts",
+    "emptyTitle": "Aucun prêt",
+    "emptyBody": "Suivez remboursements, intérêts et prêteurs ici."
+  },
+  "reports": {
+    "title": "Rapports",
+    "emptyTitle": "Aucun rapport",
+    "emptyBody": "Générez vos rapports mensuels, fiscaux et de dépenses ici."
+  },
+  "statements": {
+    "title": "Relevés",
+    "emptyTitle": "Aucun relevé",
+    "emptyBody": "Téléchargez vos relevés de comptes dès que vos comptes sont connectés."
+  },
+  "help": {
+    "title": "Aide et assistance",
+    "faqTitle": "Questions fréquentes",
+    "q1": "Comment connecter un compte bancaire ?",
+    "a1": "Allez dans Comptes → Connecter un compte et suivez la procédure sécurisée. Nous utilisons un accès en lecture seule.",
+    "q2": "Mon argent est-il en sécurité sur Finovault ?",
+    "a2": "Oui. Finovault utilise un chiffrement de niveau bancaire. Nous ne stockons jamais votre mot de passe bancaire.",
+    "q3": "Comment contacter le support ?",
+    "a3": "Appuyez sur le bouton ci-dessous ou demandez à votre Money Coach.",
+    "contactTitle": "Besoin d'aide encore ?",
+    "contactBody": "Notre équipe de support est là pour vous aider.",
+    "contactCta": "Nous contacter",
+    "coachCta": "Ou demandez à votre Money Coach"
+  },
+  "notifications": {
+    "bellLabel": "Notifications",
+    "bellLabelUnread": "{count} notifications non lues",
+    "title": "Notifications",
+    "markAllRead": "Tout marquer lu",
+    "emptyTitle": "Aucune notification",
+    "emptyBody": "Vous êtes à jour.",
+    "newNotification": "Nouvelle notification : {title}"
   }
 }

@@ -25,6 +25,7 @@ export interface MockDbSnapshot {
   payees?: Record<string, unknown[]>;
   pensions?: Record<string, unknown>;
   pensionContributions?: Record<string, unknown[]>;
+  notifications?: Record<string, unknown[]>;
 }
 
 export async function loadMockDbSnapshot(): Promise<MockDbSnapshot | null> {

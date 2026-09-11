@@ -6,6 +6,8 @@ export { MoneyText } from './MoneyText';
 export type { MoneyTextProps } from './MoneyText';
 export { EmptyState } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
+export { EmptyPageShell } from './EmptyPageShell';
+export type { EmptyPageShellProps } from './EmptyPageShell';
 export { SectionHeader } from './SectionHeader';
 export type { SectionHeaderProps } from './SectionHeader';
 export { TextField } from './TextField';

@@ -162,16 +162,24 @@ function GoalRow({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <button
-          type="button"
+        <span
+          role="button"
+          tabIndex={0}
+          aria-label={`Contribute to ${goal.name}`}
           onClick={(e) => {
             e.stopPropagation();
             onContribute();
           }}
-          className="rounded-full border border-[var(--fv-primary)] px-3 py-1 text-[13px] font-semibold text-[var(--fv-primary)] hover:opacity-80"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation();
+              onContribute();
+            }
+          }}
+          className="cursor-pointer rounded-full border border-[var(--fv-primary)] px-3 py-1 text-[13px] font-semibold text-[var(--fv-primary)] hover:opacity-80"
         >
           Contribute
-        </button>
+        </span>
         <Icon name="chevron-right" size={18} subdued />
       </div>
     </GlassCard>
@@ -283,7 +291,7 @@ function GoalForm({
           <select
             value={type}
             onChange={(e) => setType(e.target.value as GoalType)}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
           >
             {GOAL_TYPES.map((gt) => (
               <option key={gt} value={gt}>{gt}</option>
@@ -400,7 +408,7 @@ function PensionSetupForm({
           <select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as PensionFrequency)}
-            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+            className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
           >
             {FREQUENCIES.map((f) => (
               <option key={f} value={f}>{f}</option>
@@ -419,7 +427,7 @@ function PensionSetupForm({
           <button
             type="button"
             onClick={() => setAutoDebit((v) => !v)}
-            className={`h-[28px] w-[48px] rounded-full transition-colors ${autoDebit ? 'bg-[var(--fv-primary)]' : 'bg-[var(--fv-border)]'}`}
+            className={`h-[28px] w-[48px] rounded-full transition-colors ${autoDebit ? 'bg-[var(--fv-primary)]' : 'bg-[var(--fv-border-subtle)]'}`}
             aria-label="Toggle auto-debit"
           >
             <span
@@ -546,7 +554,7 @@ function AccountSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none"
+        className="min-h-[48px] rounded-[10px] border border-[var(--fv-border)] bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] "
       >
         <option value="">Select account</option>
         {accounts.map((a) => (

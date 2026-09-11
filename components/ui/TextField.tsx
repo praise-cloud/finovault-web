@@ -38,7 +38,7 @@ export function TextField({
         onChange={(e) => onChangeText(e.target.value)}
         onBlur={onBlur}
         aria-invalid={!!error}
-        className={`min-h-[48px] rounded-[10px] border bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)] outline-none transition-colors focus:border-[var(--fv-primary)] ${
+        className={`min-h-[48px] rounded-[10px] border bg-[var(--fv-surface)] px-4 py-3 text-[var(--fv-text)]  transition-colors focus:border-[var(--fv-primary)] ${
           error ? 'border-[var(--fv-error)]' : 'border-[var(--fv-border)]'
         }`}
       />

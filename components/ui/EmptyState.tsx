@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import type { LucideIcon } from 'lucide-react';
 import { Button } from './Button';
 import { VaultMark } from '../VaultMark';
 
@@ -10,12 +11,19 @@ export interface EmptyStateProps {
   ctaLabel?: string;
   onCta?: () => void;
   className?: string;
+  icon?: LucideIcon;
 }
 
-export function EmptyState({ title, body, ctaLabel, onCta, className = '' }: EmptyStateProps) {
+export function EmptyState({ title, body, ctaLabel, onCta, className = '', icon: Icon }: EmptyStateProps) {
   return (
     <div className={`flex flex-col items-center justify-center gap-3 py-8 ${className}`}>
-      <VaultMark size={56} subdued />
+      {Icon ? (
+        <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[var(--fv-border)] bg-[var(--fv-wash)]">
+          <Icon size={28} strokeWidth={1.8} className="text-[var(--fv-text)]" />
+        </span>
+      ) : (
+        <VaultMark size={56} subdued />
+      )}
       <h3 className="text-center text-lg font-semibold text-[var(--fv-text)]">{title}</h3>
       {body ? (
         <p className="max-w-[280px] text-center text-[15px] leading-[21px] text-[var(--fv-text-secondary)]">
