@@ -37,46 +37,12 @@ export default function LoginPage() {
     }
   };
 
-  const demoRoles = [
-    { role: 'individual', email: 'individual@finovault.app', label: t('auth.demoIndividual'), accent: '#4338CA', wash: '#EEF0FF' },
-    { role: 'freelancer', email: 'freelancer@finovault.app', label: t('auth.demoFreelancer'), accent: '#B42318', wash: '#FEF0EE' },
-    { role: 'entrepreneur', email: 'entrepreneur@finovault.app', label: t('auth.demoEntrepreneur'), accent: '#92400E', wash: '#FEF6E5' },
-    { role: 'sme', email: 'sme@finovault.app', label: t('auth.demoSme'), accent: '#0F766E', wash: '#E6F9F6' },
-  ];
-
   return (
     <AuthShell
       title={t('auth.loginTitle')}
       subtitle={t('common.tagline')}
     >
       <div className="flex flex-col gap-4">
-        {/* Demo Roles Quick Fill */}
-        <div className="rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-wash)] p-3 shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--fv-text)]">
-              {t('auth.demoAccounts')}
-            </span>
-            <span className="text-[10px] font-bold text-[var(--fv-text-secondary)]">Vault123!</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-            {demoRoles.map((dr) => (
-              <button
-                key={dr.role}
-                type="button"
-                onClick={() => {
-                  setValue('email', dr.email, { shouldValidate: true });
-                  setValue('password', 'Vault123!', { shouldValidate: true });
-                }}
-                className="flex flex-col items-center justify-center rounded-[6px] border-2 border-[var(--fv-border-ink)] p-1.5 transition-all hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#1A1A2E] active:translate-y-0 active:shadow-none"
-                style={{ backgroundColor: dr.wash }}
-              >
-                <span className="text-[11px] font-black uppercase tracking-tight" style={{ color: dr.accent }}>
-                  {dr.label}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
 
         <Controller
           control={control}

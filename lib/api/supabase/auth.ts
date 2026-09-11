@@ -42,65 +42,117 @@ export async function signup(
   supabase: SupabaseClient,
   body: unknown
 ): Promise<ApiResponse<{ user: UserProfile; session: { accessToken: string } }>> {
-  const { email, password, fullName } = body as { email: string; password: string; fullName: string };
-  if (!email || !password || !fullName) {
+  const { email, password, fullName } = (body || {}) as { email?: string; password?: string; fullName?: string };
+  const normalized = String(email || '').trim().toLowerCase();
+  const trimmedName = String(fullName || '').trim();
+
+  if (!normalized || !password || !trimmedName) {
     return fail(ApiErrorCodes.VALIDATION, 'Missing required fields.');
   }
   if (password.length < 8) {
     return fail(ApiErrorCodes.VALIDATION, 'Password must be at least 8 characters.');
   }
-  const { data: existing } = await supabase.from('users').select('id').eq('email', email).single();
-  if (existing) {
-    return fail('EMAIL_TAKEN', 'An account with this email already exists.');
+
+  // Use Supabase Auth admin to create user with email auto-confirmed
+  const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
+    email: normalized,
+    password,
+    email_confirm: true,
+  });
+
+  if (authErr) {
+    if (authErr.message?.includes('already registered')) {
+      return fail('EMAIL_TAKEN', 'An account with this email already exists.');
+    }
+    return fail(ApiErrorCodes.INTERNAL, authErr.message || 'Failed to create user.');
   }
-  const { hash, salt } = await hashPassword(password);
-  const now = new Date().toISOString();
-  const { data: user, error } = await supabase
-    .from('users')
-    .insert({
-      email,
-      password_hash: `${salt}:${hash}`,
-      full_name: fullName,
+
+  const uid = authData.user.id;
+
+  // The PostgreSQL trigger on auth.users automatically created the profile row.
+  // We update full_name and ensure role fields are properly set.
+  await supabase
+    .from('profiles')
+    .update({
+      full_name: trimmedName,
       primary_role: 'individual',
-      secondary_roles: [],
       scheme: 'standard',
       preferred_language: 'en',
       preferred_currency: 'MUR',
-      created_at: now,
     })
-    .select()
-    .single();
-  if (error || !user) {
-    return fail(ApiErrorCodes.INTERNAL, error?.message ?? 'Failed to create user.');
-  }
-  const token = randomUUID();
-  await supabase.from('sessions').insert({ token, user_id: user.id, created_at: now });
-  return ok({ user: toProfile(user), session: { accessToken: token } });
+    .eq('id', uid);
+
+  const { data: profileData } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', uid)
+    .maybeSingle();
+
+  // Create session using signInWithPassword
+  const { data: sessionData } = await supabase.auth.signInWithPassword({
+    email: normalized,
+    password,
+  });
+
+  const token = sessionData?.session?.access_token || authData.user.id;
+  const user = profileData ? toProfile(profileData) : toProfile({
+    id: uid,
+    email: normalized,
+    full_name: trimmedName,
+    primary_role: 'individual',
+    scheme: 'standard',
+    preferred_language: 'en',
+    preferred_currency: 'MUR',
+    created_at: new Date().toISOString(),
+  });
+
+  return ok({ user, session: { accessToken: token } });
 }
 
 export async function login(
   supabase: SupabaseClient,
   body: unknown
 ): Promise<ApiResponse<{ user: UserProfile; session: { accessToken: string } }>> {
-  const { email, password } = body as { email: string; password: string };
-  const { data: user } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email?.trim().toLowerCase() ?? '')
-    .single();
-  if (!user || !(await verifyPassword(password, user.password_hash))) {
-    return fail(ApiErrorCodes.UNAUTHORIZED, 'Invalid email or password.');
+  const { email, password } = (body || {}) as { email?: string; password?: string };
+  const normalized = String(email || '').trim().toLowerCase();
+
+  if (!normalized || !password) {
+    return fail(ApiErrorCodes.VALIDATION, 'Email and password are required.');
   }
-  const token = randomUUID();
-  await supabase.from('sessions').insert({ token, user_id: user.id, created_at: new Date().toISOString() });
-  return ok({ user: toProfile(user), session: { accessToken: token } });
+
+  const { data: sessionData, error: signInErr } = await supabase.auth.signInWithPassword({
+    email: normalized,
+    password,
+  });
+
+  if (signInErr || !sessionData?.user) {
+    return fail(ApiErrorCodes.UNAUTHORIZED, 'Incorrect email or password. Please try again.');
+  }
+
+  const uid = sessionData.user.id;
+  const { data: p } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
+
+  const user = p ? toProfile(p) : toProfile({
+    id: uid,
+    email: normalized,
+    full_name: sessionData.user.user_metadata?.full_name || 'Finovault Member',
+    primary_role: 'individual',
+    scheme: 'standard',
+    preferred_language: 'en',
+    preferred_currency: 'MUR',
+    created_at: sessionData.user.created_at,
+  });
+
+  return ok({
+    user,
+    session: { accessToken: sessionData.session?.access_token || uid },
+  });
 }
 
 export async function logout(
-  supabase: SupabaseClient,
-  token: string | null
+  _supabase: SupabaseClient,
+  _token: string | null
 ): Promise<ApiResponse<{ success: true }>> {
-  if (token) await supabase.from('sessions').delete().eq('token', token);
   return ok({ success: true });
 }
 
@@ -109,15 +161,14 @@ export async function getSession(
   token: string | null
 ): Promise<ApiResponse<{ user: UserProfile }>> {
   if (!token) return fail(ApiErrorCodes.UNAUTHORIZED, 'Session expired.');
-  const { data: session } = await supabase
-    .from('sessions')
-    .select('user_id')
-    .eq('token', token)
-    .single();
-  if (!session) return fail(ApiErrorCodes.UNAUTHORIZED, 'Session expired.');
-  const { data: user } = await supabase.from('users').select('*').eq('id', session.user_id).single();
-  if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Session expired.');
-  return ok({ user: toProfile(user) });
+  const { data: authUser, error } = await supabase.auth.getUser(token);
+  if (error || !authUser?.user) {
+    return fail(ApiErrorCodes.UNAUTHORIZED, 'Session expired.');
+  }
+  const uid = authUser.user.id;
+  const { data: p } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
+  if (!p) return fail(ApiErrorCodes.UNAUTHORIZED, 'User profile not found.');
+  return ok({ user: toProfile(p) });
 }
 
 export async function forgotPassword(

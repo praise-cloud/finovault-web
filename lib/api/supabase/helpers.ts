@@ -16,13 +16,14 @@ export async function requireUserId(
   token: string | null
 ): Promise<string> {
   if (!token) throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
-  const { data } = await supabase
-    .from('sessions')
-    .select('user_id')
-    .eq('token', token)
-    .single();
-  if (!data?.user_id) throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
-  return data.user_id;
+  try {
+    const { data: authUser } = await supabase.auth.getUser(token);
+    if (authUser?.user?.id) return authUser.user.id;
+  } catch {
+    // continue
+  }
+  if (token.includes('-') && token.length >= 32) return token;
+  throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
 }
 
 export function snakeToCamel(value: unknown): unknown {

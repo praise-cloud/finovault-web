@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { Building2, ArrowRight } from 'lucide-react';
 
 const caps = [1, 2, 3, 4] as const;
 
@@ -9,7 +11,11 @@ export function Business() {
   const { t } = useTranslation();
 
   return (
-    <section aria-label="Business" className="bg-[#0a0e17] py-24 md:py-32 border-t-2 border-white/10">
+    <section
+      id="business"
+      aria-label="Business"
+      className="bg-[var(--fv-hp-bg)] py-24 md:py-32 border-t-2 border-[var(--fv-hp-border)] transition-colors duration-200"
+    >
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-6 lg:grid-cols-2 md:px-10">
         {/* Real brutalist business telemetry console */}
         <div aria-hidden className="order-2 flex items-center justify-center lg:order-1">
@@ -100,12 +106,23 @@ export function Business() {
             ))}
           </div>
 
-          <a
-            href="/login"
-            className="mt-10 inline-flex min-h-[52px] items-center justify-center rounded-none border-2 border-white bg-transparent px-8 py-4 text-xs font-black uppercase tracking-[0.18em] text-white shadow-[4px_4px_0_0_#ffffff] hover:bg-white hover:text-black hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
-          >
-            {t('hp.business.cta')}
-          </a>
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            <Link
+              href="/business"
+              className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-[6px] border-2 border-[var(--fv-hp-card-border)] bg-emerald-600 dark:bg-emerald-500 px-8 py-4 text-xs font-black uppercase tracking-[0.18em] text-white shadow-[4px_4px_0_0_#0f172a] dark:shadow-[4px_4px_0_0_#ffffff] hover:shadow-[6px_6px_0_0_#059669] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+            >
+              <Building2 size={16} />
+              <span>{t('hp.nav.exploreBusiness', 'Explore for business')}</span>
+              <ArrowRight size={16} />
+            </Link>
+
+            <Link
+              href="/login"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-[6px] border-2 border-[var(--fv-hp-card-border)] bg-transparent px-8 py-4 text-xs font-black uppercase tracking-[0.18em] text-[var(--fv-hp-text-title)] shadow-[3px_3px_0_0_var(--fv-hp-border)] hover:bg-[var(--fv-hp-bg-alt)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
+            >
+              {t('hp.business.cta')}
+            </Link>
+          </div>
         </div>
       </div>
     </section>
