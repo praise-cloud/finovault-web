@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { GlassCard, SectionHeader, Icon } from '@/components/ui';
 import { useAccounts, useTransactions, useGoals, useVendors, useInvoices } from '@/lib/hooks/use-money';
 import { buildCoachContext, coachReply } from '@/lib/services/coach';
@@ -124,6 +125,18 @@ export default function CoachPage() {
           <span className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--fv-text)]">
             {t('coach.snapshot')}
           </span>
+          {user?.subscriptionPlan && user.subscriptionPlan !== 'free' ? (
+            <span className="rounded-[4px] border border-emerald-600 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 text-[9px] font-black uppercase text-emerald-800 dark:text-emerald-300">
+              PRO AI UNLOCKED • MPGS
+            </span>
+          ) : (
+            <Link
+              href="/checkout?plan=plus"
+              className="rounded-[4px] border border-[var(--fv-border-ink)] bg-blue-100 dark:bg-blue-950 px-1.5 py-0.5 text-[9px] font-black uppercase text-blue-800 dark:text-blue-300 hover:opacity-80"
+            >
+              UPGRADE TO PRO
+            </Link>
+          )}
         </div>
         <span className="text-sm font-bold tabular-nums text-[var(--fv-text)]">
           {formatMoney(ctx.totalBalance, ctx.currency)}

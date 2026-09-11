@@ -306,6 +306,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
               )}
             </div>
+
+            {/* Subscription / Mastercard Plan Badge */}
+            {user?.subscriptionPlan === 'business' ? (
+              <Link
+                href="/cards"
+                className="hidden sm:flex items-center gap-1.5 rounded-[8px] border-2 border-amber-600 bg-amber-100 dark:bg-amber-950/60 text-amber-950 dark:text-amber-300 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#D97706] hover:-translate-y-0.5 transition-all"
+              >
+                <span className="h-2 w-2 rounded-full bg-[#EB001B]" />
+                <span>★ BIZ ENTERPRISE</span>
+              </Link>
+            ) : user?.subscriptionPlan === 'plus' ? (
+              <Link
+                href="/cards"
+                className="hidden sm:flex items-center gap-1.5 rounded-[8px] border-2 border-blue-600 bg-blue-100 dark:bg-blue-950/60 text-blue-950 dark:text-blue-300 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#1D4ED8] hover:-translate-y-0.5 transition-all"
+              >
+                <span className="h-2 w-2 rounded-full bg-[#EB001B]" />
+                <span>★ PLUS PRO</span>
+              </Link>
+            ) : (
+              <Link
+                href="/checkout?plan=plus"
+                className="hidden sm:flex items-center gap-1.5 rounded-[8px] border-2 border-[var(--fv-border-ink)] bg-emerald-100 dark:bg-emerald-950/60 text-emerald-950 dark:text-emerald-300 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000] hover:-translate-y-0.5 transition-all"
+              >
+                <span>⚡ UPGRADE</span>
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-2.5">
