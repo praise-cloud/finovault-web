@@ -404,5 +404,224 @@
     "emptyTitle": "No notifications",
     "emptyBody": "You're all caught up.",
     "newNotification": "New notification: {title}"
+  },
+  "hp": {
+    "illustrative": "ILLUSTRATIVE — Product in development",
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "security": "Security",
+      "pricing": "Pricing",
+      "enter": "ENTER FINOVAULT",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "hero": {
+      "headline": "NEVER ENTER DEBT.",
+      "subheadline": "Own what you never thought you would, with FINOVAULT.",
+      "ctaPrimary": "ENTER FINOVAULT",
+      "ctaSecondary": "SEE HOW IT WORKS",
+      "stat1Value": "100%",
+      "stat1Label": "Your data, on your device",
+      "stat2Value": "24/7",
+      "stat2Label": "Pattern recognition working for you",
+      "stat3Value": "0",
+      "stat3Label": "Third parties with your financial data"
+    },
+    "philosophy": {
+      "headline": "YOUR MONEY IS TALKING.",
+      "message1": "Your money has an opinion. Every purchase is a vote — for what matters to you and what doesn't.",
+      "message2": "Your money has history. Patterns in how you earn and spend tell the story of your life, whether you read them or not.",
+      "message3": "Your money has potential. Most people never see the intelligence hidden in their own transactions. FINOVAULT does."
+    },
+    "features": {
+      "title": "WHAT FINOVAULT DOES",
+      "see": {
+        "title": "SEE",
+        "desc": "Every account, currency, and transaction — one clear picture of your money."
+      },
+      "understand": {
+        "title": "UNDERSTAND",
+        "desc": "Pattern recognition surfaces what your money is telling you, automatically."
+      },
+      "protect": {
+        "title": "PROTECT",
+        "desc": "Designed with security and privacy as core requirements, not afterthoughts."
+      },
+      "decide": {
+        "title": "DECIDE",
+        "desc": "Turn insight into action with confidence — goals, budgets, and moves that matter."
+      }
+    },
+    "mirror": {
+      "eyebrow": "Financial Mirror",
+      "title": "THIS ISN'T BUDGETING. IT'S PATTERN RECOGNITION.",
+      "statement": "FINOVAULT reads your transactions and shows you the patterns others miss — so you can act on them.",
+      "cat1": "Living costs",
+      "cat1pct": "42%",
+      "cat2": "Savings & investments",
+      "cat2pct": "18%",
+      "cat3": "Debt service",
+      "cat3pct": "11%",
+      "cat4": "Business income",
+      "cat4pct": "29%"
+    },
+    "personal": {
+      "title": "YOUR MONEY. YOUR RULES.",
+      "cap1": "Link everything",
+      "cap1desc": "Bank accounts, mobile money, and cash — connected in one secure view.",
+      "cap2": "Spot your patterns",
+      "cap2desc": "Understand your spending, saving, and income with intelligent analysis.",
+      "cap3": "Protect your future",
+      "cap3desc": "Build emergency funds, savings goals, and pension plans your way.",
+      "cap4": "Decide with confidence",
+      "cap4desc": "Know what every financial move means before you make it.",
+      "cta": "START SEEING YOUR MONEY"
+    },
+    "business": {
+      "title": "BUSINESS MONEY MOVES DIFFERENTLY.",
+      "planned": "PLANNED — Part of Phase 2-3 roadmap",
+      "cap1": "Cash flow, live",
+      "cap1desc": "See exactly where your business money is, down to the day.",
+      "cap2": "Vendor intelligence",
+      "cap2desc": "Understand spend, reliability, and terms across every supplier.",
+      "cap3": "Tax readiness",
+      "cap3desc": "Set aside what you owe automatically. Never be caught short.",
+      "cap4": "Runway clarity",
+      "cap4desc": "Know how long your business can run, and what changes it.",
+      "cta": "EXPLORE FOR BUSINESS"
+    },
+    "roadmap": {
+      "title": "FROM FINANCIAL APP TO FINANCIAL INTELLIGENCE",
+      "phase1": {
+        "title": "FOUNDATIONAL",
+        "phase": "Phase 1",
+        "status": "FOUNDATIONAL — CURRENT",
+        "item1": "Personal money picture",
+        "item2": "Pattern recognition & insights",
+        "item3": "Goals, savings & budgets"
+      },
+      "phase2": {
+        "title": "ENHANCING",
+        "phase": "Phase 2",
+        "status": "FUTURE",
+        "item1": "Business banking & cash flow",
+        "item2": "Vendor & invoice intelligence",
+        "item3": "Automated tax readiness"
+      },
+      "phase3": {
+        "title": "TRANSFORMING",
+        "phase": "Phase 3",
+        "status": "FUTURE",
+        "item1": "Open platform & integrations",
+        "item2": "Wealth management marketplace",
+        "item3": "Predictive financial intelligence"
+      }
+    },
+    "security": {
+      "title": "YOUR MONEY IS PRIVATE.",
+      "statement": "We don't make claims we can't back up. Security and privacy are designed in from the start — because your money deserves nothing less.",
+      "principle1": {
+        "title": "Your data, yours",
+        "desc": "You control your financial data. We never sell it, and we never give it away."
+      },
+      "principle2": {
+        "title": "Local processing first",
+        "desc": "Wherever possible, your information is processed on your own device."
+      },
+      "principle3": {
+        "title": "Encrypted by default",
+        "desc": "Your financial data is encrypted in transit and at rest."
+      },
+      "principle4": {
+        "title": "No third-party sharing",
+        "desc": "We do not share your data with third parties. Full stop."
+      }
+    },
+    "comparison": {
+      "title": "HOW FINOVAULT COMPARES",
+      "colFinovault": "FINOVAULT",
+      "colTraditional": "Traditional Banking",
+      "colBudgeting": "Budgeting Apps",
+      "colWealth": "Wealth Management",
+      "approach": "Approach",
+      "dataControl": "Data control",
+      "intelligence": "Intelligence",
+      "cost": "Cost",
+      "focus": "Focus",
+      "approachF": "Financial intelligence",
+      "approachT": "Transactions & loans",
+      "approachB": "Categorisation",
+      "approachW": "Asset advice",
+      "dataF": "You own it, local-first",
+      "dataT": "Bank holds your data",
+      "dataB": "Vendor aggregates data",
+      "dataW": "Advisor holds your data",
+      "intelF": "Pattern recognition built-in",
+      "intelT": "Raw statements",
+      "intelB": "Static budgets",
+      "intelW": "Human expertise only",
+      "costF": "Transparent, fair",
+      "costT": "Hidden fees common",
+      "costB": "Ads & data monetisation",
+      "costW": "High AUM fees",
+      "focusF": "Your whole money picture",
+      "focusT": "Selling products",
+      "focusB": "Budgeting alone",
+      "focusW": "Affluent only"
+    },
+    "pricing": {
+      "proposed": "PROPOSED / EARLY ACCESS",
+      "title": "PRICING",
+      "note": "Pricing is proposed and will be validated before launch.",
+      "tierFree": {
+        "name": "FREE",
+        "price": "$0",
+        "period": "/month",
+        "f1": "Personal money picture",
+        "f2": "Basic pattern recognition",
+        "f3": "Unlimited accounts",
+        "f4": "Community support",
+        "cta": "GET STARTED"
+      },
+      "tierPlus": {
+        "name": "PLUS",
+        "price": "MUR 199",
+        "period": "/month",
+        "f1": "Everything in Free",
+        "f2": "Advanced pattern intelligence",
+        "f3": "Automatic insights & alerts",
+        "f4": "Priority support",
+        "cta": "CHOOSE PLUS"
+      },
+      "tierBiz": {
+        "name": "BUSINESS",
+        "price": "MUR 5,000",
+        "period": "/month",
+        "f1": "Everything in Plus",
+        "f2": "Business cash flow dashboards",
+        "f3": "Vendor & invoice intelligence",
+        "f4": "Dedicated onboarding",
+        "cta": "CONTACT US"
+      }
+    },
+    "cta": {
+      "headline": "GIVE YOUR MONEY ONE SHOT.",
+      "subline": "Be among the first to see your money differently.",
+      "emailPlaceholder": "Enter your email",
+      "button": "JOIN THE WAITLIST",
+      "success": "You're on the list. We'll be in touch."
+    },
+    "footer": {
+      "tagline": "See it. Understand it. Own it.",
+      "copyright": "© {year} FINOVAULT. All rights reserved.",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "contact": "Contact",
+      "features": "Features",
+      "howItWorks": "How It Works",
+      "security": "Security",
+      "pricing": "Pricing"
+    }
   }
 }
