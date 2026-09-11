@@ -62,7 +62,7 @@ export function Nav() {
         {/* Desktop CTA */}
         <a
           href="/login"
-          className="hidden rounded-none bg-[var(--fv-hp-accent)] px-5 py-2.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[var(--fv-hp-accent-hover)] min-h-[48px] md:inline-block"
+          className="hidden rounded-none bg-[var(--fv-hp-accent)] px-5 py-2.5 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-[var(--fv-hp-accent-hover)] min-h-[48px] md:inline-flex md:items-center"
         >
           {t('hp.nav.enter')}
         </a>
