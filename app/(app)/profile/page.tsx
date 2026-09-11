@@ -109,7 +109,7 @@ export default function ProfilePage() {
             className="h-14 w-14 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--fv-primary)] text-lg font-bold text-white">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--fv-primary)] text-lg font-bold text-[var(--fv-on-fill)]">
             {initials}
           </div>
         )}
@@ -218,7 +218,7 @@ export default function ProfilePage() {
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 securityOverview?.twoFactorEnabled
                   ? 'bg-[var(--fv-primary)]'
-                  : 'bg-[var(--fv-border)]'
+                  : 'bg-[var(--fv-border-subtle)]'
               }`}
             >
               <span

@@ -13,6 +13,7 @@ export function VaultMark({
   className?: string;
   subdued?: boolean;
 }) {
+  const tone = subdued ? 'var(--fv-text-secondary, currentColor)' : 'var(--fv-primary)';
   return (
     <svg
       width={size}
@@ -27,17 +28,17 @@ export function VaultMark({
         cy="24"
         r="21"
         fill="none"
-        stroke={subdued ? '#B0B4BA' : '#1D4ED8'}
+        style={{ stroke: tone }}
         strokeWidth="2.5"
       />
       <path
         d="M24 6 A18 18 0 0 1 37.97 14.52"
         fill="none"
-        stroke={subdued ? '#B0B4BA' : '#1D4ED8'}
+        style={{ stroke: tone }}
         strokeWidth="3"
         strokeLinecap="round"
       />
-      <circle cx="24" cy="24" r="4.5" fill={subdued ? '#B0B4BA' : '#1D4ED8'} />
+      <circle cx="24" cy="24" r="4.5" style={{ fill: tone }} />
     </svg>
   );
 }

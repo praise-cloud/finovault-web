@@ -1,165 +1,36 @@
-# Review Report — RV-001 Close-out
+# Design QA Report — DS-008 (FE-009: Expanded Sidebar + 6 New Pages)
 
-**Commit**: `2115727` — "Certify Supabase BFF parity and wire onboarding completion persistence"
-**Branch**: `feat/backlog` vs `main`
-**Reviewer**: @reviewer
-**Date**: 2026-09-09
-**Mode**: Thorough (19-table schema + BFF layer + auth boundary)
+- Status: **PASS ✅**
+- QA by: @designer (impeccable critique + audit, Phase 3)
+- Date: 2026-09-11
+- Source of truth: `specs/sidebar-navigation.md` (DS-007) | Implementation: `specs/implementation-summary.md` (FE-009)
+- Verification status: `verified` — every spec item checked against actual code. (Code-level claims — tsc 0 errors, eslint exit 0, 60/60 tests — taken from FE-009 notes; not re-run in design QA.)
 
----
+## Checklist Results
 
-## Review Scope
+| # | Spec item | Result |
+|---|---|---|
+| 1 | Sidebar structure §1/§2: 7 groups, 18 items, icons, routes, pinned Account | ✅ PASS |
+| 2 | States §3: active wash+ink border+semibold+`aria-current`; idle `border-2 border-transparent` (zero shift); hover `--fv-border-subtle`; focus-visible global 2px `--fv-ink` (globals.css:153) | ✅ PASS |
+| 3 | Mobile `w-16`: group labels → `h-px` divider (`aria-hidden`), icon-only items + `aria-label` | ✅ PASS |
+| 4 | A11y §7: `role="group"` + `aria-labelledby` per group (incl. Account); touch targets `py-3` ≈ 48px ≥ 44px; focus ring never removed | ✅ PASS |
+| 5 | 6 new pages §4: titles + icons (CreditCard/TrendingUp/Landmark/FileBarChart/ScrollText) + copy; Help = native `<details>` FAQ ×3 + contact card (mailto) + Coach link | ✅ PASS |
+| 6 | i18n §6: full en+fr parity — `nav.groups.*` (7), `tabs.*` (18 incl. dashboard, no `home`), six page namespaces incl. 12 `help.*` keys; values match spec verbatim | ✅ PASS |
+| 7 | Dark mode: all new elements token-driven (`var(--fv-*)`); no hardcoded colors in changed files (only pre-existing chart colors in insights/page.tsx, out of scope) | ✅ PASS |
+| 8 | Icon swaps: Pay→`Send`, Accounts→`Wallet`, Cards→`CreditCard`; `Home` import removed; `tabs.home` zero code usage | ✅ PASS |
 
-| Item | Status |
-|------|--------|
-| Files reviewed | 6 (helpers.ts, resources.ts, page.tsx, 0001_init.sql, api-contract.md, implementation-summary.md) |
-| Lines reviewed | ~1350 (resources.ts 954, migration 223, helpers 39, page 69, contract 90) |
-| Review areas | snakeToCamel parity, partial-merge correctness, fire-and-forget safety, security, migration schema |
+## Flagged Items — Confirmed
 
----
+- **(a) `aria-labelledby` empty group name on mobile**: ✅ Acceptable per spec §7. On `w-16`, label `<span>` is `display:none` so `role="group"` announces without a name — a minor screen-reader degradation, not a WCAG failure (group names optional; every `<Link>` self-labels via `aria-label`). Divider `aria-hidden`. Conformant.
+- **(b) Help FAQ copy**: ✅ Confirmed tone. Copy is spec §6.3 verbatim — confident, reassurance-first bank tone ("read-only access", "bank-grade encryption", "never store your password"). The only placeholder is `SUPPORT_EMAIL` (help/page.tsx:17) with a `ponytail:` marker — swap when the support contract lands.
+- **(c) Sidebar geometry `w-16`/`w-56`**: ✅ Confirmed. `w-16 md:w-56 md:px-4`, primary nav `flex-1 overflow-y-auto`, Account `mt-auto`. Mobile pills centered shrink-to-fit (no `w-full`) = correct.
 
-## Issues Found
+## Notes (P3 — non-blocking)
 
-| # | Severity | File | Line | Category | Issue | Suggestion |
-|---|----------|------|------|----------|-------|------------|
-| 1 | **CRITICAL** | `lib/api/supabase/resources.ts` | 595 | security | `changePassword` compares `password_hash` (stored as `salt:hex` by auth.ts) with plaintext `b.currentPassword` via `!==`. These can never match — the function always rejects every password change. Users cannot change their password. | Use `verifyPassword()` from auth.ts (import and call it). |
-| 2 | **CRITICAL** | `lib/api/supabase/resources.ts` | 601 | security | `changePassword` stores the new password as plaintext: `password_hash: b.newPassword as string`. The auth system uses `scrypt + salt` (`salt:hex` format). This overwrites a hashed password with plaintext, permanently breaking the user's login. | Use `hashPassword()` from auth.ts; store as `salt:hash` — exactly like signup (auth.ts L62). |
-| 3 | **HIGH** | `lib/api/supabase/resources.ts` | 839 | api-contract | `listPayees` returns `ok(data ?? [])` — **no `snakeToCamel`**. Every other list function in this file wraps with `snakeToCamel`. The `user_id` field leaks as snake_case to the frontend, contradicting the API contract ("All data payloads use camelCase keys"). | Wrap: `ok(snakeToCamel(data ?? []))` — matches every other `list*` function. |
-| 4 | **HIGH** | `lib/api/supabase/resources.ts` | 856 | api-contract | `createPayee` returns `ok(data)` — **no `snakeToCamel`**. Returns raw row with `user_id` in snake_case. Contract says "Creators/upserts return the created row (camelCase)." | Wrap: `ok(snakeToCamel(data))` — matches every other `create*` function. |
-| 5 | **MEDIUM** | `lib/api/supabase/resources.ts` | 67-72 | code-quality | `savePreferences` builds `update` object with only the fields from `existing` row, but the `update` object omits `onboarding_completed` when `p.onboardingCompleted` is `undefined`. On a fresh user with no existing row, `existing` is `null`, so the upsert creates a row with only `user_id`, `financial_goals`, `risk_tolerance`, `money_fears` — `onboarding_completed` is absent and relies on the column default (`false`). This is correct but only by accident. | Add `onboarding_completed: existing?.onboarding_completed ?? false` as a default in the base update object, and keep the conditional override for explicit `true` from onboarding. Makes the intent explicit rather than relying on SQL DEFAULT. |
-| 6 | **MEDIUM** | `lib/api/supabase/resources.ts` | 240-267 | perf | `listGoals` has N+1 query pattern: one query for goals, then a separate `goal_contributions` query per goal. For a user with many goals, this multiplies DB round-trips. | Use a single query with `select('*, goal_contributions(*)')` and let Supabase join, or use `Promise.all` at minimum. Not blocking but worth noting for scale. |
-| 7 | **MEDIUM** | `supabase/migrations/0001_init.sql` | 1-223 | migration | `user_preferences.updated_at` has no trigger to auto-update on modification. The column always holds the initial `now()` value, never reflecting when preferences were last changed. | Add a `CREATE OR REPLACE FUNCTION` trigger that sets `updated_at = now()` on UPDATE, or remove the column if tracking isn't needed. |
-| 8 | **LOW** | `supabase/migrations/0001_init.sql` | 1-2 | migration | Migration comment says "No RLS: BFF uses service-role key (bypasses RLS)." Correct for a BFF-only architecture, but should be flagged as a security boundary: if any client-side code ever calls Supabase directly (leaked anon key), data is unprotected. | Document this as a known architectural decision with the caveat. Consider adding RLS policies as a defense-in-depth layer for future-proofing. |
-| 9 | **LOW** | `lib/api/supabase/helpers.ts` | 28-38 | code-quality | `snakeToCamel` processes the full object tree on every BFF response. For large payloads (e.g., transactions list with many fields), this creates temporary objects on every call. Fine for current scale but worth noting. | Current implementation is correct and clear. Optimize (lazy/map-only-when-needed) only if profiling shows it matters. |
-
----
-
-## Findings by Focus Area
-
-### 1. snakeToCamel Parity
-
-**Verdict: 2 leaks found.**
-
-All 25 raw-row returns were checked against `snakeToCamel` wrapping:
-
-| Function | Wrapped? | Notes |
-|----------|----------|-------|
-| `listAccounts` | ✅ | |
-| `createAccount` | ✅ | |
-| `listTransactions` | ✅ | |
-| `createTransaction` | ✅ | |
-| `listBudgets` | ✅ | |
-| `upsertBudget` (both paths) | ✅ | |
-| `getSecurityOverview` | ✅ | Wrapped after spread — correct |
-| `toggle2fa` | ✅ | Wrapped after spread — correct |
-| `changePassword` | ✅ | Wrapped after spread — correct |
-| `listDevices` | ✅ | |
-| `listSecurityEvents` | ✅ | |
-| `resolveSecurityEvent` | ✅ | |
-| `listInvoices` | ✅ | |
-| `createInvoice` | ✅ | |
-| `updateInvoiceStatus` | ✅ | |
-| `listVendors` | ✅ | |
-| `createVendor` | ✅ | |
-| `listTransfers` | ✅ | |
-| `getTransfer` | ✅ | |
-| `createTransfer` (both paths) | ✅ | |
-| `listBills` | ✅ | |
-| `payBill` | ✅ | |
-| `scheduleBill` | ✅ | |
-| **`listPayees`** | **❌** | **Issue #3** |
-| **`createPayee`** | **❌** | **Issue #4** |
-
-**Intentionally raw (verified)**: `createPayee` return is raw — **not intentional** per contract. Both `listPayees` and `createPayee` should use `snakeToCamel`. The contract states all responses use camelCase. (Note: `getMe` is hand-mapped and correctly stays raw from snakeToCamel — it does its own mapping.)
-
-### 2. savePreferences Partial-Merge Correctness
-
-**Verdict: Correct for the `onboardingCompleted` case. Functional for the fire-and-forget use case.**
-
-The read-then-merge logic at `resources.ts:66-73`:
-- Reads `existing` row before building the update.
-- `financial_goals`, `risk_tolerance`, `money_fears`: use `p.field ?? existing?.field ?? default` — preserves existing value when not provided.
-- `onboarding_completed`: only added to the update object when `p.onboardingCompleted !== undefined`. This is the key fix — a partial PUT (e.g., only `riskTolerance`) will NOT reset `onboarding_completed`.
-
-**One edge case**: When `existing` is `null` (first-time save) and `onboardingCompleted` is not in the body, the upsert row omits `onboarding_completed` entirely, relying on the column `DEFAULT false`. This works correctly but is implicit — see Issue #5.
-
-### 3. Fire-and-Forget Onboarding Save
-
-**Verdict: Acceptable error handling. No unhandled rejection risk.**
-
-The pattern at `page.tsx:28-32`:
-```typescript
-moneyApi.savePreferences({ onboardingCompleted: true }).catch((err) => {
-  console.error('Failed to persist onboarding completion:', err);
-});
-router.replace('/dashboard');
-```
-
-- The `.catch()` handler prevents unhandled promise rejection.
-- Navigation is never blocked — correct for a non-critical flag.
-- The Supabase write is server-side; even if the component unmounts on navigation, the fetch completes server-side. The error will still be caught by `.catch()` (client-side fetch rejection fires on network error, not component unmount).
-- Logging via `console.error` is appropriate given the app has no toast/notification system.
-
-**No issues found.**
-
-### 4. Security
-
-| Check | Status | Notes |
-|-------|--------|-------|
-| No hardcoded secrets | ✅ | All secrets via `process.env` (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY). Verified in server.ts L12-13. |
-| Service role key server-only | ✅ | `server.ts` creates client server-side; key never reaches browser. Route handler at `app/api/bff/[...path]/route.ts` gates on `isSupabaseConfigured()`. |
-| Auth enforced on protected routes | ✅ | `requireUserId()` in every handler; throws UNAUTHORIZED on missing/invalid token. |
-| Resource ownership checked | ✅ | All queries filter by `user_id = uid` from token. No trust of `user_id` from body. |
-| No PII in error messages | ✅ | Error messages are generic ("Failed to create account", "Event not found"). Supabase error details not leaked to client (only the message). |
-| Password hashing (signup/login) | ✅ | `auth.ts` uses `scrypt + salt` with `timingSafeEqual` verification. |
-| **Password change hashing** | **❌** | **Issue #2 — stores plaintext. Issue #1 — comparison always fails.** |
-| Input validation | ⚠️ | Basic validation present (amount > 0, name required). `savePreferences` accepts arbitrary `Record<string, unknown>` body — no schema validation on field types. Low risk for BFF-only endpoint. |
-| SQL injection | ✅ | All queries use Supabase query builder (parameterized). No raw SQL. |
-
-### 5. Migration Sanity
-
-**Verdict: Solid v1 schema. Minor gaps noted.**
-
-| Check | Status | Notes |
-|-------|--------|-------|
-| Idempotency | ✅ | All `CREATE TABLE IF NOT EXISTS`, all indexes `IF NOT EXISTS`. |
-| Foreign keys | ✅ | All user-owned tables reference `users(id) ON DELETE CASCADE`. Cross-table FKs (goal_contributions → goals, pension_contributions → pension_plans) use `ON DELETE CASCADE`. Optional FKs (account references) use `ON DELETE SET NULL`. |
-| Indexes | ✅ | Appropriate covering indexes on user+date patterns (`idx_transactions_user_date`, `idx_accounts_user_created`, etc.). Idempotency key unique constraint on transfers. |
-| Enums | ⚠️ | No PostgreSQL enums used — all categorical fields (`status`, `type`, `direction`, `severity`) are `text` with app-level defaults. Acceptable for a v1 MVP; harder to enforce constraints. |
-| Updated-at | ❌ | `user_preferences.updated_at` has no trigger — see Issue #7. |
-| Check constraints | ⚠️ | No `CHECK` constraints on amounts (e.g., `amount > 0`). Relied on app-level validation. |
-| Password resets | ✅ | Token and email are `UNIQUE`; `expires_at` column present for expiry. |
+1. **P3 — Double-active state on /profile** — `app/(app)/layout.tsx:111-113`: `active = pathname === item.href` is true for BOTH Settings and Profile (`/profile` each). Result: on /profile, two Account pills render active simultaneously (wash + border + semibold + `aria-current="page"`). Spec §1 declared both → /profile (intentional), but simultaneous double-active is a visible artifact, not the designed intent (Settings = primary entry, Profile = subpage).
+   Fix (when convenient): `const active = pathname === item.href && (item.href !== '/profile' || item.key === 'settings');` — or move Profile highlight to an anchor/sub-route. Optional, not blocking.
+2. **P3 nit** — `GroupLabel` renders the mobile `h-px` divider above the first group too (`isFirst` only adjusts md+ padding) — a hairline between logo and Dashboard on mobile. Harmless (acts as header/nav separator); informational only.
 
 ---
 
-## Summary
-
-| Severity | Count |
-|----------|-------|
-| CRITICAL | 2 |
-| HIGH | 2 |
-| MEDIUM | 3 |
-| LOW | 2 |
-| **Total** | **9** |
-
-### Overall Verdict: **REJECT** ❌
-
-Two critical security defects in `changePassword` block merge:
-1. Password comparison is broken (always fails).
-2. New passwords stored as plaintext (overwrites hashed password).
-
-These must be fixed before this commit can merge. The fix is straightforward: import `verifyPassword` and `hashPassword` from `auth.ts` into `resources.ts` and use them in `changePassword`.
-
-The two HIGH findings (missing `snakeToCamel` on `listPayees` and `createPayee`) should be fixed in the same pass — one-line changes.
-
----
-
-## Verification Status
-
-| Check | Status |
-|-------|--------|
-| `npx tsc --noEmit` | Not re-run (read-only review) |
-| `npm run lint` | Not re-run (read-only review) |
-| Code review | ✅ completed |
-| Security review | ✅ completed (2 CRITICAL found) |
-| Status | `verified` (review complete; findings documented for delegation) |
+**Verdict: PASS ✅** — FE-009 conforms to DS-007 on all checklist items; 3 flagged items confirmed. P3 notes are optional polish, no rework required.

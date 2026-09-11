@@ -108,17 +108,35 @@
     "finish": "Enter Finovault"
   },
   "tabs": {
-    "home": "Home",
+    "dashboard": "Dashboard",
     "insights": "Insights",
     "vault": "Vault",
     "pay": "Pay",
     "profile": "Profile",
     "coach": "Coach",
     "accounts": "Accounts",
-    "invoices": "Invoices",
+    "cards": "Cards",
     "transactions": "Transactions",
     "budgets": "Budgets",
-    "vendors": "Vendors"
+    "investments": "Investments",
+    "loans": "Loans",
+    "invoices": "Invoices",
+    "vendors": "Vendors",
+    "reports": "Reports",
+    "statements": "Statements",
+    "help": "Help",
+    "settings": "Settings"
+  },
+  "nav": {
+    "groups": {
+      "overview": "Overview",
+      "money": "Money",
+      "grow": "Grow",
+      "operate": "Operate",
+      "reports": "Reports",
+      "support": "Support",
+      "account": "Account"
+    }
   },
   "vault": {
     "createGoal": "Create goal",
@@ -338,6 +356,45 @@
     "reliability": "Reliability",
     "emptyTitle": "No vendors linked",
     "emptyBody": "Add your top suppliers to track spending and reliability."
+  },
+  "cards": {
+    "title": "Cards",
+    "emptyTitle": "No cards yet",
+    "emptyBody": "Link a card to manage limits, PIN and spending here."
+  },
+  "investments": {
+    "title": "Investments",
+    "emptyTitle": "No investments yet",
+    "emptyBody": "Track funds, ETFs and returns here once you start investing."
+  },
+  "loans": {
+    "title": "Loans",
+    "emptyTitle": "No loans",
+    "emptyBody": "Track repayments, interest and lenders here."
+  },
+  "reports": {
+    "title": "Reports",
+    "emptyTitle": "No reports yet",
+    "emptyBody": "Generate monthly, tax and spending reports here."
+  },
+  "statements": {
+    "title": "Statements",
+    "emptyTitle": "No statements",
+    "emptyBody": "Download account statements once your accounts are linked."
+  },
+  "help": {
+    "title": "Help & Support",
+    "faqTitle": "Frequently asked questions",
+    "q1": "How do I link a bank account?",
+    "a1": "Go to Accounts → Link account, and follow the secure flow. We use read-only access.",
+    "q2": "Is my money safe on Finovault?",
+    "a2": "Yes. Finovault uses bank-grade encryption. We never store your banking password.",
+    "q3": "How do I contact support?",
+    "a3": "Tap the button below or ask your Money Coach for help.",
+    "contactTitle": "Still need help?",
+    "contactBody": "Our support team is here to help.",
+    "contactCta": "Message us",
+    "coachCta": "Or ask your Money Coach"
   },
   "notifications": {
     "bellLabel": "Notifications",

@@ -108,17 +108,35 @@
     "finish": "Entrer dans Finovault"
   },
   "tabs": {
-    "home": "Accueil",
+    "dashboard": "Tableau de bord",
     "insights": "Aperçus",
     "vault": "Coffre",
     "pay": "Payer",
     "profile": "Profil",
     "coach": "Coach",
     "accounts": "Comptes",
-    "invoices": "Factures",
+    "cards": "Cartes",
     "transactions": "Opérations",
     "budgets": "Budgets",
-    "vendors": "Fournisseurs"
+    "investments": "Placements",
+    "loans": "Prêts",
+    "invoices": "Factures",
+    "vendors": "Fournisseurs",
+    "reports": "Rapports",
+    "statements": "Relevés",
+    "help": "Aide",
+    "settings": "Paramètres"
+  },
+  "nav": {
+    "groups": {
+      "overview": "Aperçu",
+      "money": "Argent",
+      "grow": "Croissance",
+      "operate": "Opérations",
+      "reports": "Rapports",
+      "support": "Assistance",
+      "account": "Compte"
+    }
   },
   "vault": {
     "createGoal": "Créer un objectif",
@@ -338,6 +356,45 @@
     "reliability": "Fiabilité",
     "emptyTitle": "Aucun fournisseur connecté",
     "emptyBody": "Ajoutez vos principaux fournisseurs pour suivre les dépenses et la fiabilité."
+  },
+  "cards": {
+    "title": "Cartes",
+    "emptyTitle": "Aucune carte",
+    "emptyBody": "Connectez une carte pour gérer plafonds, code PIN et dépenses ici."
+  },
+  "investments": {
+    "title": "Placements",
+    "emptyTitle": "Aucun placement",
+    "emptyBody": "Suivez vos fonds, ETF et rendements ici dès que vous investissez."
+  },
+  "loans": {
+    "title": "Prêts",
+    "emptyTitle": "Aucun prêt",
+    "emptyBody": "Suivez remboursements, intérêts et prêteurs ici."
+  },
+  "reports": {
+    "title": "Rapports",
+    "emptyTitle": "Aucun rapport",
+    "emptyBody": "Générez vos rapports mensuels, fiscaux et de dépenses ici."
+  },
+  "statements": {
+    "title": "Relevés",
+    "emptyTitle": "Aucun relevé",
+    "emptyBody": "Téléchargez vos relevés de comptes dès que vos comptes sont connectés."
+  },
+  "help": {
+    "title": "Aide et assistance",
+    "faqTitle": "Questions fréquentes",
+    "q1": "Comment connecter un compte bancaire ?",
+    "a1": "Allez dans Comptes → Connecter un compte et suivez la procédure sécurisée. Nous utilisons un accès en lecture seule.",
+    "q2": "Mon argent est-il en sécurité sur Finovault ?",
+    "a2": "Oui. Finovault utilise un chiffrement de niveau bancaire. Nous ne stockons jamais votre mot de passe bancaire.",
+    "q3": "Comment contacter le support ?",
+    "a3": "Appuyez sur le bouton ci-dessous ou demandez à votre Money Coach.",
+    "contactTitle": "Besoin d'aide encore ?",
+    "contactBody": "Notre équipe de support est là pour vous aider.",
+    "contactCta": "Nous contacter",
+    "coachCta": "Ou demandez à votre Money Coach"
   },
   "notifications": {
     "bellLabel": "Notifications",
