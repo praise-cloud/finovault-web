@@ -17,7 +17,7 @@ export function Footer() {
         <div className="flex flex-col justify-between gap-10 md:flex-row md:items-center">
           <div>
             <div className="flex items-center gap-3">
-              <VaultMark size={32} subdued />
+              <VaultMark size={36} />
               <span className="hp-display text-lg font-black tracking-widest text-white">FINOVAULT</span>
             </div>
             <p className="mt-3 text-sm font-semibold text-[var(--fv-hp-text-muted)] max-w-sm">
