@@ -69,13 +69,13 @@ export function Nav() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-2 lg:gap-4 md:flex" role="list">
+        <ul className="hidden items-center gap-2 md:gap-4 lg:gap-6 xl:gap-8 md:flex" role="list">
           {navLinks.map((item) => (
             <li key={item.key}>
               {item.isRoute ? (
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1.5 text-xs font-black uppercase tracking-[0.14em] text-[var(--fv-hp-text-body)] hover:text-[var(--fv-hp-accent)] transition-all px-3 py-1.5 border border-transparent hover:border-[var(--fv-hp-accent-border)] hover:bg-[var(--fv-hp-accent-light)] cursor-pointer rounded-[4px]"
+                  className="flex items-center gap-1.5 text-xs font-black uppercase tracking-[0.14em] text-[var(--fv-hp-text-body)] hover:text-[var(--fv-hp-accent)] transition-all px-3.5 py-2 border border-transparent hover:border-[var(--fv-hp-accent-border)] hover:bg-[var(--fv-hp-accent-light)] cursor-pointer rounded-[4px]"
                 >
                   <Building2 size={14} className="text-emerald-500" />
                   <span>{t(`hp.nav.${item.key}`, 'Finovault for Business')}</span>
@@ -84,7 +84,7 @@ export function Nav() {
                 <button
                   type="button"
                   onClick={() => handleNavClick(item)}
-                  className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--fv-hp-text-body)] transition-all hover:text-[var(--fv-hp-text-title)] px-3 py-1.5 border border-transparent hover:border-[var(--fv-hp-border)] hover:bg-[var(--fv-hp-surface)] cursor-pointer rounded-[4px]"
+                  className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--fv-hp-text-body)] transition-all hover:text-[var(--fv-hp-text-title)] px-3.5 py-2 border border-transparent hover:border-[var(--fv-hp-border)] hover:bg-[var(--fv-hp-surface)] cursor-pointer rounded-[4px]"
                 >
                   {t(`hp.nav.${item.key}`)}
                 </button>
@@ -94,7 +94,7 @@ export function Nav() {
         </ul>
 
         {/* Desktop CTA & Theme Toggle */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-4 md:flex">
           {/* Light / Dark Mode Toggle */}
           <button
             type="button"
@@ -115,15 +115,6 @@ export function Nav() {
               </>
             )}
           </button>
-
-          {/* Explore for Business CTA */}
-          <Link
-            href="/business"
-            className="rounded-[6px] border-2 border-emerald-600 dark:border-emerald-400 bg-emerald-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-800 dark:text-emerald-300 transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-emerald-500/20 active:translate-x-0.5 active:translate-y-0.5 shadow-[2px_2px_0_0_#059669] min-h-[40px] inline-flex items-center gap-1.5"
-          >
-            <Building2 size={13} />
-            <span>{t('hp.nav.exploreBusiness', 'Explore for business')}</span>
-          </Link>
 
           {/* Enter Finovault CTA */}
           <Link
@@ -194,17 +185,9 @@ export function Nav() {
           )}
 
           <Link
-            href="/business"
-            onClick={() => setOpen(false)}
-            className="mt-2 w-full max-w-xs text-center rounded-[6px] border-2 border-emerald-600 dark:border-emerald-400 bg-emerald-500/15 py-3 text-sm font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 shadow-[3px_3px_0_0_#059669]"
-          >
-            {t('hp.nav.exploreBusiness', 'Explore for business')}
-          </Link>
-
-          <Link
             href="/login"
             onClick={() => setOpen(false)}
-            className="w-full max-w-xs text-center rounded-[6px] border-2 border-[var(--fv-hp-card-border)] bg-[var(--fv-hp-accent)] py-3 text-sm font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#0f172a] dark:shadow-[4px_4px_0_0_#ffffff]"
+            className="mt-4 w-full max-w-xs text-center rounded-[6px] border-2 border-[var(--fv-hp-card-border)] bg-[var(--fv-hp-accent)] py-3 text-sm font-black uppercase tracking-widest text-white shadow-[4px_4px_0_0_#0f172a] dark:shadow-[4px_4px_0_0_#ffffff]"
           >
             {t('hp.nav.enter')}
           </Link>
