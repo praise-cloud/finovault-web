@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/i18n'; // ponytail: side-effect import, initializes i18next for all routes
 import React, { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { initMockApi, setMockLatency } from '@/lib/api';
@@ -16,7 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (import.meta.env.MODE === 'test') setMockLatency(0);
+    if (process.env.NODE_ENV === 'test') setMockLatency(0);
     void initMockApi().then(() => {
       void restoreSession().finally(() => setReady(true));
     });

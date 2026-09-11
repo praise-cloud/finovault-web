@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source not "../specs";
 
 :root {
   --fv-bg: #f5f7ff;

@@ -16,9 +16,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Finovault — Vault Your Future. Grow Your Wealth.',
+  title: 'FINOVAULT — See it. Understand it. Own it.',
   description:
-    'Finovault is a wealth platform for African income realities: protect what you have, grow your wealth, pay for life without friction.',
+    'FINOVAULT is a financial intelligence platform. See your money, understand your patterns, and own your financial future. Never enter debt.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
