@@ -90,7 +90,12 @@
     "unlockChecking": "Vérification…",
     "unlockFallback": "Utiliser le mot de passe",
     "unlockPrompt": "Déverrouiller Finovault",
-    "biometricFailed": "L'authentification a échoué. Réessayez."
+    "biometricFailed": "L'authentification a échoué. Réessayez.",
+    "demoAccounts": "Remplissage Démo Rapide",
+    "demoIndividual": "Particulier",
+    "demoFreelancer": "Freelance",
+    "demoEntrepreneur": "Entrepreneur",
+    "demoSme": "PME"
   },
   "onboarding": {
     "linkTitle": "Connectez votre argent",
@@ -136,7 +141,10 @@
       "reports": "Rapports",
       "support": "Assistance",
       "account": "Compte"
-    }
+    },
+    "activeRole": "Rôle Actif",
+    "switchRole": "Changer de rôle",
+    "roleSwitched": "Passé à {role}"
   },
   "vault": {
     "createGoal": "Créer un objectif",

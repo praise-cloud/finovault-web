@@ -54,32 +54,36 @@ export default function LinkAccountsPage() {
           return (
             <div
               key={kind}
-              className={`flex items-center gap-3 rounded-[14px] border p-3.5 ${
-                isLinked ? 'border-[var(--fv-primary)] bg-[var(--fv-wash)]' : 'border-[var(--fv-primary-border)] bg-[var(--fv-surface)]'
+              className={`flex items-center gap-3.5 rounded-[12px] border-2 border-[var(--fv-border-ink)] p-3.5 transition-all ${
+                isLinked
+                  ? 'bg-[var(--fv-wash)] shadow-[4px_4px_0_0_#1A1A2E] dark:shadow-[4px_4px_0_0_#000000]'
+                  : 'bg-[var(--fv-surface)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]'
               }`}
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-[var(--fv-wash)] text-[var(--fv-primary)]">
-                <Icon size={20} strokeWidth={1.8} />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-wash)] text-[var(--fv-primary)]">
+                <Icon size={20} strokeWidth={2.2} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-semibold text-[var(--fv-text)]">{t(titleKey)}</span>
-                <span className="block text-[13px] text-[var(--fv-text-secondary)]">{subtitle}</span>
+                <span className="block text-[15px] font-black uppercase tracking-tight text-[var(--fv-text)]">
+                  {t(titleKey)}
+                </span>
+                <span className="block text-[12px] font-medium text-[var(--fv-text-secondary)]">{subtitle}</span>
               </span>
               <button
                 type="button"
                 onClick={() => handleLink(kind)}
                 disabled={isLinked || isLoading}
-                className={`flex shrink-0 items-center gap-1 rounded-[10px] px-3.5 py-2 text-sm font-semibold transition-colors ${
+                className={`flex shrink-0 items-center gap-1.5 rounded-[8px] border-2 border-[var(--fv-border-ink)] px-3.5 py-2 text-xs font-black uppercase tracking-wider transition-all ${
                   isLinked
-                    ? 'bg-[var(--fv-primary-border)] text-[var(--fv-primary)]'
-                    : 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)] hover:bg-[var(--fv-primary-light)]'
-                } ${isLinked || isLoading ? 'cursor-default opacity-100' : ''}`}
+                    ? 'bg-[var(--fv-wash)] text-[var(--fv-primary)] shadow-none'
+                    : 'bg-[var(--fv-primary)] text-[var(--fv-on-fill)] shadow-[2px_2px_0_0_#1A1A2E] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#1A1A2E] active:translate-y-0 active:shadow-none'
+                } ${isLinked || isLoading ? 'cursor-default' : ''}`}
               >
                 {isLoading ? (
                   <span aria-live="polite">…</span>
                 ) : isLinked ? (
                   <>
-                    <Check size={16} strokeWidth={3} />
+                    <Check size={14} strokeWidth={3} />
                     {t('onboarding.linked')}
                   </>
                 ) : (
@@ -90,13 +94,19 @@ export default function LinkAccountsPage() {
           );
         })}
 
-        <p className="text-center text-xs text-[var(--fv-text-secondary)]">{t('onboarding.skipNote')}</p>
+        <p className="text-center text-xs font-medium text-[var(--fv-text-secondary)]">{t('onboarding.skipNote')}</p>
 
-        <Button label={t('common.continue')} onPress={finish} loading={false} fullWidth />
+        <Button
+          label={t('common.continue')}
+          onPress={finish}
+          loading={false}
+          fullWidth
+          className="mt-1 font-black uppercase tracking-wider"
+        />
 
         <Link
           href="/onboarding/role"
-          className="flex items-center justify-center gap-1.5 py-2 text-sm font-medium text-[var(--fv-text-secondary)] hover:text-[var(--fv-primary)]"
+          className="flex items-center justify-center gap-2 py-2 text-xs font-black uppercase tracking-wider text-[var(--fv-text-secondary)] hover:text-[var(--fv-primary)]"
         >
           <ArrowLeft size={16} />
           {t('common.back')}

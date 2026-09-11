@@ -19,21 +19,21 @@ const GRANT_KEYS = [
 export function GrantOpportunities() {
   const { t } = useTranslation();
   return (
-    <div>
+    <div className="mb-5">
       <SectionHeader title={t('home.grants.title')} />
-      <GlassCard className="flex flex-col gap-3">
+      <div className="rounded-[12px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] p-3 shadow-[4px_4px_0_0_#1A1A2E] dark:shadow-[4px_4px_0_0_#000000] flex flex-col gap-2.5">
         {GRANT_KEYS.map(({ name, deadline }) => (
           <div
             key={name}
-            className="flex items-center justify-between gap-3 rounded-[12px] border border-[var(--fv-primary-border)] bg-[var(--fv-surface)] px-3.5 py-3"
+            className="flex items-center justify-between gap-3 rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] px-3.5 py-3 shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]"
           >
-            <span className="text-sm font-semibold text-[var(--fv-text)]">{t(name)}</span>
-            <span className="shrink-0 rounded-full bg-[var(--fv-wash)] px-2.5 py-1 text-xs font-medium text-[var(--fv-primary)]">
+            <span className="text-sm font-black uppercase tracking-tight text-[var(--fv-text)]">{t(name)}</span>
+            <span className="shrink-0 rounded-[6px] border-2 border-[var(--fv-border-ink)] bg-[#FEF6E5] dark:bg-[#3A3226] px-2.5 py-1 text-xs font-black uppercase tracking-wider text-[#92400E]">
               {t(deadline)}
             </span>
           </div>
         ))}
-      </GlassCard>
+      </div>
     </div>
   );
 }

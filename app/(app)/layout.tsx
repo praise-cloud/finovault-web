@@ -27,6 +27,8 @@ import {
   Sun,
   Moon,
   Monitor,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
 import { useAuthStore } from '@/stores/auth-store';
@@ -34,8 +36,17 @@ import { useTheme, type ThemeMode } from '@/lib/theme';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { NotificationDropdown } from '@/components/notifications/NotificationDropdown';
 import { useNotifications } from '@/lib/notifications/useNotifications';
+import { userApi } from '@/lib/api';
+import type { PrimaryRole } from '@/types';
 
 type NavItem = { href: string; key: string; icon: typeof LayoutDashboard };
+
+const ROLE_BADGES: Record<PrimaryRole, { labelKey: string; accent: string; wash: string }> = {
+  individual: { labelKey: 'role.individual', accent: '#4338CA', wash: '#EEF0FF' },
+  freelancer: { labelKey: 'role.freelancer', accent: '#B42318', wash: '#FEF0EE' },
+  entrepreneur: { labelKey: 'role.entrepreneur', accent: '#92400E', wash: '#FEF6E5' },
+  sme: { labelKey: 'role.sme', accent: '#0F766E', wash: '#E6F9F6' },
+};
 
 const primaryGroups: Array<{ slug: string; items: readonly NavItem[] }> = [
   {
@@ -118,13 +129,13 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
       href={item.href}
       aria-current={active ? 'page' : undefined}
       aria-label={t(`tabs.${item.key}`)}
-      className={`flex items-center gap-3 rounded-[10px] border-2 px-3 py-3 text-sm transition-colors duration-[120ms] md:py-2.5 ${
+      className={`flex items-center gap-3 rounded-[10px] border-2 px-3 py-2.5 text-sm transition-all duration-[120ms] ${
         active
-          ? 'border-[var(--fv-border)] bg-[var(--fv-wash)] font-semibold text-[var(--fv-text)]'
-          : 'border-transparent text-[var(--fv-text-secondary)] hover:bg-[var(--fv-border-subtle)]'
+          ? 'border-[var(--fv-border-ink)] bg-[var(--fv-wash)] font-black text-[var(--fv-text)] shadow-[3px_3px_0_0_#1A1A2E] dark:shadow-[3px_3px_0_0_#000000]'
+          : 'border-transparent text-[var(--fv-text-secondary)] font-semibold hover:border-[var(--fv-border-ink)] hover:bg-[var(--fv-surface)] hover:text-[var(--fv-text)]'
       }`}
     >
-      <NavIcon size={20} strokeWidth={1.8} />
+      <NavIcon size={18} strokeWidth={2.2} />
       <span className="hidden md:inline">{t(`tabs.${item.key}`)}</span>
     </Link>
   );
@@ -132,18 +143,21 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 /**
  * Authenticated app shell: grouped sidebar + top bar. Guards unauthenticated users and
- * wires navigation, profile and logout.
+ * wires navigation, profile, interactive role-switching, and logout.
  */
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const logout = useAuthStore((s) => s.logout);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isRoleMenuOpen, setRoleMenuOpen] = useState(false);
   const bellRef = useRef<HTMLButtonElement>(null);
+  const roleMenuRef = useRef<HTMLDivElement>(null);
   const { notifications, unreadCount, markRead, markAllRead, announcement } = useNotifications();
   const { mode, setMode } = useTheme();
 
@@ -163,23 +177,46 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, router]);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (roleMenuRef.current && !roleMenuRef.current.contains(event.target as Node)) {
+        setRoleMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   if (!isAuthenticated) {
     return null;
   }
 
   const firstName = user?.fullName?.split(' ')[0] ?? '';
+  const currentRole = user?.primaryRole ?? 'individual';
+  const activeRoleBadge = ROLE_BADGES[currentRole];
 
   const handleLogout = async () => {
     await logout();
     router.replace('/login');
   };
 
+  const handleSwitchRole = async (newRole: PrimaryRole) => {
+    setRoleMenuOpen(false);
+    if (newRole === currentRole) return;
+    try {
+      const updated = await userApi.setRole({ primaryRole: newRole, scheme: 'standard' });
+      setUser(updated);
+    } catch {
+      if (user) setUser({ ...user, primaryRole: newRole });
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[var(--fv-bg)]">
-      <aside className="flex w-16 shrink-0 flex-col items-center gap-2 border-r border-[var(--fv-border-subtle)] bg-[var(--fv-surface)] py-5 md:w-56 md:items-stretch md:px-4">
-        <div className="mb-4 flex items-center gap-2 px-2">
+      <aside className="flex w-16 shrink-0 flex-col items-center gap-2 border-r-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] py-5 md:w-56 md:items-stretch md:px-4">
+        <div className="mb-4 flex items-center gap-2.5 px-2">
           <VaultMark size={36} />
-          <span className="font-display hidden text-lg font-bold text-[var(--fv-primary)] md:block">
+          <span className="hidden text-lg font-black uppercase tracking-wider text-[var(--fv-primary)] md:block">
             Finovault
           </span>
         </div>
@@ -209,29 +246,78 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             type="button"
             onClick={handleLogout}
             aria-label={t('profile.logout')}
-            className="flex items-center gap-3 rounded-[10px] border-2 border-transparent px-3 py-3 text-sm text-[var(--fv-text-secondary)] transition-colors duration-[120ms] hover:bg-[var(--fv-border-subtle)] md:py-2.5"
+            className="flex items-center gap-3 rounded-[10px] border-2 border-transparent px-3 py-2.5 text-sm font-semibold text-[var(--fv-text-secondary)] transition-all duration-[120ms] hover:border-[var(--fv-border-ink)] hover:bg-[var(--fv-surface)] hover:text-[var(--fv-text)] md:py-2"
           >
-            <LogOut size={20} strokeWidth={1.8} />
+            <LogOut size={18} strokeWidth={2.2} />
             <span className="hidden md:inline">{t('profile.logout')}</span>
           </button>
         </nav>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between border-b border-[var(--fv-border-subtle)] bg-[var(--fv-surface)] px-5">
-          <span className="text-sm font-medium text-[var(--fv-text-secondary)]">
-            {firstName}
-          </span>
-          <div className="flex items-center gap-2">
+        <header className="flex h-16 items-center justify-between border-b-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] px-5 shadow-[0_2px_0_0_rgba(26,26,46,0.06)]">
+          {/* User info & interactive role badge */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-black uppercase tracking-wider text-[var(--fv-text)]">
+              {firstName}
+            </span>
+
+            {/* Role Switcher Pill Dropdown */}
+            <div className="relative" ref={roleMenuRef}>
+              <button
+                type="button"
+                onClick={() => setRoleMenuOpen((v) => !v)}
+                aria-label={t('nav.switchRole')}
+                className="flex items-center gap-2 rounded-[8px] border-2 border-[var(--fv-border-ink)] px-3 py-1 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000] transition-all hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                style={{ backgroundColor: activeRoleBadge.wash, color: activeRoleBadge.accent }}
+              >
+                <span>{t(activeRoleBadge.labelKey)}</span>
+                <ChevronDown size={14} strokeWidth={3} className={`transition-transform duration-150 ${isRoleMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isRoleMenuOpen && (
+                <div className="absolute left-0 top-full z-50 mt-2 w-56 rounded-[12px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] p-2 shadow-[4px_4px_0_0_#1A1A2E] dark:shadow-[4px_4px_0_0_#000000]">
+                  <div className="mb-1.5 border-b border-[var(--fv-border-subtle)] px-2.5 pb-1 text-[10px] font-black uppercase tracking-wider text-[var(--fv-text-secondary)]">
+                    {t('nav.activeRole')}
+                  </div>
+                  {(['individual', 'freelancer', 'entrepreneur', 'sme'] as const).map((r) => {
+                    const itemConf = ROLE_BADGES[r];
+                    const isCurrent = currentRole === r;
+                    return (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => handleSwitchRole(r)}
+                        className={`flex w-full items-center justify-between rounded-[8px] border-2 px-3 py-2 text-xs font-black uppercase tracking-wider transition-all mb-1 ${
+                          isCurrent
+                            ? 'border-[var(--fv-border-ink)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]'
+                            : 'border-transparent text-[var(--fv-text)] hover:border-[var(--fv-border-ink)] hover:bg-[var(--fv-wash)]'
+                        }`}
+                        style={{
+                          backgroundColor: isCurrent ? itemConf.wash : undefined,
+                          color: isCurrent ? itemConf.accent : undefined,
+                        }}
+                      >
+                        <span>{t(itemConf.labelKey)}</span>
+                        {isCurrent ? <Check size={14} strokeWidth={3} /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => setMode(nextMode)}
               aria-label={t('settings.theme')}
               aria-pressed={mode === 'system'}
               title={`${t('settings.theme')}: ${modeTitle}`}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--fv-radius-control)] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] shadow-[var(--fv-shadow-hard-sm)] transition-all duration-[120ms] hover:-translate-y-0.5 hover:shadow-[var(--fv-shadow-hard)] active:translate-y-0.5 active:shadow-none"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000] transition-all duration-[120ms] hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#1A1A2E] active:translate-y-0 active:shadow-none"
             >
-              <ThemeIcon size={20} strokeWidth={1.8} className="text-[var(--fv-text)]" />
+              <ThemeIcon size={18} strokeWidth={2.2} className="text-[var(--fv-text)]" />
             </button>
             <NotificationBell
               unreadCount={unreadCount}
@@ -239,7 +325,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               onToggle={() => setDropdownOpen((v) => !v)}
               bellRef={bellRef}
             />
-            <span className="rounded-full bg-[var(--fv-primary-border)] px-3 py-1 text-xs font-semibold text-[var(--fv-primary)]">
+            <span className="rounded-[8px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-primary)] px-3 py-1 text-xs font-black uppercase tracking-wider text-[var(--fv-on-fill)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]">
               {t('profile.planBadge')}
             </span>
           </div>

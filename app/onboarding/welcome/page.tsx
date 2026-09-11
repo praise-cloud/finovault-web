@@ -39,11 +39,15 @@ export default function WelcomePage() {
       step={{ current: 4, total: 4 }}
     >
       <div className="flex flex-col items-center gap-5 text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--fv-wash)]">
-          <ShieldCheck size={28} className="text-[var(--fv-primary)]" strokeWidth={1.8} />
+        <div className="flex h-16 w-16 items-center justify-center rounded-[14px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-wash)] shadow-[4px_4px_0_0_#1A1A2E] dark:shadow-[4px_4px_0_0_#000000]">
+          <ShieldCheck size={32} className="text-[var(--fv-primary)]" strokeWidth={2.2} />
         </div>
 
-        <p className="text-sm leading-relaxed text-[var(--fv-text-secondary)]">
+        <div className="inline-flex items-center gap-2 rounded-[6px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] px-3 py-1 text-xs font-black uppercase tracking-wider text-[var(--fv-text)] shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]">
+          <span>Role: {roleLabel}</span>
+        </div>
+
+        <p className="text-xs leading-relaxed text-[var(--fv-text-secondary)]">
           {t('onboarding.securedNote')}
         </p>
 
@@ -54,15 +58,20 @@ export default function WelcomePage() {
           ].map(({ icon: Icon, text }) => (
             <li
               key={text}
-              className="flex items-center gap-3 rounded-[12px] border border-[var(--fv-primary-border)] bg-[var(--fv-surface)] px-3.5 py-3"
+              className="flex items-center gap-3 rounded-[10px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] px-3.5 py-3 shadow-[2px_2px_0_0_#1A1A2E] dark:shadow-[2px_2px_0_0_#000000]"
             >
-              <Icon size={18} className="shrink-0 text-[var(--fv-primary)]" strokeWidth={1.8} />
-              <span className="text-sm font-medium text-[var(--fv-text)]">{text}</span>
+              <Icon size={18} className="shrink-0 text-[var(--fv-primary)]" strokeWidth={2.2} />
+              <span className="text-xs font-bold text-[var(--fv-text)]">{text}</span>
             </li>
           ))}
         </ul>
 
-        <Button label={t('onboarding.finish')} onPress={handleFinish} fullWidth />
+        <Button
+          label={t('onboarding.finish')}
+          onPress={handleFinish}
+          fullWidth
+          className="mt-2 font-black uppercase tracking-wider text-base"
+        />
       </div>
     </AuthShell>
   );
