@@ -24,6 +24,9 @@ import type {
   TransactionDirection,
   Transfer,
   Vendor,
+  AppNotification,
+  MastercardPaymentRequest,
+  MastercardPaymentResponse,
 } from '@/types';
 import { computeTransferFee, computePensionProjection, computeSecurityScore } from '@/lib/utils/fees';
 import {
@@ -128,7 +131,17 @@ export const mockRoutes: MockRoute[] = [
       const user = token ? getUserByToken(token) : undefined;
       if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
       const patch = body as Partial<UserProfile>;
-      const allowed: Array<keyof UserProfile> = ['fullName', 'avatarUrl', 'preferredLanguage', 'preferredCurrency'];
+      const allowed: Array<keyof UserProfile> = [
+        'fullName',
+        'avatarUrl',
+        'preferredLanguage',
+        'preferredCurrency',
+        'subscriptionPlan',
+        'subscriptionStatus',
+        'subscriptionPeriod',
+        'mastercardLast4',
+        'mastercardExpiry',
+      ];
       const sanitized: Partial<UserProfile> = {};
       for (const key of allowed) {
         const value = patch[key];
@@ -1039,6 +1052,82 @@ export const mockRoutes: MockRoute[] = [
       list[index] = { ...list[index], readAt: now };
       db.setNotifications(uid, list);
       return ok({ id, readAt: now });
+    },
+  },
+  // ---- payment / mastercard ---------------------------------------------------
+  {
+    method: 'POST',
+    pattern: /^\/payment\/mastercard\/process$/,
+    handler: ({ token, body }) => {
+      const payload = body as MastercardPaymentRequest;
+      const {
+        planId,
+        billingPeriod = 'monthly',
+        amount,
+        currency = 'USD',
+        cardholderName,
+        cardNumber,
+        expiryMonth,
+        expiryYear,
+        cvc,
+        email,
+      } = payload || {};
+
+      if (!planId || !cardNumber || !expiryMonth || !expiryYear || !cvc || !cardholderName) {
+        return fail(ApiErrorCodes.VALIDATION, 'Missing required payment parameters.');
+      }
+
+      const cleanNum = cardNumber.replace(/\s+/g, '');
+      if (cleanNum.length < 15 || cleanNum.length > 19) {
+        return fail(ApiErrorCodes.VALIDATION, 'Invalid card number length.');
+      }
+
+      const last4 = cleanNum.slice(-4);
+      const transactionId = `MPGS_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
+      const authorizationCode = `MC${Math.floor(100000 + Math.random() * 900000)}`;
+      const timestamp = new Date().toISOString();
+      const expiryFormatted = `${expiryMonth.padStart(2, '0')}/${expiryYear.slice(-2)}`;
+
+      const user = token ? getUserByToken(token) : (email ? findUserByEmail(email.toLowerCase()) : undefined);
+      if (user) {
+        updateProfile(user.profile.id, {
+          subscriptionPlan: planId,
+          subscriptionStatus: 'active',
+          subscriptionPeriod: billingPeriod,
+          mastercardLast4: last4,
+          mastercardExpiry: expiryFormatted,
+        });
+
+        // Add a confirmation notification
+        const notifs = db.notificationsFor(user.profile.id);
+        const newNotif: AppNotification = {
+          id: nextId('notif'),
+          title: `Mastercard Payment Settled: ${planId.toUpperCase()} Plan`,
+          body: `Payment of ${currency} ${amount} authorized via MPGS (${authorizationCode}). Full plan features unlocked.`,
+          type: 'system',
+          createdAt: timestamp,
+          readAt: undefined,
+        };
+        db.setNotifications(user.profile.id, [newNotif, ...notifs]);
+      }
+
+      const response: MastercardPaymentResponse = {
+        success: true,
+        transactionId,
+        authorizationCode,
+        gateway: 'Mastercard Payment Gateway Services (MPGS)',
+        settlementStatus: 'SETTLED',
+        brand: 'Mastercard',
+        last4,
+        expiry: expiryFormatted,
+        amount,
+        currency,
+        planId,
+        timestamp,
+        receiptUrl: `https://mpgs.mastercard.com/receipt/${transactionId}`,
+      };
+
+      return ok(response);
     },
   },
 ];

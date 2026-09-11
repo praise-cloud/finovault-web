@@ -1,12 +1,13 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
 const tiers = [
-  { key: 'tierFree', featured: false },
-  { key: 'tierPlus', featured: true },
-  { key: 'tierBiz', featured: false },
+  { key: 'tierFree', href: '/signup', featured: false },
+  { key: 'tierPlus', href: '/checkout?plan=plus', featured: true },
+  { key: 'tierBiz', href: '/checkout?plan=business', featured: false },
 ] as const;
 
 const features = [1, 2, 3, 4] as const;
@@ -33,13 +34,13 @@ export function Pricing() {
         </div>
 
         <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 items-stretch">
-          {tiers.map(({ key, featured }) => (
+          {tiers.map(({ key, href, featured }) => (
             <div
               key={key}
               className={`p-8 border-2 transition-all flex flex-col justify-between ${
                 featured
                   ? 'border-[var(--fv-hp-accent)] bg-[#0c1529] shadow-[10px_10px_0_0_#1D4ED8] md:-translate-y-2'
-                  : 'border-white/20 bg-[#0d121c] shadow-[6px_6px_0_0_rgba(255,255,255,0.1)]'
+                  : 'border-white/20 bg-[#0d121c] shadow-[6px_6px_0_0_rgba(255,255,255,0.15)]'
               }`}
             >
               <div>
@@ -74,8 +75,8 @@ export function Pricing() {
               </div>
 
               <div className="mt-10">
-                <a
-                  href="/login"
+                <Link
+                  href={href}
                   className={`inline-flex min-h-[52px] w-full items-center justify-center rounded-none border-2 text-xs font-black uppercase tracking-[0.16em] transition-all cursor-pointer ${
                     featured
                       ? 'border-white bg-[var(--fv-hp-accent)] text-white shadow-[4px_4px_0_0_#ffffff] hover:shadow-[6px_6px_0_0_#ffffff] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none'
@@ -83,7 +84,7 @@ export function Pricing() {
                   }`}
                 >
                   {key === 'tierFree' ? t('hp.pricing.tierFree.cta') : t(`hp.pricing.${key}.cta`)}
-                </a>
+                </Link>
               </div>
             </div>
           ))}

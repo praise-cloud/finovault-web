@@ -2,3 +2,4 @@ export { api, setAccessToken, getAccessToken, initMockApi, setMockLatency, MOCK_
 export { authApi, userApi } from './auth';
 export type { SignupInput, LoginInput, AuthResult } from './auth';
 export { moneyApi } from './money';
+export { paymentApi } from './payment';

@@ -30,6 +30,40 @@ export interface UserProfile {
   preferredCurrency: string;
   createdAt: string;
   businessProfile?: BusinessProfile;
+  subscriptionPlan?: 'free' | 'plus' | 'business';
+  subscriptionStatus?: 'active' | 'trial' | 'inactive';
+  subscriptionPeriod?: 'monthly' | 'annually';
+  mastercardLast4?: string;
+  mastercardExpiry?: string;
+}
+
+export interface MastercardPaymentRequest {
+  planId: 'free' | 'plus' | 'business';
+  billingPeriod: 'monthly' | 'annually';
+  amount: number;
+  currency: string;
+  cardholderName: string;
+  cardNumber: string;
+  expiryMonth: string;
+  expiryYear: string;
+  cvc: string;
+  email: string;
+}
+
+export interface MastercardPaymentResponse {
+  success: boolean;
+  transactionId: string;
+  authorizationCode: string;
+  gateway: 'Mastercard Payment Gateway Services (MPGS)';
+  settlementStatus: 'SETTLED' | 'PENDING' | 'DECLINED';
+  brand: 'Mastercard';
+  last4: string;
+  expiry: string;
+  amount: number;
+  currency: string;
+  planId: 'free' | 'plus' | 'business';
+  timestamp: string;
+  receiptUrl?: string;
 }
 
 // ---- Money domain models (mirror finovault-flutter/lib/core/models.dart) ----
