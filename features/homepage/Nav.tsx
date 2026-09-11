@@ -62,7 +62,7 @@ export function Nav() {
           className="flex items-center gap-3 group cursor-pointer"
           aria-label="FINOVAULT home"
         >
-          <VaultMark size={34} subdued />
+          <VaultMark size={38} className="transition-transform group-hover:scale-105" />
           <span className="hp-display text-base font-black tracking-widest text-[var(--fv-hp-text-title)] group-hover:text-[var(--fv-hp-accent)] transition-colors">
             FINOVAULT
           </span>
