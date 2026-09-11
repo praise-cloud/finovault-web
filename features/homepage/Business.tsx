@@ -115,13 +115,6 @@ export function Business() {
               <span>{t('hp.nav.exploreBusiness', 'Explore for business')}</span>
               <ArrowRight size={16} />
             </Link>
-
-            <Link
-              href="/login"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-[6px] border-2 border-[var(--fv-hp-card-border)] bg-transparent px-8 py-4 text-xs font-black uppercase tracking-[0.18em] text-[var(--fv-hp-text-title)] shadow-[3px_3px_0_0_var(--fv-hp-border)] hover:bg-[var(--fv-hp-bg-alt)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer"
-            >
-              {t('hp.business.cta')}
-            </Link>
           </div>
         </div>
       </div>
