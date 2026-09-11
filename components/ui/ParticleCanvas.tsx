@@ -9,6 +9,8 @@ interface Particle {
   vy: number;
   radius: number;
   color: string;
+  phase: number;
+  pulseSpeed: number;
 }
 
 export function ParticleCanvas({ className = '' }: { className?: string }) {
@@ -22,8 +24,9 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+    let dpr = 1;
+    let width = 0;
+    let height = 0;
 
     let isDark = document.documentElement.classList.contains('dark');
 
@@ -50,25 +53,53 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
     };
 
     let colors = getColors();
-
-    const particleCount = Math.min(Math.floor((width * height) / 12000), 75);
     const particles: Particle[] = [];
 
-    const createParticle = (): Particle => {
+    const createParticle = (w: number, h: number): Particle => {
       const palette = colors.particles;
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.7,
-        vy: (Math.random() - 0.5) * 0.7,
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.65,
+        vy: (Math.random() - 0.5) * 0.65,
         radius: Math.random() * 2 + 1.2,
         color: palette[Math.floor(Math.random() * palette.length)],
+        phase: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.0015 + Math.random() * 0.002,
       };
     };
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(createParticle());
-    }
+    const setupCanvas = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = canvas.parentElement?.clientWidth || window.innerWidth;
+      height = canvas.parentElement?.clientHeight || window.innerHeight;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const isMobile = width < 768;
+      const targetCount = isMobile
+        ? Math.min(Math.max(Math.floor((width * height) / 6500), 40), 55)
+        : Math.min(Math.floor((width * height) / 11000), 80);
+
+      if (particles.length === 0) {
+        for (let i = 0; i < targetCount; i++) {
+          particles.push(createParticle(width, height));
+        }
+      } else if (particles.length < targetCount) {
+        while (particles.length < targetCount) {
+          particles.push(createParticle(width, height));
+        }
+      } else if (particles.length > targetCount) {
+        particles.length = targetCount;
+      }
+    };
+
+    setupCanvas();
 
     function updateColors() {
       colors = getColors();
@@ -77,7 +108,7 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
       });
     }
 
-    const mouse = { x: -9999, y: -9999, radius: 130 };
+    const mouse = { x: -9999, y: -9999, radius: 140 };
 
     const handlePointerMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -90,39 +121,62 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
       mouse.y = -9999;
     };
 
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches.length > 0) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.touches[0].clientX - rect.left;
+        mouse.y = e.touches[0].clientY - rect.top;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    };
+
     const handleResize = () => {
-      if (!canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
+      setupCanvas();
     };
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handlePointerMove);
     window.addEventListener('mouseleave', handlePointerLeave);
+    window.addEventListener('touchstart', handleTouchMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
 
-    const maxDistance = 115;
-
-    const render = () => {
+    const render = (time: number) => {
       ctx.clearRect(0, 0, width, height);
+
+      const isMobile = width < 768;
+      const maxDistance = isMobile ? 120 : 130;
+      const touchRadius = isMobile ? 160 : mouse.radius;
 
       // Update & render particles
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
-        p.x += p.vx;
-        p.y += p.vy;
+        // Harmonic ambient drift for lively organic motion
+        const harmonicX = Math.sin(time * 0.0009 + p.phase) * (isMobile ? 0.35 : 0.18);
+        const harmonicY = Math.cos(time * 0.0009 + p.phase) * (isMobile ? 0.35 : 0.18);
 
-        if (p.x < 0) p.x = width;
-        else if (p.x > width) p.x = 0;
+        p.x += p.vx + harmonicX;
+        p.y += p.vy + harmonicY;
 
-        if (p.y < 0) p.y = height;
-        else if (p.y > height) p.y = 0;
+        if (p.x < -10) p.x = width + 10;
+        else if (p.x > width + 10) p.x = -10;
 
-        // Particle circle
+        if (p.y < -10) p.y = height + 10;
+        else if (p.y > height + 10) p.y = -10;
+
+        const pulsedRadius = Math.max(0.8, p.radius + Math.sin(time * p.pulseSpeed + p.phase) * 0.45);
+
+        // Particle node
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, pulsedRadius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.shadowBlur = isDark ? 8 : 0;
+        ctx.shadowBlur = isDark ? (isMobile ? 10 : 8) : 0;
         ctx.shadowColor = p.color;
         ctx.fill();
 
@@ -134,29 +188,30 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDistance) {
-            const alpha = (1 - dist / maxDistance) * (isDark ? 0.28 : 0.18);
+            const alpha = (1 - dist / maxDistance) * (isDark ? (isMobile ? 0.34 : 0.28) : 0.18);
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
             ctx.strokeStyle = `rgba(${colors.lineRgb}, ${alpha})`;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = isMobile ? 1.1 : 1;
             ctx.shadowBlur = 0;
             ctx.stroke();
           }
         }
 
-        // Connect to mouse
+        // Connect to touch / pointer
         const mdx = p.x - mouse.x;
         const mdy = p.y - mouse.y;
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < mouse.radius) {
-          const mAlpha = (1 - mdist / mouse.radius) * (isDark ? 0.45 : 0.3);
+        if (mdist < touchRadius) {
+          const mAlpha = (1 - mdist / touchRadius) * (isDark ? 0.55 : 0.35);
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(mouse.x, mouse.y);
           ctx.strokeStyle = `rgba(${colors.mouseRgb}, ${mAlpha})`;
-          ctx.lineWidth = 1.2;
-          ctx.shadowBlur = 0;
+          ctx.lineWidth = isMobile ? 1.5 : 1.2;
+          ctx.shadowBlur = isDark ? 6 : 0;
+          ctx.shadowColor = `rgba(${colors.mouseRgb}, 0.5)`;
           ctx.stroke();
         }
       }
@@ -164,7 +219,7 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
       animationFrameId = requestAnimationFrame(render);
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -172,6 +227,10 @@ export function ParticleCanvas({ className = '' }: { className?: string }) {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handlePointerMove);
       window.removeEventListener('mouseleave', handlePointerLeave);
+      window.removeEventListener('touchstart', handleTouchMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, []);
 
