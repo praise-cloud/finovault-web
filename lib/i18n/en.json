@@ -130,7 +130,8 @@
     "reports": "Reports",
     "statements": "Statements",
     "help": "Help",
-    "settings": "Settings"
+    "settings": "Settings",
+    "gateway": "MPGS Gateway"
   },
   "nav": {
     "groups": {
@@ -144,7 +145,14 @@
     },
     "activeRole": "Active Role",
     "switchRole": "Switch Role",
-    "roleSwitched": "Switched to {role}"
+    "roleSwitched": "Switched to {role}",
+    "currentPlan": "Current Plan",
+    "upgradeToPlus": "Upgrade to Plus",
+    "upgradeToBiz": "Upgrade to Biz",
+    "featureLocked": "Package Upgrade Required",
+    "featureLockedDesc": "This capability requires the {plan} package.",
+    "upgradeCta": "Upgrade with Mastercard MPGS",
+    "previewAnyway": "Preview Screen Anyway"
   },
   "vault": {
     "createGoal": "Create goal",

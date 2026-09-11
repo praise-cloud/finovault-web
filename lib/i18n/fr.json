@@ -130,7 +130,8 @@
     "reports": "Rapports",
     "statements": "Relevés",
     "help": "Aide",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "gateway": "Passerelle MPGS"
   },
   "nav": {
     "groups": {
@@ -144,7 +145,14 @@
     },
     "activeRole": "Rôle Actif",
     "switchRole": "Changer de rôle",
-    "roleSwitched": "Passé à {role}"
+    "roleSwitched": "Passé à {role}",
+    "currentPlan": "Forfait Actuel",
+    "upgradeToPlus": "Passer à Plus",
+    "upgradeToBiz": "Passer à Business",
+    "featureLocked": "Mise à niveau de forfait requise",
+    "featureLockedDesc": "Cette fonctionnalité requiert le forfait {plan}.",
+    "upgradeCta": "Mettre à niveau avec Mastercard MPGS",
+    "previewAnyway": "Aperçu de la page quand même"
   },
   "vault": {
     "createGoal": "Créer un objectif",
