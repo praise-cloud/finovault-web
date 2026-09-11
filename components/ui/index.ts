@@ -16,3 +16,4 @@ export { ProgressRing } from './ProgressRing';
 export type { ProgressRingProps } from './ProgressRing';
 export { Icon } from './Icon';
 export type { IconProps, IconName } from './Icon';
+export { ParticleCanvas } from './ParticleCanvas';

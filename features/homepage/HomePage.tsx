@@ -18,7 +18,7 @@ import { TickerTape } from './TickerTape';
 
 export function HomePage() {
   return (
-    <div className="min-h-screen bg-[#0a0e17] text-white selection:bg-[var(--fv-hp-accent)] selection:text-white">
+    <div className="min-h-screen bg-[var(--fv-hp-bg)] text-[var(--fv-hp-text-title)] selection:bg-[var(--fv-hp-accent)] selection:text-white transition-colors duration-200">
       <Nav />
       <main>
         <Hero />
