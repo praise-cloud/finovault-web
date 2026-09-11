@@ -13,41 +13,66 @@ export function Roadmap() {
   const { t } = useTranslation();
 
   return (
-    <section aria-label="Roadmap" className="bg-[#0a0e17] py-24 md:py-32">
+    <section aria-label="Roadmap" className="bg-[#0a0e17] py-24 md:py-32 border-t-2 border-white/10">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
+        <div className="mb-4 inline-flex items-center gap-2 border-2 border-[var(--fv-hp-accent)] bg-[var(--fv-hp-accent-light)] px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-white">
+          [ 06 / EXECUTION ROADMAP ]
+        </div>
         <h2
-          className="hp-display text-[var(--fv-hp-display-lg)] font-bold text-white"
+          className="hp-display text-[var(--fv-hp-display-lg)] font-black leading-tight tracking-tight text-white uppercase"
           style={{ textWrap: 'balance' }}
         >
           {t('hp.roadmap.title')}
         </h2>
+
         <div className="relative mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* Connector line — desktop only */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-[16.67%] right-[16.67%] top-12 hidden h-px bg-white/10 md:block"
-          />
-          {phases.map(({ key, statusClass }) => (
-            <div key={key} className="relative border border-white/12 p-8">
-              <p className="text-sm font-medium text-[var(--fv-hp-text-muted)]">{t(`hp.roadmap.${key}.phase`)}</p>
-              <h3 className="hp-display mt-2 text-[var(--fv-hp-display-md)] font-bold text-white">
-                {t(`hp.roadmap.${key}.title`)}
-              </h3>
-              <span
-                className={`mt-3 inline-block rounded-none border px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] ${statusClass}`}
+          {phases.map(({ key, statusClass }, idx) => {
+            const isCurrent = key === 'phase1';
+            return (
+              <div
+                key={key}
+                className={`relative p-8 border-2 transition-all ${
+                  isCurrent
+                    ? 'border-[var(--fv-hp-accent)] bg-[#0c1426] shadow-[8px_8px_0_0_#1D4ED8]'
+                    : 'border-white/20 bg-[#0d121c] shadow-[6px_6px_0_0_rgba(255,255,255,0.1)]'
+                }`}
               >
-                {t(`hp.roadmap.${key}.status`)}
-              </span>
-              <ul className="mt-6 space-y-2">
-                {[1, 2, 3].map((i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm font-medium text-[var(--fv-hp-text-body)]">
-                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 bg-[var(--fv-hp-accent)]" />
-                    {t(`hp.roadmap.${key}.item${i}`)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                <div className="flex justify-between items-center border-b-2 border-white/15 pb-4 mb-4">
+                  <span className="font-mono text-xs font-black uppercase tracking-widest text-[var(--fv-hp-accent-hover)]">
+                    {t(`hp.roadmap.${key}.phase`)}
+                  </span>
+                  <span className="font-mono text-xs font-black text-white/40">
+                    0{idx + 1} // 03
+                  </span>
+                </div>
+
+                <h3 className="hp-display text-2xl font-black text-white uppercase tracking-tight">
+                  {t(`hp.roadmap.${key}.title`)}
+                </h3>
+
+                <div className="mt-3">
+                  <span
+                    className={`inline-block rounded-none border-2 px-2.5 py-1 text-[0.68rem] font-black uppercase tracking-[0.14em] ${
+                      isCurrent
+                        ? 'border-[var(--fv-hp-accent)] bg-[var(--fv-hp-accent)] text-white'
+                        : 'border-white/30 bg-white/5 text-white/70'
+                    }`}
+                  >
+                    {t(`hp.roadmap.${key}.status`)}
+                  </span>
+                </div>
+
+                <ul className="mt-8 space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm font-semibold text-[var(--fv-hp-text-body)]">
+                      <span className="mt-1 h-2 w-2 flex-shrink-0 bg-[var(--fv-hp-accent)]" />
+                      <span>{t(`hp.roadmap.${key}.item${i}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
