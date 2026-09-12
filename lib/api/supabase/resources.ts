@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { PensionPlan } from '@/types';
+import type { PensionPlan, Account, AccountType, AccountVerificationResult, BankLinkResult } from '@/types';
 import type { ApiResponse } from '@/types/api';
 import { ApiErrorCodes } from '@/types/api';
 import { computeTransferFee, computePensionProjection, computeSecurityScore } from '@/lib/utils/fees';
@@ -145,6 +145,218 @@ export async function deleteAccount(
   const uid = await requireUserId(supabase, token);
   await supabase.from('accounts').delete().eq('id', accountId).eq('user_id', uid);
   return ok({ success: true });
+}
+
+const NIGERIAN_BANKS = ['GTBank', 'Access Bank', 'Zenith Bank', 'First Bank', 'UBA', 'Kuda Bank', 'Moniepoint', 'Stanbic IBTC', 'Fidelity Bank'];
+const NIGERIAN_WALLETS = ['OPay', 'PalmPay'];
+const MAURITIAN_BANKS = ['MCB', 'SBM', 'Bank One', 'Maubank', 'Absa Bank Mauritius'];
+const MAURITIAN_WALLETS = ['Juice', 'my.t money', 'Emtel Money'];
+
+const FIRST_NAMES = [
+  'Ade', 'Chioma', 'Emeka', 'Fatima', 'Ibrahim', 'Kehinde', 'Ngozi', 'Oluwaseun', 'Tunde', 'Zainab',
+  'Aarav', 'Aditi', 'Aisha', 'Arjun', 'Bhavesh', 'Chaya', 'Deepak', 'Esha', 'Farid', 'Geeta',
+  'Hassan', 'Indira', 'Jaya', 'Kabir', 'Leela', 'Manoj', 'Nadia', 'Omkar', 'Priya', 'Rahul'
+];
+const LAST_NAMES = [
+  'Adeyemi', 'Balogun', 'Chukwu', 'Danjuma', 'Eze', 'Ibrahim', 'Okafor', 'Okonkwo', 'Okoro', 'Suleiman',
+  'Bundhoo', 'Chowdhury', 'Dinavia', 'Gooljar', 'Hossen', 'Jhugroo', 'Kistnen', 'Lallah', 'Mootoosamy'
+];
+
+function deterministicName(identifier: string): string {
+  let h = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    h = ((h << 5) - h + identifier.charCodeAt(i)) | 0;
+  }
+  h = Math.abs(h);
+  return `${FIRST_NAMES[h % FIRST_NAMES.length]} ${LAST_NAMES[(h >> 8) % LAST_NAMES.length]}`;
+}
+
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+export async function verifyAccount(
+  supabase: SupabaseClient,
+  token: string | null,
+  body: unknown
+): Promise<ApiResponse<AccountVerificationResult>> {
+  await requireUserId(supabase, token);
+  const { institution, identifier, holderName } = (body || {}) as {
+    institution?: string;
+    identifier?: string;
+    holderName?: string;
+  };
+  if (!institution || !identifier) {
+    return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
+  }
+  const idStr = identifier.trim();
+  const isNigerian = NIGERIAN_BANKS.includes(institution) || NIGERIAN_WALLETS.includes(institution);
+  const isBank = NIGERIAN_BANKS.includes(institution) || MAURITIAN_BANKS.includes(institution);
+
+  let valid = false;
+  if (isNigerian) {
+    valid = isBank ? /^\d{10}$/.test(idStr) : /^(\+?234|0)?[789][01]\d{8}$|^\d{10,11}$/.test(idStr);
+  } else {
+    valid = isBank ? /^\d{8,16}$/.test(idStr) : /^[5-7]\d{4,7}$/.test(idStr);
+  }
+
+  if (!valid) {
+    return ok({ exists: false, holderName: null, verified: false });
+  }
+
+  const expectedName = deterministicName(idStr);
+  const userSpecified = (holderName || '').trim();
+  const verified = userSpecified ? userSpecified.toLowerCase() === expectedName.toLowerCase() : true;
+
+  return ok({
+    exists: true,
+    holderName: expectedName,
+    verified,
+  });
+}
+
+export async function linkBankAccount(
+  supabase: SupabaseClient,
+  token: string | null,
+  body: unknown
+): Promise<ApiResponse<BankLinkResult>> {
+  const uid = await requireUserId(supabase, token);
+  const { institution, accountNumber, holderName, country } = (body || {}) as {
+    institution?: string;
+    accountNumber?: string;
+    holderName?: string;
+    country?: string;
+  };
+
+  if (!institution || !accountNumber?.trim()) {
+    return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
+  }
+
+  const acctNum = accountNumber.trim();
+  const isNigerian =
+    country === 'NG' ||
+    NIGERIAN_BANKS.includes(institution) ||
+    NIGERIAN_WALLETS.includes(institution);
+  const isWallet =
+    NIGERIAN_WALLETS.includes(institution) ||
+    MAURITIAN_WALLETS.includes(institution);
+  const isBank = !isWallet;
+
+  if (isNigerian) {
+    if (isBank && !/^\d{10}$/.test(acctNum)) {
+      return fail(ApiErrorCodes.VALIDATION, 'Nigerian bank account number (NUBAN) must be 10 digits.');
+    }
+    if (!isBank && !/^(\+?234|0)?[789][01]\d{8}$|^\d{10,11}$/.test(acctNum)) {
+      return fail(ApiErrorCodes.VALIDATION, 'Nigerian wallet number must be 10–11 digits.');
+    }
+  } else {
+    if (isBank && !/^\d{8,16}$/.test(acctNum)) {
+      return fail(ApiErrorCodes.VALIDATION, 'Bank account number must be 8–16 digits.');
+    }
+    if (!isBank && !/^[5-7]\d{4,7}$/.test(acctNum)) {
+      return fail(ApiErrorCodes.VALIDATION, 'Mobile money number must be 5–8 digits starting with 5–7.');
+    }
+  }
+
+  const verifiedHolderName = holderName?.trim() || deterministicName(acctNum);
+  const seed = hashCode(institution + acctNum);
+  const currency = isNigerian ? 'NGN' : 'MUR';
+  const last4 = acctNum.slice(-4);
+  const startingBalance = isNigerian
+    ? (isWallet ? 25000 + (seed % 35000) : 350000 + (seed % 500000))
+    : (isWallet ? 3200 + (seed % 900) : 64000 + (seed % 40000));
+
+  const accountType: AccountType = isWallet ? 'mobileMoney' : 'bank';
+  const accountName = `${institution} ••${last4} (${verifiedHolderName})`;
+
+  // 1. Create account
+  const { data: newAccount, error: accError } = await supabase
+    .from('accounts')
+    .insert({
+      user_id: uid,
+      name: accountName,
+      type: accountType,
+      balance: startingBalance,
+      currency,
+      institution,
+      is_active: true,
+    })
+    .select()
+    .single();
+
+  if (accError || !newAccount) {
+    return fail(ApiErrorCodes.INTERNAL, accError?.message || 'Failed to link account.');
+  }
+
+  // 2. Automatically generate and seed 45 days of realistic transaction history
+  const spendCats = isNigerian
+    ? ['groceries', 'transport', 'utilities', 'dining', 'airtime', 'shopping']
+    : ['groceries', 'transport', 'utilities', 'dining', 'software', 'supplies'];
+  const merchants = isNigerian
+    ? ['Jumia', 'Chicken Republic', 'MTN Airtime', 'Ikeja Electric', 'Fuel / NNPC', 'Spar Supermarket', 'Uber Lagos', 'Konga', 'DSTV']
+    : ['Shoprite', 'Bus ticket', 'CEB', 'Lambrooks', 'Flicks', 'Canva', 'Office Supplies', 'Super U'];
+
+  const transactionsToInsert: Array<Record<string, unknown>> = [];
+  const now = Date.now();
+
+  for (let d = 1; d <= 45; d++) {
+    const k = (seed + d * 7) % 10;
+    const date = new Date(now - d * 86400000).toISOString();
+
+    if (d % 3 === 0) {
+      // Inflow
+      const creditAmt = isNigerian
+        ? (isWallet ? 15000 + (k * 2500) : 120000 + (k * 25000))
+        : (isWallet ? 60 + (k * 17) : 1400 + (k * 320));
+      transactionsToInsert.push({
+        user_id: uid,
+        account_id: newAccount.id,
+        amount: creditAmt,
+        currency,
+        direction: 'in',
+        category: isWallet ? 'client payment' : 'salary',
+        merchant_name: isWallet ? 'Transfer in' : 'Payroll / Salary',
+        date,
+        is_expense: false,
+        is_recurring: d % 15 === 0,
+        status: 'posted',
+      });
+    }
+
+    if (d % 2 === 0) {
+      // Expense
+      const debitAmt = isNigerian
+        ? (isWallet ? 2500 + (k * 800) : 12000 + (k * 3500))
+        : (isWallet ? 40 + (k * 9) : 380 + (k * 70));
+      transactionsToInsert.push({
+        user_id: uid,
+        account_id: newAccount.id,
+        amount: debitAmt,
+        currency,
+        direction: 'out',
+        category: spendCats[k % spendCats.length],
+        merchant_name: merchants[k % merchants.length],
+        date,
+        is_expense: true,
+        is_recurring: false,
+        status: 'posted',
+      });
+    }
+  }
+
+  if (transactionsToInsert.length > 0) {
+    await supabase.from('transactions').insert(transactionsToInsert);
+  }
+
+  return ok({
+    account: snakeToCamel(newAccount) as Account,
+    imported: transactionsToInsert.length,
+  });
 }
 
 // ── transactions ───────────────────────────────────────────────────────────

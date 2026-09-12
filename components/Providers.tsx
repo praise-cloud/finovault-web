@@ -7,6 +7,8 @@ import { initMockApi, setMockLatency } from '@/lib/api';
 import { ThemeProvider } from '@/lib/theme';
 import { useAuthStore } from '@/stores/auth-store';
 
+import { BrutalistLoading } from '@/components/ui/BrutalistLoading';
+
 /**
  * Client-side providers: mock API boot, i18n-ready theme and react-query.
  * Kept small so layout.tsx stays a server component.
@@ -26,14 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
 
   if (!ready) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--fv-bg)]">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-2 border-[var(--fv-primary)] border-t-transparent" />
-          <p className="text-sm text-[var(--fv-text-secondary)]">Finovault</p>
-        </div>
-      </div>
-    );
+    return <BrutalistLoading />;
   }
 
   return (

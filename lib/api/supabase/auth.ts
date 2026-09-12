@@ -23,6 +23,8 @@ export async function verifyPassword(password: string, stored: string): Promise<
 }
 
 function toProfile(row: Record<string, unknown>): UserProfile {
+  const preferredCurrency = (row.preferred_currency as string) ?? 'NGN';
+  const country = (row.country as string) ?? (preferredCurrency === 'MUR' ? 'MU' : 'NG');
   return {
     id: row.id as string,
     email: row.email as string,
@@ -32,7 +34,9 @@ function toProfile(row: Record<string, unknown>): UserProfile {
     secondaryRoles: ((row.secondary_roles as string[]) as PrimaryRole[]) ?? [],
     scheme: (row.scheme as UserProfile['scheme']) ?? 'standard',
     preferredLanguage: (row.preferred_language as 'en' | 'fr') ?? 'en',
-    preferredCurrency: (row.preferred_currency as string) ?? 'MUR',
+    preferredCurrency,
+    country,
+    phone: (row.phone as string) ?? undefined,
     createdAt: row.created_at as string,
     businessProfile: row.business_profile ? (row.business_profile as UserProfile['businessProfile']) : undefined,
   };
@@ -42,9 +46,17 @@ export async function signup(
   supabase: SupabaseClient,
   body: unknown
 ): Promise<ApiResponse<{ user: UserProfile; session: { accessToken: string } }>> {
-  const { email, password, fullName } = (body || {}) as { email?: string; password?: string; fullName?: string };
+  const { email, password, fullName, country, phone } = (body || {}) as {
+    email?: string;
+    password?: string;
+    fullName?: string;
+    country?: string;
+    phone?: string;
+  };
   const normalized = String(email || '').trim().toLowerCase();
   const trimmedName = String(fullName || '').trim();
+  const userCountry = country === 'MU' ? 'MU' : 'NG';
+  const preferredCurrency = userCountry === 'NG' ? 'NGN' : 'MUR';
 
   if (!normalized || !password || !trimmedName) {
     return fail(ApiErrorCodes.VALIDATION, 'Missing required fields.');
@@ -70,7 +82,7 @@ export async function signup(
   const uid = authData.user.id;
 
   // The PostgreSQL trigger on auth.users automatically created the profile row.
-  // We update full_name and ensure role fields are properly set.
+  // We update full_name and ensure country, currency, and role fields are properly set.
   await supabase
     .from('profiles')
     .update({
@@ -78,7 +90,9 @@ export async function signup(
       primary_role: 'individual',
       scheme: 'standard',
       preferred_language: 'en',
-      preferred_currency: 'MUR',
+      preferred_currency: preferredCurrency,
+      country: userCountry,
+      phone: phone?.trim() || null,
     })
     .eq('id', uid);
 

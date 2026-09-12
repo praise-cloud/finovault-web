@@ -49,6 +49,8 @@ export async function handleBffRequest(
     if (first === 'accounts') {
       if (method === 'GET' && segments.length === 1) return res.listAccounts(supabase, token);
       if (method === 'POST' && segments.length === 1) return res.createAccount(supabase, token, body);
+      if (method === 'POST' && second === 'verify') return res.verifyAccount(supabase, token, body);
+      if (method === 'POST' && second === 'link') return res.linkBankAccount(supabase, token, body);
       if (method === 'DELETE' && segments.length === 2) return res.deleteAccount(supabase, token, second);
     }
 

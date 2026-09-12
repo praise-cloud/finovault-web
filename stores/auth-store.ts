@@ -14,7 +14,14 @@ interface AuthState {
   status: 'idle' | 'authenticating' | 'authenticated' | 'error';
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (input: { fullName: string; email: string; password: string }) => Promise<void>;
+  signup: (input: {
+    fullName: string;
+    email: string;
+    password: string;
+    phone?: string;
+    country?: 'NG' | 'MU' | string;
+    preferredCurrency?: string;
+  }) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: UserProfile) => void;
   setSession: (session: ServerSession, user: UserProfile) => void;

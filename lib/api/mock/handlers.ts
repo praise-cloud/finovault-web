@@ -267,6 +267,156 @@ export const mockRoutes: MockRoute[] = [
     },
   },
   {
+    method: 'POST',
+    pattern: /^\/accounts\/verify$/,
+    handler: ({ token, body }) => {
+      const user = token ? getUserByToken(token) : undefined;
+      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+      const { institution, identifier, holderName } = body as {
+        institution?: string;
+        identifier?: string;
+        holderName?: string;
+      };
+      if (!institution || !identifier) {
+        return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
+      }
+      const nigerianBanks = ['GTBank', 'Access Bank', 'Zenith Bank', 'First Bank', 'UBA', 'Kuda Bank', 'Moniepoint', 'Stanbic IBTC', 'Fidelity Bank'];
+      const nigerianWallets = ['OPay', 'PalmPay'];
+      const isNigerian = nigerianBanks.includes(institution) || nigerianWallets.includes(institution);
+      const isBank = !nigerianWallets.includes(institution) && institution !== 'Juice' && institution !== 'my.t money' && institution !== 'Emtel Money';
+      
+      const idStr = identifier.trim();
+      let valid = false;
+      if (isNigerian) {
+        valid = isBank ? /^\d{10}$/.test(idStr) : /^(\+?234|0)?[789][01]\d{8}$|^\d{10,11}$/.test(idStr);
+      } else {
+        valid = isBank ? /^\d{8,16}$/.test(idStr) : /^[5-7]\d{4,7}$/.test(idStr);
+      }
+      if (!valid) return ok({ exists: false, holderName: null, verified: false });
+
+      const firstNames = ['Ade', 'Chioma', 'Emeka', 'Fatima', 'Ibrahim', 'Kehinde', 'Ngozi', 'Oluwaseun', 'Tunde', 'Zainab', 'Aarav', 'Priya'];
+      const lastNames = ['Adeyemi', 'Balogun', 'Chukwu', 'Danjuma', 'Eze', 'Ibrahim', 'Okafor', 'Okonkwo', 'Okoro', 'Suleiman'];
+      let h = 0;
+      for (let i = 0; i < idStr.length; i++) h = ((h << 5) - h + idStr.charCodeAt(i)) | 0;
+      h = Math.abs(h);
+      const resolved = `${firstNames[h % firstNames.length]} ${lastNames[(h >> 4) % lastNames.length]}`;
+      const match = holderName ? holderName.trim().toLowerCase() === resolved.toLowerCase() : true;
+      return ok({ exists: true, holderName: resolved, verified: match });
+    },
+  },
+  {
+    method: 'POST',
+    pattern: /^\/accounts\/link$/,
+    handler: ({ token, body }) => {
+      const user = token ? getUserByToken(token) : undefined;
+      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+      const { institution, accountNumber, holderName, country } = body as {
+        institution: string;
+        accountNumber: string;
+        holderName?: string;
+        country?: string;
+      };
+      if (!institution || !accountNumber?.trim()) {
+        return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
+      }
+      const acctNum = accountNumber.trim();
+      const nigerianBanks = ['GTBank', 'Access Bank', 'Zenith Bank', 'First Bank', 'UBA', 'Kuda Bank', 'Moniepoint', 'Stanbic IBTC', 'Fidelity Bank'];
+      const nigerianWallets = ['OPay', 'PalmPay'];
+      const isNigerian = country === 'NG' || nigerianBanks.includes(institution) || nigerianWallets.includes(institution);
+      const isWallet = nigerianWallets.includes(institution) || institution === 'Juice' || institution === 'my.t money' || institution === 'Emtel Money';
+      const isBank = !isWallet;
+
+      if (isNigerian) {
+        if (isBank && !/^\d{10}$/.test(acctNum)) {
+          return fail(ApiErrorCodes.VALIDATION, 'Nigerian bank account number (NUBAN) must be 10 digits.');
+        }
+        if (!isBank && !/^(\+?234|0)?[789][01]\d{8}$|^\d{10,11}$/.test(acctNum)) {
+          return fail(ApiErrorCodes.VALIDATION, 'Nigerian wallet number must be 10–11 digits.');
+        }
+      } else {
+        if (isBank && !/^\d{8,16}$/.test(acctNum)) {
+          return fail(ApiErrorCodes.VALIDATION, 'Bank account number must be 8–16 digits.');
+        }
+        if (!isBank && !/^[5-7]\d{4,7}$/.test(acctNum)) {
+          return fail(ApiErrorCodes.VALIDATION, 'Mobile money number must be 5–8 digits starting with 5–7.');
+        }
+      }
+
+      let h = 0;
+      for (let i = 0; i < acctNum.length; i++) h = ((h << 5) - h + acctNum.charCodeAt(i)) | 0;
+      h = Math.abs(h);
+      const firstNames = ['Ade', 'Chioma', 'Emeka', 'Fatima', 'Ibrahim', 'Kehinde', 'Ngozi', 'Oluwaseun', 'Tunde', 'Zainab'];
+      const lastNames = ['Adeyemi', 'Balogun', 'Chukwu', 'Danjuma', 'Eze', 'Ibrahim', 'Okafor', 'Okonkwo', 'Okoro', 'Suleiman'];
+      const resolvedName = holderName?.trim() || `${firstNames[h % firstNames.length]} ${lastNames[(h >> 4) % lastNames.length]}`;
+      const currency = isNigerian ? 'NGN' : 'MUR';
+      const last4 = acctNum.slice(-4);
+      const startingBalance = isNigerian
+        ? (isWallet ? 25000 + (h % 35000) : 350000 + (h % 500000))
+        : (isWallet ? 3200 + (h % 900) : 64000 + (h % 40000));
+
+      const account: Account = {
+        id: nextId('acc'),
+        name: `${institution} ••${last4} (${resolvedName})`,
+        type: isWallet ? 'mobileMoney' : 'bank',
+        balance: startingBalance,
+        currency,
+        institution,
+        isActive: true,
+      };
+      db.addAccount(user.profile.id, account);
+
+      const spendCats = isNigerian
+        ? ['groceries', 'transport', 'utilities', 'dining', 'airtime', 'shopping']
+        : ['groceries', 'transport', 'utilities', 'dining', 'software', 'supplies'];
+      const merchants = isNigerian
+        ? ['Jumia', 'Chicken Republic', 'MTN Airtime', 'Ikeja Electric', 'Fuel / NNPC', 'Spar Supermarket', 'Uber Lagos', 'Konga']
+        : ['Shoprite', 'Bus ticket', 'CEB', 'Lambrooks', 'Flicks', 'Canva', 'Office Supplies', 'Super U'];
+
+      let imported = 0;
+      const now = Date.now();
+      for (let d = 1; d <= 45; d++) {
+        const k = (h + d * 7) % 10;
+        const date = new Date(now - d * 86400000).toISOString();
+        if (d % 3 === 0) {
+          const creditAmt = isNigerian ? (isWallet ? 15000 + (k * 2500) : 120000 + (k * 25000)) : (isWallet ? 60 + (k * 17) : 1400 + (k * 320));
+          db.addTransaction(user.profile.id, {
+            id: nextId('tx'),
+            accountId: account.id,
+            amount: creditAmt,
+            currency,
+            direction: 'in',
+            category: isWallet ? 'client payment' : 'salary',
+            merchantName: isWallet ? 'Transfer in' : 'Payroll / Salary',
+            date,
+            isExpense: false,
+            isRecurring: d % 15 === 0,
+            status: 'posted',
+          });
+          imported++;
+        }
+        if (d % 2 === 0) {
+          const debitAmt = isNigerian ? (isWallet ? 2500 + (k * 800) : 12000 + (k * 3500)) : (isWallet ? 40 + (k * 9) : 380 + (k * 70));
+          db.addTransaction(user.profile.id, {
+            id: nextId('tx'),
+            accountId: account.id,
+            amount: debitAmt,
+            currency,
+            direction: 'out',
+            category: spendCats[k % spendCats.length],
+            merchantName: merchants[k % merchants.length],
+            date,
+            isExpense: true,
+            isRecurring: false,
+            status: 'posted',
+          });
+          imported++;
+        }
+      }
+
+      return ok({ account, imported });
+    },
+  },
+  {
     method: 'DELETE',
     pattern: /^\/accounts\/([\w-]+)$/,
     handler: ({ token, params }) => {

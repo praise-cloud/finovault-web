@@ -6,6 +6,9 @@ export interface SignupInput {
   fullName: string;
   email: string;
   password: string;
+  phone?: string;
+  country?: 'NG' | 'MU' | string;
+  preferredCurrency?: string;
 }
 
 export interface LoginInput {
