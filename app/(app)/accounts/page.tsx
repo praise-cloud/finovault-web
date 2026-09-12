@@ -2,38 +2,64 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+import { Landmark, Plus } from 'lucide-react';
 import { GlassCard, SectionHeader, Button, TextField, EmptyState, Icon } from '@/components/ui';
-import { useAccounts, useLinkAccount, useUnlinkAccount, useTransactions } from '@/lib/hooks/use-money';
+import { useAccounts, useLinkAccount, useUnlinkAccount, useTransactions, moneyKeys } from '@/lib/hooks/use-money';
 import { formatMoney, formatDate } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth-store';
+import { LinkAccountModal } from '@/components/banking/LinkAccountModal';
 import type { Account, AccountType } from '@/types';
 
 const ACCOUNT_TYPES: AccountType[] = ['bank', 'mobileMoney', 'cash', 'other'];
 
 export default function AccountsPage() {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
   const currency = user?.preferredCurrency ?? 'MUR';
+  const userCountry = user?.country || (currency === 'NGN' ? 'NG' : 'MU');
 
   const { data: accounts = [] } = useAccounts();
   const linkAccount = useLinkAccount();
   const unlinkAccount = useUnlinkAccount();
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
   const [type, setType] = useState<AccountType>('bank');
   const [balance, setBalance] = useState('');
+
+  const handleLinkSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: moneyKeys.accounts });
+    queryClient.invalidateQueries({ queryKey: ['money', 'transactions'] });
+  };
 
   const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
   const totalActive = accounts.filter((a) => a.isActive).length;
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <SectionHeader
-        title={t('tabs.accounts')}
-        actionLabel={showForm ? t('common.cancel') : t('accounts.link')}
-        onAction={() => setShowForm((v) => !v)}
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <SectionHeader title={t('tabs.accounts')} />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-2 rounded-[8px] border-2 border-[var(--fv-border-ink)] bg-[#1D4ED8] px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white shadow-[3px_3px_0_0_#ffffff] transition-transform active:translate-x-0.5 active:translate-y-0.5"
+          >
+            <Landmark size={15} />
+            <span>Link Bank / Wallet (Auto Sync)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowForm((v) => !v)}
+            className="rounded-[8px] border-2 border-[var(--fv-border-ink)] bg-[var(--fv-surface)] px-3 py-2 text-xs font-bold text-[var(--fv-text-secondary)] hover:text-[var(--fv-text)]"
+          >
+            {showForm ? t('common.cancel') : '+ Manual'}
+          </button>
+        </div>
+      </div>
 
       <GlassCard className="flex items-center justify-between">
         <div>
@@ -107,6 +133,13 @@ export default function AccountsPage() {
           ))}
         </div>
       )}
+
+      <LinkAccountModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        defaultCountry={userCountry}
+        onSuccess={handleLinkSuccess}
+      />
     </div>
   );
 }

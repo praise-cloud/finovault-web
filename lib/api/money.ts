@@ -2,6 +2,8 @@ import { api } from './client';
 import type {
   Account,
   AccountType,
+  AccountVerificationResult,
+  BankLinkResult,
   AppNotification,
   BillCategory,
   BillPayment,
@@ -43,6 +45,17 @@ export const moneyApi = {
     balance?: number;
     institution?: string;
   }) => api.post<Account>('/accounts', input),
+  verifyAccount: (input: {
+    institution: string;
+    identifier: string;
+    holderName?: string;
+  }) => api.post<AccountVerificationResult>('/accounts/verify', input),
+  linkBankAccount: (input: {
+    institution: string;
+    accountNumber: string;
+    holderName?: string;
+    country?: string;
+  }) => api.post<BankLinkResult>('/accounts/link', input),
   unlinkAccount: (accountId: string) => api.delete<{ success: boolean }>(`/accounts/${accountId}`),
 
   // ---- transactions ---------------------------------------------------------

@@ -13,6 +13,7 @@ export const signupSchema = z.object({
   email,
   password,
   phone: z.string().optional(),
+  country: z.enum(['NG', 'MU']),
 });
 
 export const loginSchema = z.object({

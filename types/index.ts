@@ -35,6 +35,27 @@ export interface UserProfile {
   subscriptionPeriod?: 'monthly' | 'annually';
   mastercardLast4?: string;
   mastercardExpiry?: string;
+  country?: 'NG' | 'MU' | string;
+  phone?: string;
+}
+
+export interface Institution {
+  id: string;
+  name: string;
+  type: AccountType;
+  country: 'NG' | 'MU';
+  blurb?: string;
+}
+
+export interface BankLinkResult {
+  account: Account;
+  imported: number;
+}
+
+export interface AccountVerificationResult {
+  exists: boolean;
+  holderName: string | null;
+  verified: boolean;
 }
 
 export interface MastercardPaymentRequest {

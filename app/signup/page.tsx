@@ -19,23 +19,35 @@ export default function SignupPage() {
   const signup = useAuthStore((s) => s.signup);
   const [formError, setFormError] = useState<string | null>(null);
   const [strength, setStrength] = useState(0);
+  const [country, setCountry] = useState<'NG' | 'MU'>('NG');
 
   const {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { fullName: '', email: '', password: '' },
+    defaultValues: { fullName: '', email: '', password: '', phone: '', country: 'NG' },
   });
 
-  const passwordValue = watch('password') ?? '';
+  const handleCountryChange = (c: 'NG' | 'MU') => {
+    setCountry(c);
+    setValue('country', c);
+  };
 
   const onSubmit = async (values: SignupValues) => {
     try {
       setFormError(null);
-      await signup({ fullName: values.fullName, email: values.email, password: values.password });
+      await signup({
+        fullName: values.fullName,
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+        country: values.country || country,
+        preferredCurrency: (values.country || country) === 'NG' ? 'NGN' : 'MUR',
+      });
       router.replace('/onboarding/role');
     } catch (err) {
       setFormError(err instanceof Error ? err.message : t('common.error'));
@@ -49,20 +61,75 @@ export default function SignupPage() {
       step={{ current: 1, total: 3 }}
     >
       <div className="flex flex-col gap-4">
-          <Controller
-            control={control}
-            name="fullName"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                label={t('auth.fullName')}
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.fullName?.message}
-                autoComplete="name"
-              />
-            )}
-          />
+        {/* Country Selector */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-black uppercase tracking-wider text-[var(--fv-text)]">
+            Select Your Country / Region
+          </label>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleCountryChange('NG')}
+              className={`flex items-center gap-2.5 rounded-[10px] border-2 p-2.5 text-left transition-all ${
+                country === 'NG'
+                  ? 'border-[var(--fv-primary)] bg-[var(--fv-wash)] shadow-[3px_3px_0_0_#1D4ED8]'
+                  : 'border-[var(--fv-border-ink)] bg-[var(--fv-surface)] opacity-70 hover:opacity-100'
+              }`}
+            >
+              <span className="text-2xl">🇳🇬</span>
+              <div className="min-w-0">
+                <div className="text-xs font-black uppercase text-[var(--fv-text)]">Nigeria</div>
+                <div className="text-[10px] font-semibold text-[var(--fv-text-secondary)]">NGN (₦) • NUBAN</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleCountryChange('MU')}
+              className={`flex items-center gap-2.5 rounded-[10px] border-2 p-2.5 text-left transition-all ${
+                country === 'MU'
+                  ? 'border-[var(--fv-primary)] bg-[var(--fv-wash)] shadow-[3px_3px_0_0_#1D4ED8]'
+                  : 'border-[var(--fv-border-ink)] bg-[var(--fv-surface)] opacity-70 hover:opacity-100'
+              }`}
+            >
+              <span className="text-2xl">🇲🇺</span>
+              <div className="min-w-0">
+                <div className="text-xs font-black uppercase text-[var(--fv-text)]">Mauritius</div>
+                <div className="text-[10px] font-semibold text-[var(--fv-text-secondary)]">MUR (Rs) • Juice</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <Controller
+          control={control}
+          name="fullName"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              label={t('auth.fullName')}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              error={errors.fullName?.message}
+              autoComplete="name"
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="phone"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextField
+              label={country === 'NG' ? 'Mobile / WhatsApp (+234)' : 'Mobile / WhatsApp (+230)'}
+              value={value ?? ''}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder={country === 'NG' ? '0801 234 5678' : '5123 4567'}
+              error={errors.phone?.message}
+              autoComplete="tel"
+            />
+          )}
+        />
           <Controller
             control={control}
             name="email"

@@ -118,6 +118,20 @@ async function handleRoute(
     }
   }
 
+  if (bffPath === '/accounts/verify' && method === 'POST') {
+    const rpc = await callRenderRpc('verifyAccount', body, token);
+    if (rpc && !rpc.error && rpc.data) {
+      return Response.json(ok(rpc.data), { status: 200 });
+    }
+  }
+
+  if (bffPath === '/accounts/link' && method === 'POST') {
+    const rpc = await callRenderRpc('linkBankAccount', body, token);
+    if (rpc && !rpc.error && rpc.data) {
+      return Response.json(ok(rpc.data), { status: 200 });
+    }
+  }
+
   // 2. Fallback to Direct Supabase handler
   if (!isSupabaseConfigured()) {
     const json = fail('INTERNAL', 'Backend is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
