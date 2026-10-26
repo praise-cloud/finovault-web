@@ -6,6 +6,7 @@ describe('signupSchema', () => {
       fullName: 'Amina Diallo',
       email: 'amina@example.com',
       password: 'Vault123!',
+      country: 'NG',
     });
     expect(result.success).toBe(true);
   });

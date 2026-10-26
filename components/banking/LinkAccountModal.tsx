@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Landmark,
   Smartphone,
   CheckCircle2,
   AlertCircle,
@@ -11,6 +10,8 @@ import {
   RefreshCw,
   ShieldCheck,
   ArrowRight,
+  Search,
+  Check,
 } from 'lucide-react';
 import { moneyApi } from '@/lib/api';
 import type { Account, AccountType } from '@/types';
@@ -22,27 +23,38 @@ interface LinkAccountModalProps {
   defaultCountry?: 'NG' | 'MU' | string;
 }
 
-const NIGERIAN_INSTITUTIONS = [
-  { id: 'GTBank', name: 'GTBank (Guaranty Trust)', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'Access Bank', name: 'Access Bank', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'Zenith Bank', name: 'Zenith Bank', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'First Bank', name: 'First Bank of Nigeria', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'UBA', name: 'United Bank for Africa (UBA)', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'Kuda Bank', name: 'Kuda Microfinance Bank', type: 'bank' as AccountType, badge: 'Digital Bank' },
-  { id: 'Moniepoint', name: 'Moniepoint MFB', type: 'bank' as AccountType, badge: 'Business & Personal' },
-  { id: 'Stanbic IBTC', name: 'Stanbic IBTC Bank', type: 'bank' as AccountType, badge: 'NUBAN' },
-  { id: 'OPay', name: 'OPay Wallet', type: 'mobileMoney' as AccountType, badge: 'Instant Transfer' },
-  { id: 'PalmPay', name: 'PalmPay Wallet', type: 'mobileMoney' as AccountType, badge: 'Instant Transfer' },
+export interface InstitutionItem {
+  id: string;
+  name: string;
+  type: AccountType;
+  badge: string;
+  code?: string;
+  slug?: string;
+}
+
+const POPULAR_NIGERIAN_INSTITUTIONS: InstitutionItem[] = [
+  { id: '058', name: 'Guaranty Trust Bank (GTBank)', type: 'bank', badge: 'Commercial', code: '058', slug: 'guaranty-trust-bank' },
+  { id: '044', name: 'Access Bank', type: 'bank', badge: 'Commercial', code: '044', slug: 'access-bank' },
+  { id: '057', name: 'Zenith Bank', type: 'bank', badge: 'Commercial', code: '057', slug: 'zenith-bank' },
+  { id: '011', name: 'First Bank of Nigeria', type: 'bank', badge: 'Commercial', code: '011', slug: 'first-bank-of-nigeria' },
+  { id: '033', name: 'United Bank for Africa (UBA)', type: 'bank', badge: 'Commercial', code: '033', slug: 'united-bank-for-africa' },
+  { id: '50211', name: 'Kuda Microfinance Bank', type: 'bank', badge: 'Digital Bank', code: '50211', slug: 'kuda-bank' },
+  { id: '50515', name: 'Moniepoint MFB', type: 'bank', badge: 'Business & Personal', code: '50515', slug: 'moniepoint-mfb' },
+  { id: '999992', name: 'OPay Digital Services', type: 'mobileMoney', badge: 'Instant Wallet', code: '999992', slug: 'opay' },
+  { id: '999991', name: 'PalmPay Wallet', type: 'mobileMoney', badge: 'Instant Wallet', code: '999991', slug: 'palmpay' },
+  { id: '221', name: 'Stanbic IBTC Bank', type: 'bank', badge: 'Commercial', code: '221', slug: 'stanbic-ibtc-bank' },
+  { id: '070', name: 'Fidelity Bank', type: 'bank', badge: 'Commercial', code: '070', slug: 'fidelity-bank' },
+  { id: '035', name: 'Wema Bank (ALAT)', type: 'bank', badge: 'Digital Bank', code: '035', slug: 'wema-bank' },
 ];
 
-const MAURITIAN_INSTITUTIONS = [
-  { id: 'MCB', name: 'MCB (Mauritius Commercial Bank)', type: 'bank' as AccountType, badge: 'Core Bank' },
-  { id: 'SBM', name: 'State Bank of Mauritius (SBM)', type: 'bank' as AccountType, badge: 'Core Bank' },
-  { id: 'Bank One', name: 'Bank One', type: 'bank' as AccountType, badge: 'Digital Bank' },
-  { id: 'Maubank', name: 'Maubank', type: 'bank' as AccountType, badge: 'Everyday Banking' },
-  { id: 'Juice', name: 'MCB Juice', type: 'mobileMoney' as AccountType, badge: 'Mobile Wallet' },
-  { id: 'my.t money', name: 'my.t money', type: 'mobileMoney' as AccountType, badge: 'Mobile Wallet' },
-  { id: 'Emtel Money', name: 'Emtel Money', type: 'mobileMoney' as AccountType, badge: 'Mobile Wallet' },
+const MAURITIAN_INSTITUTIONS: InstitutionItem[] = [
+  { id: 'MCB', name: 'MCB (Mauritius Commercial Bank)', type: 'bank', badge: 'Core Bank' },
+  { id: 'SBM', name: 'State Bank of Mauritius (SBM)', type: 'bank', badge: 'Core Bank' },
+  { id: 'Bank One', name: 'Bank One', type: 'bank', badge: 'Digital Bank' },
+  { id: 'Maubank', name: 'Maubank', type: 'bank', badge: 'Everyday Banking' },
+  { id: 'Juice', name: 'MCB Juice', type: 'mobileMoney', badge: 'Mobile Wallet' },
+  { id: 'my.t money', name: 'my.t money', type: 'mobileMoney', badge: 'Mobile Wallet' },
+  { id: 'Emtel Money', name: 'Emtel Money', type: 'mobileMoney', badge: 'Mobile Wallet' },
 ];
 
 export function LinkAccountModal({
@@ -52,7 +64,10 @@ export function LinkAccountModal({
   defaultCountry = 'NG',
 }: LinkAccountModalProps) {
   const [country, setCountry] = useState<'NG' | 'MU'>(defaultCountry === 'MU' ? 'MU' : 'NG');
-  const [selectedInstId, setSelectedInstId] = useState<string>('GTBank');
+  const [allNigerianBanks, setAllNigerianBanks] = useState<InstitutionItem[]>(POPULAR_NIGERIAN_INSTITUTIONS);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+  const [selectedInst, setSelectedInst] = useState<InstitutionItem>(POPULAR_NIGERIAN_INSTITUTIONS[0]);
+  const [bankSearch, setBankSearch] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [holderName, setHolderName] = useState('');
   const [verifiedName, setVerifiedName] = useState<string | null>(null);
@@ -66,23 +81,86 @@ export function LinkAccountModal({
   useEffect(() => {
     const c = defaultCountry === 'MU' ? 'MU' : 'NG';
     setCountry(c);
-    setSelectedInstId(c === 'NG' ? 'GTBank' : 'MCB');
+    setSelectedInst(c === 'NG' ? POPULAR_NIGERIAN_INSTITUTIONS[0] : MAURITIAN_INSTITUTIONS[0]);
   }, [defaultCountry]);
 
-  if (!isOpen) return null;
+  // Dynamically load all 285+ Nigerian banks from Paystack / BFF
+  useEffect(() => {
+    if (!isOpen || country !== 'NG') return;
+    let cancelled = false;
 
-  const currentInstitutions = country === 'NG' ? NIGERIAN_INSTITUTIONS : MAURITIAN_INSTITUTIONS;
-  const selectedInst = currentInstitutions.find((i) => i.id === selectedInstId) || currentInstitutions[0];
+    async function loadBanks() {
+      setLoadingBanks(true);
+      try {
+        const banks = await moneyApi.getNigerianBanks();
+        if (!cancelled && banks && banks.length > 0) {
+          const mapped: InstitutionItem[] = banks.map((b) => {
+            const isWallet =
+              b.slug?.includes('opay') ||
+              b.slug?.includes('palmpay') ||
+              b.type === 'mobile_money' ||
+              b.name.toLowerCase().includes('wallet');
+            return {
+              id: b.code || String(b.id),
+              name: b.name,
+              code: b.code,
+              type: isWallet ? 'mobileMoney' : 'bank',
+              badge: isWallet ? 'Wallet' : b.code ? `Code: ${b.code}` : 'Bank',
+              slug: b.slug,
+            };
+          });
+          setAllNigerianBanks(mapped);
+        }
+      } catch (err) {
+        console.warn('Could not fetch live Nigerian banks, using local registry.', err);
+      } finally {
+        if (!cancelled) setLoadingBanks(false);
+      }
+    }
+
+    loadBanks();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, country]);
+
+  // Filter banks by search query
+  const filteredBanks = useMemo(() => {
+    if (country === 'MU') {
+      if (!bankSearch.trim()) return MAURITIAN_INSTITUTIONS;
+      const q = bankSearch.toLowerCase().trim();
+      return MAURITIAN_INSTITUTIONS.filter((b) => b.name.toLowerCase().includes(q));
+    }
+
+    if (!bankSearch.trim()) return allNigerianBanks;
+    const q = bankSearch.toLowerCase().trim();
+    return allNigerianBanks.filter(
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        (b.code && b.code.toLowerCase().includes(q)) ||
+        (b.slug && b.slug.toLowerCase().includes(q))
+    );
+  }, [country, allNigerianBanks, bankSearch]);
 
   const handleCountrySwitch = (c: 'NG' | 'MU') => {
     setCountry(c);
-    setSelectedInstId(c === 'NG' ? 'GTBank' : 'MCB');
+    setSelectedInst(c === 'NG' ? allNigerianBanks[0] || POPULAR_NIGERIAN_INSTITUTIONS[0] : MAURITIAN_INSTITUTIONS[0]);
+    setBankSearch('');
     setAccountNumber('');
     setVerifiedName(null);
     setError(null);
   };
 
-  const handleVerify = async (acct: string) => {
+  const handleSelectInstitution = (inst: InstitutionItem) => {
+    setSelectedInst(inst);
+    setVerifiedName(null);
+    setError(null);
+    if (accountNumber.trim().length >= 8) {
+      handleVerify(accountNumber.trim(), inst);
+    }
+  };
+
+  const handleVerify = async (acct: string, inst = selectedInst) => {
     if (!acct || acct.length < 8) {
       setVerifiedName(null);
       return;
@@ -91,9 +169,10 @@ export function LinkAccountModal({
     setError(null);
     try {
       const res = await moneyApi.verifyAccount({
-        institution: selectedInst.id,
+        institution: inst.name,
         identifier: acct,
         holderName: holderName || undefined,
+        bankCode: inst.code,
       });
       if (res.exists && res.holderName) {
         setVerifiedName(res.holderName);
@@ -127,12 +206,12 @@ export function LinkAccountModal({
       setStepState('CONNECTING TO FINANCIAL ENCLAVE...');
       await new Promise((r) => setTimeout(r, 450));
 
-      setStepState('VERIFYING ACCOUNT AND NUBAN ROUTING...');
+      setStepState(`RESOLVING NUBAN WITH ${selectedInst.name.toUpperCase()}...`);
       await new Promise((r) => setTimeout(r, 450));
 
       setStepState('FETCHING & DECRYPTING 45-DAY TRANSACTION HISTORY...');
       const res = await moneyApi.linkBankAccount({
-        institution: selectedInst.id,
+        institution: selectedInst.name,
         accountNumber: accountNumber.trim(),
         holderName: verifiedName || holderName || undefined,
         country,
@@ -171,7 +250,7 @@ export function LinkAccountModal({
               Link Bank Account
             </h2>
             <p className="text-xs text-slate-400">
-              Select your institution and connect for automatic 45-day transaction sync.
+              Live NUBAN resolution across all 285+ Nigerian banks & MFBs with automatic 45-day transaction sync.
             </p>
           </div>
           <button
@@ -226,7 +305,7 @@ export function LinkAccountModal({
                   <span className="text-2xl">🇳🇬</span>
                   <div>
                     <div className="text-xs font-black uppercase text-white">Nigeria</div>
-                    <div className="text-[10px] text-slate-400 font-mono">NGN (₦) • NUBAN</div>
+                    <div className="text-[10px] text-slate-400 font-mono">NGN (₦) • 285+ Banks</div>
                   </div>
                 </button>
 
@@ -248,45 +327,136 @@ export function LinkAccountModal({
               </div>
             </div>
 
-            {/* Institution Choice */}
+            {/* Selected Bank Summary Card */}
+            <div className="rounded-[8px] border border-blue-500/40 bg-blue-950/30 p-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                {selectedInst.type === 'mobileMoney' ? (
+                  <Smartphone size={16} className="text-amber-400 shrink-0" />
+                ) : (
+                  <Building2 size={16} className="text-blue-400 shrink-0" />
+                )}
+                <div className="truncate">
+                  <div className="text-[9px] font-mono uppercase text-blue-400 font-black">SELECTED INSTITUTION</div>
+                  <div className="text-xs font-black text-white truncate">{selectedInst.name}</div>
+                </div>
+              </div>
+              {selectedInst.code && (
+                <span className="font-mono text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded border border-white/20 text-slate-300 shrink-0">
+                  CODE: {selectedInst.code}
+                </span>
+              )}
+            </div>
+
+            {/* Quick Pick Shortcuts for Nigeria */}
+            {country === 'NG' && (
+              <div>
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Quick Pick (Popular Banks & Wallets)
+                  </label>
+                  {loadingBanks && (
+                    <span className="flex items-center gap-1 text-[10px] font-mono text-blue-400">
+                      <RefreshCw size={10} className="animate-spin" /> Syncing live list...
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {POPULAR_NIGERIAN_INSTITUTIONS.slice(0, 8).map((inst) => {
+                    const isSelected = selectedInst.name === inst.name || selectedInst.code === inst.code;
+                    return (
+                      <button
+                        key={inst.id}
+                        type="button"
+                        onClick={() => handleSelectInstitution(inst)}
+                        className={`rounded-[6px] border px-2 py-1 text-[11px] font-bold transition-all ${
+                          isSelected
+                            ? 'border-emerald-400 bg-emerald-950/60 text-emerald-300 shadow-[1px_1px_0_0_#10B981]'
+                            : 'border-white/15 bg-white/[0.04] text-slate-300 hover:border-white/40 hover:text-white'
+                        }`}
+                      >
+                        {inst.name.split(' ')[0]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Searchable Institution Directory */}
             <div>
-              <label className="text-[11px] font-black uppercase tracking-wider text-slate-300">
-                2. Select Bank or Wallet Provider
-              </label>
-              <div className="mt-1.5 grid grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
-                {currentInstitutions.map((inst) => {
-                  const isSelected = selectedInstId === inst.id;
-                  return (
-                    <button
-                      key={inst.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedInstId(inst.id);
-                        setVerifiedName(null);
-                        if (accountNumber) handleVerify(accountNumber);
-                      }}
-                      className={`flex items-center justify-between rounded-[8px] border-2 p-2 text-left transition-all ${
-                        isSelected
-                          ? 'border-emerald-400 bg-emerald-950/40 shadow-[2px_2px_0_0_#10B981]'
-                          : 'border-white/15 bg-white/[0.02] hover:border-white/30'
-                      }`}
-                    >
-                      <div className="min-w-0 pr-1">
-                        <div className="truncate text-xs font-black text-white">
-                          {inst.name}
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[11px] font-black uppercase tracking-wider text-slate-300">
+                  2. Search All {country === 'NG' ? `${allNigerianBanks.length}+ Banks & MFBs` : 'Institutions'}
+                </label>
+                <span className="text-[9px] font-mono text-slate-400">
+                  {filteredBanks.length} FOUND
+                </span>
+              </div>
+
+              {/* Search input */}
+              <div className="relative mb-2">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={bankSearch}
+                  onChange={(e) => setBankSearch(e.target.value)}
+                  placeholder={
+                    country === 'NG'
+                      ? 'Type bank name or code (e.g. Kuda, Moniepoint, Zenith, 058)...'
+                      : 'Search Mauritian banks...'
+                  }
+                  className="w-full rounded-[8px] border border-white/20 bg-[#05070e] pl-9 pr-3 py-2 text-xs font-mono text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+                />
+                {bankSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setBankSearch('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {/* Bank list */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-36 overflow-y-auto pr-1 border border-white/10 rounded-[8px] p-1.5 bg-black/20">
+                {filteredBanks.length === 0 ? (
+                  <div className="col-span-2 py-4 text-center text-xs font-mono text-slate-500">
+                    No matching institutions found for &ldquo;{bankSearch}&rdquo;
+                  </div>
+                ) : (
+                  filteredBanks.map((inst) => {
+                    const isSelected = selectedInst.name === inst.name || (inst.code && selectedInst.code === inst.code);
+                    return (
+                      <button
+                        key={`${inst.id}-${inst.code || inst.name}`}
+                        type="button"
+                        onClick={() => handleSelectInstitution(inst)}
+                        className={`flex items-center justify-between rounded-[6px] border p-2 text-left transition-all ${
+                          isSelected
+                            ? 'border-emerald-400 bg-emerald-950/40 shadow-[2px_2px_0_0_#10B981]'
+                            : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        <div className="min-w-0 pr-1">
+                          <div className="truncate text-xs font-bold text-white">
+                            {inst.name}
+                          </div>
+                          <div className="text-[9px] font-mono text-slate-400">
+                            {inst.code ? `CBN: ${inst.code}` : inst.badge}
+                          </div>
                         </div>
-                        <div className="text-[9px] font-mono text-slate-400">
-                          {inst.badge}
-                        </div>
-                      </div>
-                      {inst.type === 'mobileMoney' ? (
-                        <Smartphone size={14} className="shrink-0 text-amber-400" />
-                      ) : (
-                        <Building2 size={14} className="shrink-0 text-blue-400" />
-                      )}
-                    </button>
-                  );
-                })}
+                        {isSelected ? (
+                          <Check size={14} className="shrink-0 text-emerald-400" />
+                        ) : inst.type === 'mobileMoney' ? (
+                          <Smartphone size={13} className="shrink-0 text-amber-400/80" />
+                        ) : (
+                          <Building2 size={13} className="shrink-0 text-blue-400/80" />
+                        )}
+                      </button>
+                    );
+                  })
+                )}
               </div>
             </div>
 

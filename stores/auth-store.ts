@@ -36,9 +36,16 @@ interface AuthState {
 
 function applySession(session: ServerSession, user: UserProfile) {
   setAccessToken(session.accessToken);
+  const country = user.country || (user.preferredCurrency === 'MUR' ? 'MU' : 'NG');
+  const preferredCurrency = user.preferredCurrency || (country === 'NG' ? 'NGN' : 'MUR');
+  const normalizedUser: UserProfile = {
+    ...user,
+    country,
+    preferredCurrency,
+  };
   return {
     session,
-    user,
+    user: normalizedUser,
     isAuthenticated: true,
     status: 'authenticated' as const,
   };
@@ -77,7 +84,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   signup: async (input) => {
     set({ status: 'authenticating', error: null });
     try {
-      const result = await authApi.signup(input);
+      const country = input.country || 'NG';
+      const preferredCurrency = input.preferredCurrency || (country === 'NG' ? 'NGN' : 'MUR');
+      const result = await authApi.signup({
+        ...input,
+        country,
+        preferredCurrency,
+      });
       saveStoredToken(result.session.accessToken);
       set(applySession(result.session, result.user));
     } catch (err) {
@@ -97,7 +110,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     set(clearSession());
   },
 
-  setUser: (user) => set({ user }),
+  setUser: (user) => {
+    const country = user.country || (user.preferredCurrency === 'MUR' ? 'MU' : 'NG');
+    const preferredCurrency = user.preferredCurrency || (country === 'NG' ? 'NGN' : 'MUR');
+    set({ user: { ...user, country, preferredCurrency } });
+  },
   setSession: (session, user) => set(applySession(session, user)),
 
   clear: () => set(clearSession()),

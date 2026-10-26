@@ -202,11 +202,12 @@ export const mockRoutes: MockRoute[] = [
     handler: ({ body }) => {
       const { email } = body as { email: string };
       const normalized = (email ?? '').trim().toLowerCase();
+      let resetToken: string | undefined = undefined;
       // Never confirm whether an account exists.
       if (findUserByEmail(normalized)) {
-        db.issuePasswordReset(normalized);
+        resetToken = db.issuePasswordReset(normalized);
       }
-      return ok({ success: true });
+      return ok({ success: true, resetToken });
     },
   },
   {
@@ -267,22 +268,50 @@ export const mockRoutes: MockRoute[] = [
     },
   },
   {
+    method: 'GET',
+    pattern: /^\/banks\/nigeria$/,
+    handler: () => {
+      const nigerianBanksList = [
+        { id: 1, name: 'Access Bank', code: '044', slug: 'access-bank' },
+        { id: 2, name: 'Guaranty Trust Bank (GTBank)', code: '058', slug: 'guaranty-trust-bank' },
+        { id: 3, name: 'Zenith Bank', code: '057', slug: 'zenith-bank' },
+        { id: 4, name: 'First Bank of Nigeria', code: '011', slug: 'first-bank-of-nigeria' },
+        { id: 5, name: 'United Bank for Africa (UBA)', code: '033', slug: 'united-bank-for-africa' },
+        { id: 6, name: 'Kuda Bank', code: '50211', slug: 'kuda-bank' },
+        { id: 7, name: 'Moniepoint MFB', code: '50515', slug: 'moniepoint-mfb' },
+        { id: 8, name: 'OPay Digital Services', code: '999992', slug: 'opay' },
+        { id: 9, name: 'PalmPay', code: '999991', slug: 'palmpay' },
+        { id: 10, name: 'Stanbic IBTC Bank', code: '221', slug: 'stanbic-ibtc-bank' },
+        { id: 11, name: 'Fidelity Bank', code: '070', slug: 'fidelity-bank' },
+        { id: 12, name: 'Sterling Bank', code: '232', slug: 'sterling-bank' },
+        { id: 13, name: 'Union Bank of Nigeria', code: '032', slug: 'union-bank-of-nigeria' },
+        { id: 14, name: 'Wema Bank (ALAT)', code: '035', slug: 'wema-bank' },
+        { id: 15, name: 'First City Monument Bank (FCMB)', code: '214', slug: 'first-city-monument-bank' },
+        { id: 16, name: 'Ecobank Nigeria', code: '050', slug: 'ecobank-nigeria' },
+        { id: 17, name: 'Polaris Bank', code: '076', slug: 'polaris-bank' },
+        { id: 18, name: 'Jaiz Bank', code: '301', slug: 'jaiz-bank' },
+        { id: 19, name: 'Taj Bank', code: '302', slug: 'taj-bank' },
+        { id: 20, name: 'Lotus Bank', code: '303', slug: 'lotus-bank' },
+        { id: 21, name: 'Providus Bank', code: '101', slug: 'providus-bank' },
+      ];
+      return ok(nigerianBanksList);
+    },
+  },
+  {
     method: 'POST',
     pattern: /^\/accounts\/verify$/,
-    handler: ({ token, body }) => {
-      const user = token ? getUserByToken(token) : undefined;
-      if (!user) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
-      const { institution, identifier, holderName } = body as {
+    handler: ({ body }) => {
+      const { institution, identifier, holderName } = (body || {}) as {
         institution?: string;
         identifier?: string;
         holderName?: string;
+        bankCode?: string;
       };
       if (!institution || !identifier) {
         return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
       }
-      const nigerianBanks = ['GTBank', 'Access Bank', 'Zenith Bank', 'First Bank', 'UBA', 'Kuda Bank', 'Moniepoint', 'Stanbic IBTC', 'Fidelity Bank'];
       const nigerianWallets = ['OPay', 'PalmPay'];
-      const isNigerian = nigerianBanks.includes(institution) || nigerianWallets.includes(institution);
+      const isNigerian = !institution.includes('Mauritius') && institution !== 'MCB' && institution !== 'SBM' && institution !== 'Bank One' && institution !== 'Maubank' && institution !== 'Juice' && institution !== 'my.t money' && institution !== 'Emtel Money';
       const isBank = !nigerianWallets.includes(institution) && institution !== 'Juice' && institution !== 'my.t money' && institution !== 'Emtel Money';
       
       const idStr = identifier.trim();
@@ -322,8 +351,8 @@ export const mockRoutes: MockRoute[] = [
       const acctNum = accountNumber.trim();
       const nigerianBanks = ['GTBank', 'Access Bank', 'Zenith Bank', 'First Bank', 'UBA', 'Kuda Bank', 'Moniepoint', 'Stanbic IBTC', 'Fidelity Bank'];
       const nigerianWallets = ['OPay', 'PalmPay'];
-      const isNigerian = country === 'NG' || nigerianBanks.includes(institution) || nigerianWallets.includes(institution);
-      const isWallet = nigerianWallets.includes(institution) || institution === 'Juice' || institution === 'my.t money' || institution === 'Emtel Money';
+      const isNigerian = country === 'NG' || nigerianBanks.includes(institution) || nigerianWallets.includes(institution) || (!institution.includes('MCB') && !institution.includes('SBM') && !institution.includes('Bank One') && !institution.includes('Maubank') && institution !== 'Juice' && institution !== 'my.t money' && institution !== 'Emtel Money');
+      const isWallet = nigerianWallets.includes(institution) || institution === 'Juice' || institution === 'my.t money' || institution === 'Emtel Money' || institution.toLowerCase().includes('opay') || institution.toLowerCase().includes('palmpay');
       const isBank = !isWallet;
 
       if (isNigerian) {

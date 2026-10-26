@@ -1,14 +1,16 @@
 import type { MetadataRoute } from 'next';
 
+export const dynamic = 'force-static';
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'FINOVAULT — Financial Intelligence',
+    name: 'FINOVAULT — Student Vault & Allowance App',
     short_name: 'FINOVAULT',
-    description: 'See your money, understand your patterns, and own your financial future. Never enter debt.',
+    description: 'The offline-first student vault and daily allowance fuel gauge designed for campus life.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#070a13',
-    theme_color: '#070a13',
+    background_color: '#F3F1EA',
+    theme_color: '#F3F1EA',
     orientation: 'portrait-primary',
     icons: [
       {

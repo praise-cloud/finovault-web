@@ -1,5 +1,5 @@
 import { api } from './client';
-import type { UserPreferences, UserProfile } from '@/types';
+import type { UserPreferences, UserProfile, BusinessProfile } from '@/types';
 import type { PrimaryRole, RoleScheme } from '@/types';
 
 export interface SignupInput {
@@ -26,6 +26,10 @@ export const authApi = {
   login: (input: LoginInput) => api.post<AuthResult>('/auth/login', input),
   logout: () => api.post<{ success: boolean }>('/auth/logout'),
   getSession: () => api.get<{ user: UserProfile }>('/auth/session'),
+  forgotPassword: (input: { email: string }) =>
+    api.post<{ success: true; resetToken?: string }>('/auth/forgot-password', input),
+  resetPassword: (input: { token: string; newPassword: string }) =>
+    api.post<{ success: true }>('/auth/reset-password', input),
 };
 
 export const userApi = {
@@ -36,4 +40,6 @@ export const userApi = {
     api.put<UserPreferences>('/users/preferences', patch),
   setRole: (input: { primaryRole: PrimaryRole; scheme?: RoleScheme }) =>
     api.put<UserProfile>('/users/role', input),
+  setBusinessProfile: (input: BusinessProfile) =>
+    api.put<UserProfile>('/users/business-profile', input),
 };

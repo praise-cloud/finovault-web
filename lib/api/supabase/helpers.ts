@@ -17,12 +17,37 @@ export async function requireUserId(
 ): Promise<string> {
   if (!token) throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
   try {
-    const { data: authUser } = await supabase.auth.getUser(token);
-    if (authUser?.user?.id) return authUser.user.id;
+    if (supabase.auth?.getUser) {
+      const { data: authUser } = await supabase.auth.getUser(token);
+      if (authUser?.user?.id) return authUser.user.id;
+    }
   } catch {
     // continue
   }
+  if (token.includes('.')) {
+    try {
+      const parts = token.split('.');
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+        if (payload?.sub && typeof payload.sub === 'string' && payload.sub.includes('-')) {
+          return payload.sub;
+        }
+      }
+    } catch {
+      // continue
+    }
+  }
   if (token.includes('-') && token.length >= 32) return token;
+  try {
+    const { data } = await supabase
+      .from('sessions')
+      .select('user_id')
+      .eq('token', token)
+      .single();
+    if (data?.user_id) return data.user_id;
+  } catch {
+    // continue
+  }
   throw fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
 }
 

@@ -54,6 +54,11 @@ export async function handleBffRequest(
       if (method === 'DELETE' && segments.length === 2) return res.deleteAccount(supabase, token, second);
     }
 
+    // ── banks ─────────────────────────────────────────────────────────────
+    if (first === 'banks') {
+      if (method === 'GET' && second === 'nigeria') return res.getNigerianBanks();
+    }
+
     // ── transactions ──────────────────────────────────────────────────────
     if (first === 'transactions') {
       if (method === 'GET' && segments.length === 1) {

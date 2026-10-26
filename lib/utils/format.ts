@@ -3,6 +3,7 @@ import { getLanguage } from '../i18n';
 export interface FormatOptions {
   locale?: string;
   currency?: string;
+  currencyDisplay?: 'code' | 'symbol' | 'narrowSymbol' | 'name';
 }
 
 function resolveLocale(locale?: string): string {
@@ -13,13 +14,16 @@ function resolveLocale(locale?: string): string {
 
 export function formatMoney(amount: number, currency: string, options?: FormatOptions): string {
   try {
-    return new Intl.NumberFormat(resolveLocale(options?.locale), {
+    const display = options?.currencyDisplay ?? (currency === 'NGN' ? 'narrowSymbol' : 'code');
+    const locale = options?.locale ? options.locale : (currency === 'NGN' ? 'en-NG' : resolveLocale());
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency,
-      currencyDisplay: 'code',
+      currencyDisplay: display,
     }).format(amount);
   } catch {
-    return `${currency} ${formatNumber(amount, options)}`;
+    const sym = currency === 'NGN' ? '₦' : `${currency} `;
+    return `${sym}${formatNumber(amount, options)}`;
   }
 }
 
@@ -31,10 +35,12 @@ export function formatNumber(value: number, options?: FormatOptions): string {
 }
 
 export function formatCompactCurrency(amount: number, currency: string): string {
-  return new Intl.NumberFormat(resolveLocale(), {
+  const display = currency === 'NGN' ? 'narrowSymbol' : 'code';
+  const locale = currency === 'NGN' ? 'en-NG' : resolveLocale();
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,
-    currencyDisplay: 'code',
+    currencyDisplay: display,
     notation: 'compact',
   }).format(amount);
 }

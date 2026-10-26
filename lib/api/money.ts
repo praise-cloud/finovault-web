@@ -39,6 +39,7 @@ export interface ChangePasswordInput {
 export const moneyApi = {
   // ---- accounts ------------------------------------------------------------
   getAccounts: () => api.get<Account[]>('/accounts'),
+  getNigerianBanks: () => api.get<Array<{ id: number; name: string; code: string; slug: string; type?: string }>>('/banks/nigeria'),
   linkAccount: (input: {
     name: string;
     type: AccountType;
@@ -49,6 +50,7 @@ export const moneyApi = {
     institution: string;
     identifier: string;
     holderName?: string;
+    bankCode?: string;
   }) => api.post<AccountVerificationResult>('/accounts/verify', input),
   linkBankAccount: (input: {
     institution: string;

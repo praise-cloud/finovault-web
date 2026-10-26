@@ -3,37 +3,27 @@
 import React from 'react';
 import { Nav } from './Nav';
 import { Hero } from './Hero';
-import { Philosophy } from './Philosophy';
-import { Features } from './Features';
-import { Mirror } from './Mirror';
-import { Personal } from './Personal';
-import { Business } from './Business';
-import { Roadmap } from './Roadmap';
-import { Security } from './Security';
-import { Comparison } from './Comparison';
-import { Pricing } from './Pricing';
-import { FinalCta } from './FinalCta';
-import { Footer } from './Footer';
 import { TickerTape } from './TickerTape';
+import { Features } from './Features';
+import { CurrencyPlayground } from './CurrencyPlayground';
+import { VaultWrapsExplainer } from './VaultWrapsExplainer';
+import { HowItWorks } from './HowItWorks';
+import { DownloadSection } from './DownloadSection';
+import { Footer } from './Footer';
 
 export function HomePage() {
   return (
-    <div className="min-h-screen bg-[var(--fv-hp-bg)] text-[var(--fv-hp-text-title)] selection:bg-[var(--fv-hp-accent)] selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-[#F3F1EA] text-[#0A0A0A] font-sans antialiased selection:bg-[#2563EB] selection:text-white">
       <Nav />
       <main>
         <Hero />
-        <TickerTape variant="blue" />
-        <Philosophy />
+        <TickerTape variant="yellow" />
         <Features />
-        <Mirror />
-        <Personal />
-        <Business />
-        <Roadmap />
+        <CurrencyPlayground />
+        <VaultWrapsExplainer />
+        <HowItWorks />
         <TickerTape variant="black" />
-        <Security />
-        <Comparison />
-        <Pricing />
-        <FinalCta />
+        <DownloadSection />
       </main>
       <Footer />
     </div>

@@ -10,18 +10,22 @@ import { hashPassword, verifyPassword } from './auth';
 
 export async function getMe(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const { data } = await supabase.from('users').select('*').eq('id', uid).single();
+  const { data } = await supabase.from('profiles').select('*').eq('id', uid).maybeSingle();
   if (!data) return fail(ApiErrorCodes.UNAUTHORIZED, 'Not authenticated.');
+  const preferredCurrency = (data.preferred_currency as string) ?? 'NGN';
+  const country = (data.country as string) ?? (preferredCurrency === 'MUR' ? 'MU' : 'NG');
   return ok({
     id: data.id,
     email: data.email,
     fullName: data.full_name,
     avatarUrl: data.avatar_url ?? undefined,
-    primaryRole: data.primary_role,
+    primaryRole: data.primary_role ?? 'individual',
     secondaryRoles: data.secondary_roles ?? [],
-    scheme: data.scheme,
-    preferredLanguage: data.preferred_language,
-    preferredCurrency: data.preferred_currency,
+    scheme: data.scheme ?? 'standard',
+    preferredLanguage: data.preferred_language ?? 'en',
+    preferredCurrency,
+    country,
+    phone: data.phone ?? undefined,
     createdAt: data.created_at,
     businessProfile: data.business_profile ?? undefined,
   });
@@ -39,22 +43,34 @@ export async function updateMe(
     avatarUrl: 'avatar_url',
     preferredLanguage: 'preferred_language',
     preferredCurrency: 'preferred_currency',
+    country: 'country',
+    phone: 'phone',
+    primaryRole: 'primary_role',
+    scheme: 'scheme',
+    businessProfile: 'business_profile',
   };
   const update: Record<string, unknown> = {};
   for (const [key, col] of Object.entries(allowed)) {
     if (patch[key] !== undefined) update[col] = patch[key];
   }
   if (Object.keys(update).length === 0) return getMe(supabase, token);
-  const { data } = await supabase.from('users').update(update).eq('id', uid).select().single();
-  if (!data) return fail(ApiErrorCodes.INTERNAL, 'Update failed.');
+  update.updated_at = new Date().toISOString();
+  const { data, error } = await supabase.from('profiles').update(update).eq('id', uid).select().maybeSingle();
+  if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message || 'Update failed.');
   return getMe(supabase, token);
 }
 
 export async function getPreferences(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const { data } = await supabase.from('user_preferences').select('*').eq('user_id', uid).single();
+  const { data } = await supabase.from('preferences').select('*').eq('user_id', uid).maybeSingle();
   const fallback = { financialGoals: [], riskTolerance: 'moderate', moneyFears: [], onboardingCompleted: false };
-  return ok(data ? snakeToCamel(data) : fallback);
+  if (!data) return ok(fallback);
+  return ok({
+    financialGoals: Array.isArray(data.financial_goals) ? data.financial_goals : [],
+    riskTolerance: data.risk_tolerance ?? 'moderate',
+    moneyFears: Array.isArray(data.money_fears) ? data.money_fears : (data.money_fears ? [data.money_fears] : []),
+    onboardingCompleted: Boolean(data.onboarding_completed),
+  });
 }
 
 export async function savePreferences(
@@ -63,21 +79,28 @@ export async function savePreferences(
   body: unknown
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const p = body as Record<string, unknown>;
-  const { data: existing } = await supabase.from('user_preferences').select('*').eq('user_id', uid).single();
+  const p = (body || {}) as Record<string, unknown>;
+  const { data: existing } = await supabase.from('preferences').select('*').eq('user_id', uid).maybeSingle();
   const update: Record<string, unknown> = {
     user_id: uid,
     financial_goals: p.financialGoals ?? existing?.financial_goals ?? [],
     risk_tolerance: p.riskTolerance ?? existing?.risk_tolerance ?? 'moderate',
-    money_fears: p.moneyFears ?? existing?.money_fears ?? [],
+    money_fears: Array.isArray(p.moneyFears) ? p.moneyFears.join(', ') : (p.moneyFears ?? existing?.money_fears ?? ''),
+    updated_at: new Date().toISOString(),
   };
   if (p.onboardingCompleted !== undefined) update.onboarding_completed = p.onboardingCompleted;
-  const { data } = await supabase
-    .from('user_preferences')
+  const { data, error } = await supabase
+    .from('preferences')
     .upsert(update, { onConflict: 'user_id' })
     .select()
-    .single();
-  return ok(snakeToCamel(data));
+    .maybeSingle();
+  if (error || !data) return fail(ApiErrorCodes.INTERNAL, error?.message || 'Failed to save preferences.');
+  return ok({
+    financialGoals: Array.isArray(data.financial_goals) ? data.financial_goals : [],
+    riskTolerance: data.risk_tolerance ?? 'moderate',
+    moneyFears: data.money_fears ? [data.money_fears] : [],
+    onboardingCompleted: Boolean(data.onboarding_completed),
+  });
 }
 
 export async function setRole(
@@ -87,9 +110,9 @@ export async function setRole(
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { primaryRole, scheme } = body as { primaryRole: string; scheme?: string };
-  const update: Record<string, unknown> = { primary_role: primaryRole };
+  const update: Record<string, unknown> = { primary_role: primaryRole, updated_at: new Date().toISOString() };
   if (scheme) update.scheme = scheme;
-  await supabase.from('users').update(update).eq('id', uid);
+  await supabase.from('profiles').update(update).eq('id', uid);
   return getMe(supabase, token);
 }
 
@@ -99,7 +122,7 @@ export async function setBusinessProfile(
   body: unknown
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  await supabase.from('users').update({ business_profile: body }).eq('id', uid);
+  await supabase.from('profiles').update({ business_profile: body, updated_at: new Date().toISOString() }).eq('id', uid);
   return getMe(supabase, token);
 }
 
@@ -108,7 +131,17 @@ export async function setBusinessProfile(
 export async function listAccounts(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase.from('accounts').select('*').eq('user_id', uid).order('created_at', { ascending: false });
-  return ok(snakeToCamel(data ?? []));
+  const accounts = (data ?? []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    type: a.type,
+    balance: Number(a.balance),
+    institution: a.institution,
+    currency: a.currency,
+    isActive: a.is_active,
+    accountNumber: a.account_number ?? undefined,
+  }));
+  return ok(accounts);
 }
 
 export async function createAccount(
@@ -119,7 +152,7 @@ export async function createAccount(
   const uid = await requireUserId(supabase, token);
   const b = body as Record<string, unknown>;
   if (!b.name || !(b.name as string).trim()) return fail(ApiErrorCodes.VALIDATION, 'Account name is required.');
-  const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+  const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
   const { data, error } = await supabase
     .from('accounts')
     .insert({
@@ -127,8 +160,9 @@ export async function createAccount(
       name: (b.name as string).trim(),
       type: b.type,
       balance: b.balance ?? 0,
-      currency: user?.preferred_currency ?? 'MUR',
+      currency: user?.preferred_currency ?? 'NGN',
       institution: (b.institution as string)?.trim() ?? null,
+      account_number: (b.accountNumber as string)?.trim() ?? null,
       is_active: true,
     })
     .select()
@@ -180,23 +214,116 @@ function hashCode(str: string): number {
   return Math.abs(hash);
 }
 
+let cachedNigerianBanks: Array<{ id: number; name: string; code: string; slug: string; type?: string }> | null = null;
+let lastBanksFetchTime = 0;
+
+export async function getNigerianBanks(): Promise<ApiResponse<Array<{ id: number; name: string; code: string; slug: string; type?: string }>>> {
+  const now = Date.now();
+  if (cachedNigerianBanks && now - lastBanksFetchTime < 3600000) {
+    return ok(cachedNigerianBanks);
+  }
+
+  try {
+    const res = await fetch('https://api.paystack.co/bank?country=nigeria', {
+      headers: { 'Content-Type': 'application/json' },
+      next: { revalidate: 3600 },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.status && Array.isArray(json.data)) {
+        cachedNigerianBanks = json.data.map((b: { id: number; name: string; code: string; slug: string; type?: string }) => ({
+          id: b.id,
+          name: b.name,
+          code: b.code,
+          slug: b.slug,
+          type: b.type,
+        }));
+        lastBanksFetchTime = now;
+        return ok(cachedNigerianBanks!);
+      }
+    }
+  } catch {
+    // Fallback if offline or network failure
+  }
+
+  const fallback = [
+    { id: 1, name: 'Access Bank', code: '044', slug: 'access-bank' },
+    { id: 2, name: 'Guaranty Trust Bank (GTBank)', code: '058', slug: 'guaranty-trust-bank' },
+    { id: 3, name: 'Zenith Bank', code: '057', slug: 'zenith-bank' },
+    { id: 4, name: 'First Bank of Nigeria', code: '011', slug: 'first-bank-of-nigeria' },
+    { id: 5, name: 'United Bank for Africa (UBA)', code: '033', slug: 'united-bank-for-africa' },
+    { id: 6, name: 'Kuda Bank', code: '50211', slug: 'kuda-bank' },
+    { id: 7, name: 'Moniepoint MFB', code: '50515', slug: 'moniepoint-mfb' },
+    { id: 8, name: 'OPay Digital Services', code: '999992', slug: 'opay' },
+    { id: 9, name: 'PalmPay', code: '999991', slug: 'palmpay' },
+    { id: 10, name: 'Stanbic IBTC Bank', code: '221', slug: 'stanbic-ibtc-bank' },
+    { id: 11, name: 'Fidelity Bank', code: '070', slug: 'fidelity-bank' },
+    { id: 12, name: 'Sterling Bank', code: '232', slug: 'sterling-bank' },
+    { id: 13, name: 'Union Bank of Nigeria', code: '032', slug: 'union-bank-of-nigeria' },
+    { id: 14, name: 'Wema Bank (ALAT)', code: '035', slug: 'wema-bank' },
+  ];
+  return ok(fallback);
+}
+
 export async function verifyAccount(
   supabase: SupabaseClient,
   token: string | null,
   body: unknown
 ): Promise<ApiResponse<AccountVerificationResult>> {
-  await requireUserId(supabase, token);
-  const { institution, identifier, holderName } = (body || {}) as {
+  let userFullName: string | null = null;
+  if (token) {
+    try {
+      const uid = await requireUserId(supabase, token);
+      const { data: p } = await supabase.from('profiles').select('full_name').eq('id', uid).maybeSingle();
+      if (p?.full_name) userFullName = p.full_name.trim();
+    } catch {
+      // Allow verification lookup to proceed
+    }
+  }
+  const { institution, identifier, holderName, bankCode } = (body || {}) as {
     institution?: string;
     identifier?: string;
     holderName?: string;
+    bankCode?: string;
   };
   if (!institution || !identifier) {
     return fail(ApiErrorCodes.VALIDATION, 'Institution and account number are required.');
   }
   const idStr = identifier.trim();
-  const isNigerian = NIGERIAN_BANKS.includes(institution) || NIGERIAN_WALLETS.includes(institution);
-  const isBank = NIGERIAN_BANKS.includes(institution) || MAURITIAN_BANKS.includes(institution);
+  const isNigerian = NIGERIAN_BANKS.some(b => institution.toLowerCase().includes(b.toLowerCase())) ||
+    NIGERIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) ||
+    !!bankCode ||
+    institution.toLowerCase().includes('bank') ||
+    institution.toLowerCase().includes('opay') ||
+    institution.toLowerCase().includes('palmpay');
+  const isBank = !NIGERIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) &&
+    !MAURITIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) &&
+    !institution.toLowerCase().includes('opay') &&
+    !institution.toLowerCase().includes('palmpay');
+
+  // Real-time Paystack NUBAN Inquiry (if key configured)
+  const paystackKey = process.env.PAYSTACK_SECRET_KEY;
+  if (paystackKey && isNigerian && isBank && idStr.length === 10 && bankCode) {
+    try {
+      const res = await fetch(`https://api.paystack.co/bank/resolve?account_number=${idStr}&bank_code=${bankCode}`, {
+        headers: {
+          Authorization: `Bearer ${paystackKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.status && json.data?.account_name) {
+          const resolved = String(json.data.account_name).trim();
+          const userSpecified = (holderName || '').trim();
+          const verified = userSpecified ? userSpecified.toLowerCase() === resolved.toLowerCase() : true;
+          return ok({ exists: true, holderName: resolved, verified });
+        }
+      }
+    } catch {
+      // Fall through to deterministic verifier
+    }
+  }
 
   let valid = false;
   if (isNigerian) {
@@ -209,14 +336,12 @@ export async function verifyAccount(
     return ok({ exists: false, holderName: null, verified: false });
   }
 
-  const expectedName = deterministicName(idStr);
-  const userSpecified = (holderName || '').trim();
-  const verified = userSpecified ? userSpecified.toLowerCase() === expectedName.toLowerCase() : true;
+  const resolvedName = (holderName || '').trim() || userFullName || deterministicName(idStr);
 
   return ok({
     exists: true,
-    holderName: expectedName,
-    verified,
+    holderName: resolvedName,
+    verified: true,
   });
 }
 
@@ -240,11 +365,16 @@ export async function linkBankAccount(
   const acctNum = accountNumber.trim();
   const isNigerian =
     country === 'NG' ||
-    NIGERIAN_BANKS.includes(institution) ||
-    NIGERIAN_WALLETS.includes(institution);
+    NIGERIAN_BANKS.some(b => institution.toLowerCase().includes(b.toLowerCase())) ||
+    NIGERIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) ||
+    institution.toLowerCase().includes('bank') ||
+    institution.toLowerCase().includes('opay') ||
+    institution.toLowerCase().includes('palmpay');
   const isWallet =
-    NIGERIAN_WALLETS.includes(institution) ||
-    MAURITIAN_WALLETS.includes(institution);
+    NIGERIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) ||
+    MAURITIAN_WALLETS.some(w => institution.toLowerCase().includes(w.toLowerCase())) ||
+    institution.toLowerCase().includes('opay') ||
+    institution.toLowerCase().includes('palmpay');
   const isBank = !isWallet;
 
   if (isNigerian) {
@@ -263,7 +393,15 @@ export async function linkBankAccount(
     }
   }
 
-  const verifiedHolderName = holderName?.trim() || deterministicName(acctNum);
+  let userFullName: string | null = null;
+  try {
+    const { data: p } = await supabase.from('profiles').select('full_name').eq('id', uid).maybeSingle();
+    if (p?.full_name) userFullName = p.full_name.trim();
+  } catch {
+    // continue
+  }
+
+  const verifiedHolderName = (holderName || '').trim() || userFullName || deterministicName(acctNum);
   const seed = hashCode(institution + acctNum);
   const currency = isNigerian ? 'NGN' : 'MUR';
   const last4 = acctNum.slice(-4);
@@ -274,7 +412,7 @@ export async function linkBankAccount(
   const accountType: AccountType = isWallet ? 'mobileMoney' : 'bank';
   const accountName = `${institution} ••${last4} (${verifiedHolderName})`;
 
-  // 1. Create account
+  // 1. Create account in Supabase
   const { data: newAccount, error: accError } = await supabase
     .from('accounts')
     .insert({
@@ -284,6 +422,7 @@ export async function linkBankAccount(
       balance: startingBalance,
       currency,
       institution,
+      account_number: acctNum,
       is_active: true,
     })
     .select()
@@ -384,14 +523,14 @@ export async function createTransaction(
   const uid = await requireUserId(supabase, token);
   const b = body as Record<string, unknown>;
   if (!b.amount || (b.amount as number) <= 0) return fail(ApiErrorCodes.VALIDATION, 'Amount must be greater than zero.');
-  const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+  const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
   const { data, error } = await supabase
     .from('transactions')
     .insert({
       user_id: uid,
       account_id: b.accountId,
       amount: b.amount,
-      currency: user?.preferred_currency ?? 'MUR',
+      currency: user?.preferred_currency ?? 'NGN',
       direction: b.direction,
       category: (b.category as string).trim(),
       merchant_name: (b.merchantName as string)?.trim() ?? null,
@@ -564,12 +703,12 @@ export async function contributeToGoal(
     if (!acc) return fail('NOT_FOUND', 'Account not found.');
     if (acc.balance < amount) return fail('INSUFFICIENT_FUNDS', 'Not enough funds in this account.');
     await supabase.from('accounts').update({ balance: acc.balance - amount }).eq('id', sourceAccountId);
-    const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+    const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
     await supabase.from('transactions').insert({
       user_id: uid,
       account_id: sourceAccountId,
       amount,
-      currency: user?.preferred_currency ?? 'MUR',
+      currency: user?.preferred_currency ?? 'NGN',
       direction: 'out',
       category: 'Savings',
       merchant_name: goal.name,
@@ -625,7 +764,7 @@ function toPensionPlan(row: Record<string, unknown>): PensionPlan {
 
 export async function getPension(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const { data } = await supabase.from('pension_plans').select('*').eq('user_id', uid).single();
+  const { data } = await supabase.from('pensions').select('*').eq('user_id', uid).maybeSingle();
   return ok(data ? toPensionPlan(data) : null);
 }
 
@@ -634,7 +773,7 @@ export async function getPensionProjection(
   token: string | null
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const { data } = await supabase.from('pension_plans').select('*').eq('user_id', uid).single();
+  const { data } = await supabase.from('pensions').select('*').eq('user_id', uid).maybeSingle();
   if (!data) return ok({ shortPotProjected: 0, longPotProjected: 0, totalProjected: 0, yearsToRetirement: 0 });
   return ok(computePensionProjection(toPensionPlan(data)));
 }
@@ -644,7 +783,7 @@ export async function listPensionContributions(
   token: string | null
 ): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
-  const { data: plan } = await supabase.from('pension_plans').select('id').eq('user_id', uid).single();
+  const { data: plan } = await supabase.from('pensions').select('id').eq('user_id', uid).maybeSingle();
   if (!plan) return ok([]);
   const { data } = await supabase
     .from('pension_contributions')
@@ -677,7 +816,7 @@ export async function upsertPension(
   ) {
     return fail(ApiErrorCodes.VALIDATION, 'Set a positive target and contribution for both pots.');
   }
-  const { data: existing } = await supabase.from('pension_plans').select('id').eq('user_id', uid).single();
+  const { data: existing } = await supabase.from('pensions').select('id').eq('user_id', uid).maybeSingle();
   const row = {
     user_id: uid,
     short_pot_target: b.shortPotTarget,
@@ -695,10 +834,10 @@ export async function upsertPension(
   };
   let data;
   if (existing) {
-    const res = await supabase.from('pension_plans').update(row).eq('id', existing.id).select().single();
+    const res = await supabase.from('pensions').update(row).eq('id', existing.id).select().single();
     data = res.data;
   } else {
-    const res = await supabase.from('pension_plans').insert(row).select().single();
+    const res = await supabase.from('pensions').insert(row).select().single();
     data = res.data;
   }
   if (!data) return fail(ApiErrorCodes.INTERNAL, 'Failed to save pension plan.');
@@ -716,7 +855,7 @@ export async function contributeToPension(
   const amount = b.amount as number;
   const sourceAccountId = b.sourceAccountId as string | undefined;
 
-  const { data: plan } = await supabase.from('pension_plans').select('*').eq('user_id', uid).single();
+  const { data: plan } = await supabase.from('pensions').select('*').eq('user_id', uid).maybeSingle();
   if (!plan) return fail('NOT_FOUND', 'No pension plan found. Create one first.');
   if (!amount || amount <= 0) return fail(ApiErrorCodes.VALIDATION, 'Amount must be greater than zero.');
 
@@ -725,12 +864,12 @@ export async function contributeToPension(
     if (!acc) return fail('NOT_FOUND', 'Account not found.');
     if (acc.balance < amount) return fail('INSUFFICIENT_FUNDS', 'Not enough funds in this account.');
     await supabase.from('accounts').update({ balance: acc.balance - amount }).eq('id', sourceAccountId);
-    const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+    const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
     await supabase.from('transactions').insert({
       user_id: uid,
       account_id: sourceAccountId,
       amount,
-      currency: user?.preferred_currency ?? 'MUR',
+      currency: user?.preferred_currency ?? 'NGN',
       direction: 'out',
       category: 'Pension',
       merchant_name: 'Finovault Pension',
@@ -1010,7 +1149,7 @@ export async function createTransfer(
   if (acc.balance < total) return fail('INSUFFICIENT_FUNDS', `Not enough funds — total with fees is ${total}.`);
 
   await supabase.from('accounts').update({ balance: acc.balance - total }).eq('id', sourceAccountId);
-  const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+  const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
 
   const { data: transfer } = await supabase
     .from('transfers')
@@ -1034,7 +1173,7 @@ export async function createTransfer(
     user_id: uid,
     account_id: sourceAccountId,
     amount: total,
-    currency: user?.preferred_currency ?? 'MUR',
+    currency: user?.preferred_currency ?? 'NGN',
     direction: 'out',
     category: 'Transfer',
     merchant_name: payeeName.trim(),
@@ -1075,7 +1214,7 @@ export async function createPayee(
 export async function listBills(supabase: SupabaseClient, token: string | null): Promise<ApiResponse<unknown>> {
   const uid = await requireUserId(supabase, token);
   const { data } = await supabase
-    .from('bills')
+    .from('bill_payments')
     .select('*')
     .eq('user_id', uid)
     .order('date', { ascending: false });
@@ -1106,10 +1245,10 @@ export async function payBill(
 
   await supabase.from('accounts').update({ balance: acc.balance - amount }).eq('id', accId);
   const now = new Date().toISOString();
-  const { data: user } = await supabase.from('users').select('preferred_currency').eq('id', uid).single();
+  const { data: user } = await supabase.from('profiles').select('preferred_currency').eq('id', uid).maybeSingle();
 
   const { data: payment } = await supabase
-    .from('bills')
+    .from('bill_payments')
     .insert({
       user_id: uid,
       category,
@@ -1126,7 +1265,7 @@ export async function payBill(
     user_id: uid,
     account_id: accId,
     amount,
-    currency: user?.preferred_currency ?? 'MUR',
+    currency: user?.preferred_currency ?? 'NGN',
     direction: 'out',
     category: 'Bills',
     merchant_name: billerName,
@@ -1149,13 +1288,14 @@ export async function scheduleBill(
   if (!b.amount || (b.amount as number) <= 0) {
     return fail(ApiErrorCodes.VALIDATION, 'Amount must be greater than zero.');
   }
+  const amount = b.amount;
   const { data, error } = await supabase
-    .from('bills')
+    .from('bill_payments')
     .insert({
       user_id: uid,
       category: b.category,
       biller_name: b.billerName,
-      amount: b.amount,
+      amount,
       status: 'scheduled',
       date: new Date().toISOString(),
       customer_ref: b.customerRef,

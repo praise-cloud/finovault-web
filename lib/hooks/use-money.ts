@@ -345,6 +345,23 @@ export function useSaveBusinessProfile() {
   });
 }
 
+export function usePreferences() {
+  return useQuery<UserPreferences>({
+    queryKey: moneyKeys.preferences,
+    queryFn: moneyApi.getPreferences,
+  });
+}
+
+export function useSavePreferences() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (patch: Partial<UserPreferences>) => moneyApi.savePreferences(patch),
+    onSuccess: (data) => {
+      qc.setQueryData(moneyKeys.preferences, data);
+    },
+  });
+}
+
 // ---- derived summary selector ------------------------------------------------
 
 export interface MoneySummary {

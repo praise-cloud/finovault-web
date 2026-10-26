@@ -3,13 +3,14 @@ import React from 'react';
 export interface SectionHeaderProps {
   title: string;
   kicker?: string;
+  subtitle?: string;
   actionLabel?: string;
   onAction?: () => void;
   id?: string;
   className?: string;
 }
 
-export function SectionHeader({ title, kicker, actionLabel, onAction, id, className = '' }: SectionHeaderProps) {
+export function SectionHeader({ title, kicker, subtitle, actionLabel, onAction, id, className = '' }: SectionHeaderProps) {
   return (
     <div className={`mb-3 flex items-end justify-between gap-2 ${className}`}>
       <div className="flex flex-col">
@@ -19,6 +20,9 @@ export function SectionHeader({ title, kicker, actionLabel, onAction, id, classN
           </span>
         ) : null}
         <h2 id={id} className="text-base sm:text-lg font-black uppercase tracking-tight text-[var(--fv-text)]">{title}</h2>
+        {subtitle ? (
+          <p className="text-xs text-[var(--fv-text-secondary)] mt-0.5">{subtitle}</p>
+        ) : null}
       </div>
       {actionLabel ? (
         <button

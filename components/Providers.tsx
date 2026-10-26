@@ -1,35 +1,19 @@
 'use client';
 
-import '@/lib/i18n'; // ponytail: side-effect import, initializes i18next for all routes
-import React, { useEffect, useState } from 'react';
+import '@/lib/i18n';
+import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { initMockApi, setMockLatency } from '@/lib/api';
 import { ThemeProvider } from '@/lib/theme';
-import { useAuthStore } from '@/stores/auth-store';
 
-import { BrutalistLoading } from '@/components/ui/BrutalistLoading';
-
-/**
- * Client-side providers: mock API boot, i18n-ready theme and react-query.
- * Kept small so layout.tsx stays a server component.
- */
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false);
-  const restoreSession = useAuthStore((s) => s.restoreSession);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (process.env.NODE_ENV === 'test') setMockLatency(0);
-    void initMockApi().then(() => {
-      void restoreSession().finally(() => setReady(true));
-    });
-  }, [restoreSession]);
-
-  const [queryClient] = React.useState(() => new QueryClient());
-
-  if (!ready) {
-    return <BrutalistLoading />;
-  }
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: false,
+      },
+    },
+  }));
 
   return (
     <QueryClientProvider client={queryClient}>
