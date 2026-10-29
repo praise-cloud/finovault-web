@@ -24,7 +24,7 @@ function containsSqlInjection(val: string): boolean {
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const initialToken = searchParams.get('token') || '';
+  const initialToken = searchParams.get('token') || searchParams.get('code') || '';
 
   const [token, setToken] = useState(initialToken);
   const [newPassword, setNewPassword] = useState('');
@@ -32,6 +32,17 @@ function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash && hash.includes('access_token=')) {
+        const hashParams = new URLSearchParams(hash.replace(/^#/, ''));
+        const at = hashParams.get('access_token');
+        if (at) setToken(at);
+      }
+    }
+  }, []);
 
   const strength = passwordStrength(newPassword);
 
