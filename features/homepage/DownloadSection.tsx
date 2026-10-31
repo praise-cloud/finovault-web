@@ -17,7 +17,11 @@ import {
   Lock,
 } from 'lucide-react';
 
-export function DownloadSection() {
+interface DownloadSectionProps {
+  onOpenDownload?: () => void;
+}
+
+export function DownloadSection({ onOpenDownload }: DownloadSectionProps) {
   const [copiedHash, setCopiedHash] = useState(false);
   const [showAndroidInstructions, setShowAndroidInstructions] = useState(false);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
@@ -319,7 +323,7 @@ export function DownloadSection() {
               </div>
               <div className="p-2 bg-white border-2 border-[#0A0A0A]">
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent('https://finovault.pro/#download')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent('https://finovault.pro/download')}`}
                   alt="Scan to download Finovault"
                   className="w-32 h-32"
                 />
@@ -327,6 +331,13 @@ export function DownloadSection() {
               <div className="mt-2 text-[11px] font-bold text-[#0A0A0A]">
                 Opens direct mobile download
               </div>
+              <button
+                type="button"
+                onClick={onOpenDownload}
+                className="mt-3 w-full py-2 bg-[#0A0A0A] text-white text-[11px] font-black uppercase tracking-wider hover:bg-[#1D4ED8] transition-colors cursor-pointer"
+              >
+                Open Device OS Selector
+              </button>
             </div>
 
           </div>

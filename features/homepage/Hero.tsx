@@ -35,7 +35,11 @@ const currencies = [
   { code: 'GHS', symbol: 'GH₵', rate: 15.2, name: 'Ghanaian Cedi' },
 ];
 
-export function Hero() {
+interface HeroProps {
+  onOpenDownload?: () => void;
+}
+
+export function Hero({ onOpenDownload }: HeroProps) {
   // View Mode: 3D interactive model vs Interactive Phone UI Mockup
   const [viewMode, setViewMode] = useState<'3d' | 'device'>('3d');
 
@@ -143,6 +147,7 @@ export function Hero() {
               {/* iOS Button */}
               <a
                 href="#download"
+                onClick={(e) => { if (onOpenDownload) { e.preventDefault(); onOpenDownload(); } }}
                 className="group flex items-center justify-center gap-3 border-2 border-[#0A0A0A] bg-[#0A0A0A] text-white px-6 py-4 text-sm font-black uppercase tracking-wider shadow-[4px_4px_0_0_#1D4ED8] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1D4ED8] active:translate-y-0 active:shadow-none cursor-pointer"
               >
                 <Apple size={20} className="transition-transform group-hover:scale-110" />
@@ -155,6 +160,7 @@ export function Hero() {
               {/* Android Button */}
               <a
                 href="#download"
+                onClick={(e) => { if (onOpenDownload) { e.preventDefault(); onOpenDownload(); } }}
                 className="group flex items-center justify-center gap-3 border-2 border-[#0A0A0A] bg-[#1D4ED8] text-white px-6 py-4 text-sm font-black uppercase tracking-wider shadow-[4px_4px_0_0_#0A0A0A] transition-all hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#0A0A0A] active:translate-y-0 active:shadow-none cursor-pointer"
               >
                 <Smartphone size={20} className="transition-transform group-hover:scale-110" />
@@ -501,7 +507,7 @@ export function Hero() {
               {/* QR Image Graphic */}
               <div className="p-3 bg-white border-2 border-[#0A0A0A] shadow-[3px_3px_0_0_#0A0A0A]">
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://finovault.pro/#download')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://finovault.pro/download')}`}
                   alt="Scan to download Finovault"
                   className="w-44 h-44"
                 />
@@ -516,8 +522,15 @@ export function Hero() {
 
             <button
               type="button"
+              onClick={() => { setQrModalOpen(false); if (onOpenDownload) onOpenDownload(); }}
+              className="mt-3 w-full py-2.5 bg-[#1D4ED8] text-white text-xs font-black uppercase tracking-wider hover:bg-[#1E40AF] transition-colors cursor-pointer"
+            >
+              Select Device OS Now
+            </button>
+            <button
+              type="button"
               onClick={() => setQrModalOpen(false)}
-              className="mt-4 w-full py-2.5 bg-[#0A0A0A] text-white text-xs font-black uppercase tracking-wider hover:bg-[#1D4ED8] transition-colors cursor-pointer"
+              className="mt-2 w-full py-2.5 bg-[#0A0A0A] text-white text-xs font-black uppercase tracking-wider hover:bg-[#1D4ED8] transition-colors cursor-pointer"
             >
               Close Window
             </button>
