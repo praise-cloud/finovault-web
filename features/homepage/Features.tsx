@@ -6,7 +6,7 @@ import {
   Coffee,
   Globe2,
   Archive,
-  Sparkles,
+  Award,
   ShieldCheck,
   Zap,
   TrendingUp,
@@ -47,7 +47,7 @@ const features = [
   },
   {
     tag: 'MODULE 05',
-    icon: Sparkles,
+    icon: Award,
     color: 'bg-[#FCE7F3] text-[#9D174D]',
     title: 'Semester Vault Wraps',
     description:

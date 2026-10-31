@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Archive, Sparkles, Award, Coffee, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Archive, Award, Coffee, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export function VaultWrapsExplainer() {
   return (
@@ -85,7 +85,7 @@ export function VaultWrapsExplainer() {
               <div className="flex items-center justify-between border-b-2 border-[#0A0A0A] pb-4 mb-6">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 bg-[#2563EB] text-white">
-                    <Sparkles size={22} />
+                    <Award size={22} />
                   </div>
                   <div>
                     <h3 className="font-black text-xl uppercase tracking-tight text-[#0A0A0A]">
