@@ -38,7 +38,7 @@ export function Footer() {
                 className="inline-flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] text-white font-black text-xs uppercase px-4 py-2 border border-white/40 shadow-[2px_2px_0_0_#ffffff] transition-all cursor-pointer"
               >
                 <Download size={14} />
-                <span>Download APK (57.7MB)</span>
+                <span>Download Direct APK</span>
               </a>
             </div>
           </div>

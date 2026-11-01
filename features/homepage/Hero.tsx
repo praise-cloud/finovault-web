@@ -12,8 +12,6 @@ import {
   MapPin,
   TrendingUp,
   CheckCircle2,
-  Copy,
-  Check,
   Sliders,
   ChevronRight,
   ArrowDown,
@@ -53,10 +51,7 @@ export function Hero({ onOpenDownload }: HeroProps) {
     { name: 'Cascavelle Lunch', amount: 8.0, time: '1:30 PM', spot: 'Food Court' },
   ]);
   const [qrModalOpen, setQrModalOpen] = useState(false);
-  const [copiedHash, setCopiedHash] = useState(false);
   const [lastLoggedSpot, setLastLoggedSpot] = useState<string | null>(null);
-
-  const sha256 = 'DA776A745AD3D80D4D9A4073BFBD22DD55F2B7D30E0AFC3730350C2846F0B814';
 
   const safeToSpend = Math.max(0, dailyAllowance - spentToday);
   const fuelPercent = Math.round((safeToSpend / dailyAllowance) * 100);
@@ -77,12 +72,6 @@ export function Hero({ onOpenDownload }: HeroProps) {
       ...prev.slice(0, 2),
     ]);
     setTimeout(() => setLastLoggedSpot(null), 1200);
-  };
-
-  const handleCopyHash = () => {
-    navigator.clipboard.writeText(sha256);
-    setCopiedHash(true);
-    setTimeout(() => setCopiedHash(false), 2000);
   };
 
   return (
@@ -179,20 +168,6 @@ export function Hero({ onOpenDownload }: HeroProps) {
               >
                 <QrCode size={18} />
                 <span>Scan QR</span>
-              </button>
-            </div>
-
-            {/* SHA-256 Checksum Pill */}
-            <div className="mt-6 flex flex-wrap items-center gap-2 text-[11px] font-mono text-[#0A0A0A]/70 bg-white/80 border border-[#0A0A0A]/30 p-2.5 max-w-xl">
-              <span className="font-bold text-[#0A0A0A]">PACKAGE SHA-256:</span>
-              <span className="truncate max-w-[220px] sm:max-w-xs">{sha256}</span>
-              <button
-                type="button"
-                onClick={handleCopyHash}
-                className="ml-auto flex items-center gap-1 text-[10px] font-bold uppercase bg-[#0A0A0A] text-white px-2 py-1 hover:bg-[#1D4ED8] transition-colors cursor-pointer"
-              >
-                {copiedHash ? <Check size={12} /> : <Copy size={12} />}
-                <span>{copiedHash ? 'Copied' : 'Copy'}</span>
               </button>
             </div>
 

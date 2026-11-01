@@ -2,17 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Download, Smartphone, QrCode, Menu, X, ArrowUpRight, Apple } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { VaultMark } from '@/components/VaultMark';
-
-const navItems = [
-  { label: 'Features', id: 'features' },
-  { label: 'Student Vault', id: 'vault' },
-  { label: '20 Currencies', id: 'currencies' },
-  { label: 'Vault Wraps', id: 'wraps' },
-  { label: 'How It Works', id: 'how-it-works' },
-  { label: 'Download', id: 'download' },
-];
 
 interface NavProps {
   onOpenDownload?: () => void;
@@ -20,7 +11,6 @@ interface NavProps {
 
 export function Nav({ onOpenDownload }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -28,11 +18,14 @@ export function Nav({ onOpenDownload }: NavProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
-    setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+  const handleDownloadClick = () => {
+    if (onOpenDownload) {
+      onOpenDownload();
+    } else {
+      const element = document.getElementById('download');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -67,76 +60,19 @@ export function Nav({ onOpenDownload }: NavProps) {
           </div>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-1 lg:gap-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => scrollTo(item.id)}
-              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#0A0A0A]/80 hover:text-[#0A0A0A] hover:bg-black/5 rounded transition-colors cursor-pointer"
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Action Button: Get App for iOS & Android */}
-        <div className="hidden md:flex items-center gap-3">
+        {/* Action Button: Direct Get App CTA */}
+        <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={onOpenDownload ? onOpenDownload : () => scrollTo('download')}
-            className="inline-flex items-center gap-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-black text-xs uppercase tracking-wider px-5 py-2.5 border-2 border-[#0A0A0A] shadow-[3px_3px_0_0_#0A0A0A] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+            onClick={handleDownloadClick}
+            className="inline-flex items-center gap-2 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white font-black text-xs uppercase tracking-wider px-4 sm:px-5 py-2.5 border-2 border-[#0A0A0A] shadow-[3px_3px_0_0_#0A0A0A] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
           >
-            <Download size={14} strokeWidth={2.5} />
-            <span>Get App (iOS / Android)</span>
-          </button>
-        </div>
-
-        {/* Mobile Hamburger */}
-        <div className="flex md:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 border-2 border-[#0A0A0A] bg-white text-[#0A0A0A] shadow-[2px_2px_0_0_#0A0A0A] cursor-pointer"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Download size={15} strokeWidth={2.5} />
+            <span className="hidden sm:inline">Get App (iOS / Android)</span>
+            <span className="sm:hidden">Get App</span>
           </button>
         </div>
       </nav>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t-2 border-[#0A0A0A] bg-[#F3F1EA] px-6 py-5 shadow-lg">
-          <div className="flex flex-col gap-3">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => scrollTo(item.id)}
-                className="text-left py-2 font-bold text-sm uppercase tracking-wider text-[#0A0A0A] border-b border-[#0A0A0A]/10"
-              >
-                {item.label}
-              </button>
-            ))}
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onOpenDownload) onOpenDownload();
-                  else scrollTo('download');
-                }}
-                className="flex items-center justify-center gap-2 bg-[#1D4ED8] text-white font-black text-xs uppercase tracking-wider py-3 border-2 border-[#0A0A0A] shadow-[3px_3px_0_0_#0A0A0A] w-full cursor-pointer"
-              >
-                <Download size={16} />
-                <span>Get Finovault Mobile (iOS / Android)</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

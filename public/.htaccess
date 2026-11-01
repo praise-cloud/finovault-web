@@ -1,0 +1,43 @@
+# ==============================================================================
+# Finovault Hostinger Apache Configuration
+# Guarantees direct binary downloads for Android APK/AAB and iOS profiles
+# ==============================================================================
+
+# MIME types for mobile applications
+AddType application/vnd.android.package-archive .apk
+AddType application/octet-stream .aab
+AddType application/x-itunes-ipa .ipa
+AddType text/xml .plist
+AddType application/manifest+json .webmanifest
+
+# Force download attachment headers for mobile installers
+<IfModule mod_headers.c>
+  <FilesMatch "\.(apk|aab|ipa)$">
+    Header set Content-Disposition "attachment"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=86400, no-transform"
+  </FilesMatch>
+</IfModule>
+
+# Clean SPA & sub-page routing without infinite loops or fallback redirects
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # NEVER rewrite existing downloads or API calls
+  RewriteRule ^downloads/ - [L]
+  RewriteRule ^api/ - [L]
+
+  # If requested resource physically exists, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Route /download to the dedicated mobile download page
+  RewriteRule ^download/?$ download/index.html [L]
+  RewriteRule ^reset-password/?$ reset-password/index.html [L]
+  RewriteRule ^rest-password/?$ rest-password/index.html [L]
+
+  # Fallback to root index.html
+  RewriteRule ^ index.html [L]
+</IfModule>

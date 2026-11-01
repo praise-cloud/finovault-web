@@ -6,8 +6,6 @@ import {
   QrCode,
   ShieldCheck,
   CheckCircle2,
-  Copy,
-  Check,
   Smartphone,
   ExternalLink,
   ChevronDown,
@@ -22,16 +20,8 @@ interface DownloadSectionProps {
 }
 
 export function DownloadSection({ onOpenDownload }: DownloadSectionProps) {
-  const [copiedHash, setCopiedHash] = useState(false);
   const [showAndroidInstructions, setShowAndroidInstructions] = useState(false);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
-  const sha256 = 'DA776A745AD3D80D4D9A4073BFBD22DD55F2B7D30E0AFC3730350C2846F0B814';
-
-  const handleCopyHash = () => {
-    navigator.clipboard.writeText(sha256);
-    setCopiedHash(true);
-    setTimeout(() => setCopiedHash(false), 2000);
-  };
 
   return (
     <section id="download" className="py-24 md:py-32 bg-[#FFFFFF] border-b-2 border-[#0A0A0A]">
@@ -197,24 +187,6 @@ export function DownloadSection({ onOpenDownload }: DownloadSectionProps) {
                   <Download size={18} />
                   <span>Download Direct APK</span>
                 </a>
-              </div>
-
-              {/* SHA-256 Verification Box */}
-              <div className="mt-5 p-3.5 bg-white border-2 border-[#0A0A0A] flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-                <div>
-                  <span className="font-bold text-[#0A0A0A]">SHA-256 CHECKSUM:</span>
-                  <div className="text-[11px] text-[#0A0A0A]/80 break-all select-all font-mono mt-0.5">
-                    {sha256}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCopyHash}
-                  className="flex items-center gap-1.5 bg-[#0A0A0A] hover:bg-[#2563EB] text-white px-3 py-1.5 font-bold uppercase text-[11px] transition-colors cursor-pointer"
-                >
-                  {copiedHash ? <Check size={14} /> : <Copy size={14} />}
-                  <span>{copiedHash ? 'Checksum Copied' : 'Copy Checksum'}</span>
-                </button>
               </div>
 
               {/* Collapsible Android Sideload Instructions */}

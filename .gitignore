@@ -46,8 +46,3 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 
-# binary releases
-*.apk
-*.aab
-/public/downloads/*.apk
-/public/downloads/*.aab
